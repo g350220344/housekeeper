@@ -1,0 +1,51 @@
+/* i-card styles */
+.i_card {
+    width: 7.02rem;
+    margin: 0.24rem auto 0;
+    border-radius: 0.3rem;
+    background: #fff;
+}
+.card_tit_box {
+    overflow: hidden;
+    clear: both;
+    padding: 0 0.27rem;
+    height: 0.79rem;
+}
+.i_card_tit {
+    float: left;
+    font-size: 0.3rem;
+    color: #111;
+    line-height: 0.79rem;
+    border-color: #e3e3e3;
+    vertical-align: middle;
+}
+.i_card_tit_icon {
+    width: 0.42rem;
+    height: 0.42rem;
+    /* margin-right: 0.1rem; */
+    display: inline-block;
+    vertical-align: text-top;
+}
+.card_icon_box {
+    float: right;
+    vertical-align: middle;
+    font-size: 0;
+    line-height: 0.79rem;
+}
+.card_icon_box img {
+    vertical-align: middle;
+    display: inline-block;
+    /* width: 0.32rem; */
+    height: 0.32rem;
+}
+.card_ctn_box {
+    padding: 0 0.27rem;
+}
+.i_card_sub_tit {
+    color: #bbb;
+    font-size: 0.24rem;
+    margin-left: 0.24rem;
+    vertical-align: bottom;
+    line-height: 0.7rem;
+}
+

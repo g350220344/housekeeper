@@ -1,0 +1,612 @@
+function loadLogo() {
+    var urlData = 'mobile=' + userId;
+    $.ajax({
+        url: 'http://10.200.11.237:8080' + server_url + '/rest/user/groupInfoByMobile',
+        dataType: 'jsonp',
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+            // showToast(3, '请求超时！');
+            // console.log(json);
+            // $('#deal_table_el').append('error')
+        },
+        success: function(json) {
+            console.log(json);
+            var data = json.data;
+            $('#logo').attr('src', data.logo);
+        }
+    })
+}
+/**
+ * 获取环形图所需数据
+ */
+function fetchRollData() {
+    var urlData = 'communityId=' + '588087879' + '&cityId=' + 2301;
+    $.ajax({
+        url: server_url + '/rest/community/getSaleDateCount',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+            // showToast(3, '请求超时！');
+            // console.log(json);
+            // $('#deal_table_el').append('error')
+        },
+        success: function (json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                // console.log(data);
+                //面积数据
+                var _arr_area = [];
+                _arr_area.push({
+                    name: '<90㎡',
+                    y: data.COUNT90
+                });
+                _arr_area.push({
+                    name: '90㎡-140㎡',
+                    y: data.COUNT90TO140
+                });
+                _arr_area.push({
+                    name: '>140㎡',
+                    y: data.COUNT140
+                });
+                //户型数据
+                var _arr_house = [];
+                _arr_house.push({
+                    name: '一室',
+                    y: data.ONEROOM
+                });
+                _arr_house.push({
+                    name: '二室',
+                    y: data.TWOROOM
+                });
+                _arr_house.push({
+                    name: '三室',
+                    y: data.THREEROOM
+                });
+                _arr_house.push({
+                    name: '四室',
+                    y: data.FOURROOMUP
+                });
+                _arr_house.push({
+                    name: '其他',
+                    y: data.OTHERROOM
+                });
+                renderQreaChart(_arr_area);
+                renderHousetypeChart(_arr_house);
+            } else {
+
+            }
+        }
+    })
+}
+
+/**
+ * 渲染户型占比图
+ * @param {*} _arr 
+ */
+function renderHousetypeChart(_arr) {
+    var chart2 = Highcharts.chart('house_type_percent', {
+        credits: {
+            text: '',
+            href: ''
+        },
+        title: {
+            text: '户型占比'
+        },
+        tooltip: {
+            headerFormat: '{series.name}<br>',
+            pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        colors: ['#43caff', '#ff504d', '#ffcd00', '#00eadd', '#ddd'],
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.percentage:.1f} %'
+                },
+                showInLegend: true // 设置饼图是否在图例中显示
+            }
+        },
+        series: [{
+            type: 'pie',
+            innerSize: '60%',
+            name: '户型占比',
+            data: _arr
+        }]
+    });
+}
+
+/**
+ * 渲染面积占比图
+ * @param {} _arr 
+ */
+function renderQreaChart(_arr) {
+    var chart1 = Highcharts.chart('square_percent', {
+        credits: {
+            text: '',
+            href: ''
+        },
+        title: {
+            text: '面积占比'
+        },
+        colors: ['#43caff', '#ffcd00', '#00eadd'],
+        tooltip: {
+            headerFormat: '{series.name}<br>',
+            pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.percentage:.1f} %'
+                },
+                showInLegend: true // 设置饼图是否在图例中显示
+            }
+        },
+        series: [{
+            type: 'pie',
+            innerSize: '60%',
+            name: '面积占比',
+            data: _arr
+        }]
+    });
+}
+var chart3;
+var month_arr = [];
+function month12() {
+    var dataArr = [];
+    var data=new Date();
+    var year=data.getFullYear();
+    data.setMonth(data.getMonth()+1)//获取到当前月份,设置月份
+    for (var i = 0; i < 12; i++) {
+        data.setMonth(data.getMonth()-1);//每次循环一次 月份值减1
+        var month = data.getMonth()+1;
+        month = month < 10 ? '0' + month : month;
+        dataArr.push(data.getFullYear()+"-"+month)
+    }
+    return dataArr.reverse();
+}
+function dataFilter(list) {
+    var result = month12();
+    var dw = [];
+    for (var i in result) {
+        var m = list.filter(function (item) {
+            return item.dayId.replace(/-01$/, '') == result[i];
+        });
+        if (m.length > 0) {
+            dw[i] = m[0];
+        }else {
+            dw[i] = null;
+        }
+    }
+    return dw;
+}
+function draw(_series) {
+    chart3 = Highcharts.chart('p_price_chart', {
+        credits: {
+            text: '',
+            href: ''
+        },
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: month12()
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            labels: {
+                formatter: function () {
+                    return this.value;
+                }
+            }
+        },
+        colors: ['#ffcd00', '#00eadd', '#43caff'],
+        tooltip: {
+            crosshairs: true,
+            shared: true
+        },
+        plotOptions: {
+            spline: {
+                marker: {
+                    radius: 3,
+                    // lineColor: '#666666',
+                    lineWidth: 1
+                }
+            }
+        },
+        series: _series
+    });
+}
+
+
+function cellStyle(e, t, o) {
+    var n = ["active", "success", "info", "warning", "danger"];
+    return o % 2 === 0 && o / 2 < n.length ? {
+        classes: n[o / 2]
+    }: {}
+}
+function rowStyle(e, t) {
+    var o = ["active", "success", "info", "warning", "danger"];
+    return t % 2 === 0 && t / 2 < o.length ? {
+        classes: o[t / 2]
+    }: {}
+}
+function scoreSorter(e, t) {
+    return e > t ? 1 : t > e ? -1 : 0
+}
+function nameFormatter(e) {
+    return e + '<i class="icon wb-book" aria-hidden="true"></i> '
+}
+function starsFormatter(e) {
+    return '<i class="icon wb-star" aria-hidden="true"></i> ' + e
+}
+function queryParams() {
+    return {
+        communityId: '588087879',
+        cityId: 2301,
+        limit: 5
+    }
+}
+function buildTable(e, t, o) {
+    var n, l, s, a = [],
+    c = [];
+    for (n = 0; t > n; n++) a.push({
+        field: "字段" + n,
+        title: "单元" + n
+    });
+    for (n = 0; o > n; n++) {
+        for (s = {},
+        l = 0; t > l; l++) s["字段" + l] = "Row-" + n + "-" + l;
+        c.push(s)
+    }
+    e.bootstrapTable("destroy").bootstrapTable({
+        columns: a,
+        data: c,
+        iconSize: "outline",
+        icons: {
+            columns: "glyphicon-list"
+        }
+    })
+}
+
+!function(e, t, o) {
+    "use strict"; !
+    init();
+} (document, window, jQuery);
+
+function init() {
+    loadLogo();
+    loadCommunityInfo();
+    loadCommunityMarket();
+    fetchRollData();
+    loadDealData();
+    loadNearbyData();
+    fetchPriceTend();
+    //load POI 信息
+    
+}
+function renderPOIs(_point) {
+    loadPOI('交通', 'traffic', _point);
+    loadPOI('医院', 'hospital', _point);
+    loadPOI('学校', 'school', _point);
+    loadPOI('银行', 'bank', _point);
+}
+function loadNearbyData() {
+    var lng = 126.67528663325477;
+    var lat = 45.765893010477946;
+    var urlData = "lng=" + lng + '&lat=' + lat + '&range=' + 2000;
+    $.ajax({
+        url: 'http://10.200.11.237:8080' + server_url + '/rest/community/aroundCommunityPriceCompare',
+        // url: 'host' + server_url + '/rest/community/searchNearCommunity',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+            // showToast(3, '请求超时！');
+            // console.log(json);
+            // $('#deal_table_el').append('error')
+        },
+        success: function (json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                initTable(data, 'nearby_table_el');
+            } else {
+
+            }
+        }
+    })
+}
+function loadDealData() {
+    var urlData = 'communityId=' + '588087879' + '&cityId=' + 2301 + '&limit=' + 5;
+    $.ajax({
+        async: false,
+        type: 'post',
+        url: server_url + '/rest/community/getDealCommunityList',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+            showToast(3, '请求超时！');
+            console.log(json);
+            $('#deal_table_el').append('error')
+        },
+        success: function (json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                var sortArr = data.sort(compare);
+                var tmp = {};
+                tmp = data.map(function(item) {
+                    item.flag = 'mid';
+                    if(item.sqmprice == sortArr[0].sqmprice) {
+                        item.flag = 'top';
+                    }else if(item.sqmprice == sortArr[sortArr.length - 1].sqmprice) {
+                        item.flag = 'bottom';
+                    }
+                    item.totalprice = item.totalprice / 10000;
+                    return item;
+                });
+                tmp.push(tmp[0]);
+                tmp.push(tmp[0]);
+                initTable(tmp, 'deal_table_el');
+            } else {
+
+            }
+        }
+    });
+}
+function initTable(_data, el) {
+    var arr = $('#' + el + ' .ul_th').find('li');
+    var html_str = '';
+    var len = arr.length;
+    for(var m in _data) {
+        var item = _data[m];
+        var sub_str = ''
+        for(var i = 0; i < len; i++) {
+            var key = $(arr[i]).attr('data-field');
+            var formatter = $(arr[i]).attr('data-formatter');
+            if(formatter) {
+                sub_str += '<li>' + (window[formatter] && window[formatter](item)) + '</li>';
+            }else {
+                sub_str += '<li>' + item[key] + '</li>';
+            }
+            
+        }
+        html_str += "<ul class='ul_tb'>" + sub_str + "</ul>";
+    }
+    $('#' + el + ' .tbody_box').html(html_str);
+}
+
+function dealSqmprice(row) {
+    if(row.flag == 'top') {
+        return row.sqmprice + '<div class="tips tip_blue">最低单价</div>';
+    }
+    if (row.flag == 'bottom') {
+        return row.sqmprice + '<div class="tips tip_yellow">最高单价</div>';
+    }
+    return row.sqmprice;
+}
+
+function distance(row) {
+    return row.distance + '米' + '(' + (row.direction || '') + ')';
+}
+
+var compare = function (obj1, obj2) {
+    var val1 = obj1.sqmprice;
+    var val2 = obj2.sqmprice;
+    if (val1 < val2) {
+        return -1;
+    } else if (val1 > val2) {
+        return 1;
+    } else {
+        return 0;
+    }            
+} 
+
+/**
+ * 检索银行poi
+ */
+function loadPOI(key, el, _point) {
+    var map = new BMap.Map("b_container");          
+    map.centerAndZoom(new BMap.Point(_point.lng, _point.lat), 11);   
+    var options = {      
+        onSearchComplete: function(results){      
+            if (local.getStatus() == BMAP_STATUS_SUCCESS){      
+                // 判断状态是否正确      
+                var s = [];      
+                for (var i = 0; i < results.getCurrentNumPois(); i ++){      
+                    s.push(results.getPoi(i));
+                }      
+                // console.log(key, s)
+                initPoi(el, s.slice(0, 4));   
+            }      
+        }      
+     };      
+    var local = new BMap.LocalSearch(map, options);  
+    local.searchNearby(key, new BMap.Point(_point.lng, _point.lat), 1000);    
+}
+
+function initPoi(el, data) {
+    var box = $('#' + el);
+    var html_str = '';
+    for(var i in data) {
+        var item = data[i];
+        var sub_str = '<div class="poi_li">' +
+        '<div class="poi_item_init_1">' + item.title + '</div>' + 
+        '<div class="poi_item_init_2">' + item.address + '</div>' +
+        '</div>';
+        html_str += sub_str;
+    }
+    box.html(html_str);
+}
+/**
+ * 加载小区行情
+ */
+function loadCommunityMarket() {
+    var communityId = 588094067;
+    var urlData = 'communityId=' + communityId;
+    $.ajax({
+        url: server_url + '/rest/community/getCommunityMarket',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+
+        },
+        success: function(json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                // console.log('community', data);
+                $('#junjia_yue').html(data.dayId.split('-')[1].replace(/^0/, '') + '月' + '参考均价');
+                // $('#cmt_salesqmprice').html(data.salesqmprice || '--')
+            }
+        }
+    })
+}
+function loadCommunityInfo() {
+    var communityId = 588094067;
+    var urlData = 'communityId=' + communityId;
+    $.ajax({
+        url: server_url + '/rest/community/getApplyCommunityInfo',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+
+        },
+        success: function(json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                // console.log('community', data);
+                var point = {
+                    lng: data.longitude,
+                    lat: data.latitude
+                }
+                renderPOIs(point);
+                var el_arr = $('.p_info_b_2_details').find('.info_val');
+                for(var i = 0; i < el_arr.length; i++) {
+                    var el = el_arr[i];
+                    var key = $(el).attr('data-field');
+                    if(key == 'buildyear') {
+                        $(el).html(data[key] + '年');
+                    }else if(key == 'buildingarea' || key == 'coveringarea') {
+                        $(el).html(data[key]/10000 + '万㎡');
+                    }else if(key == 'plotratio') {
+                        $(el).html(data[key] + '%');
+                    }else if(key == 'totalhouseholdcount') {
+                        $(el).html(data[key] + '户');
+                    }else if(key == 'saleSqmPriceLinkRelativeRatio') {
+                        $(el).html(data[key] + '%');
+                        if(data[key] < 0) {
+                            $(el).addClass('rate_down');
+                            $('#info_arrow').attr('src', '../img/ico_x.png');
+                        }else {
+                            $(el).addClass('rate_up');
+                            $('#info_arrow').attr('src', '../img/ico_s.png');
+                        }
+                    }else {
+                        $(el).html(data[key]);
+                    }
+                }
+                $('.p_info_b_1_name').html(data.communityname);
+                $('#buidingPic').attr('src', data.pictureurl);
+                var star_str = '';
+                for(var i = 0; i < data.communityScore; i++) {
+                    star_str += '<img class="p_star" src="../img/pdf/favorites-filling.png" alt="">';
+                }
+                for(var i = 0; i < (5 - data.communityScore); i++) {
+                    star_str += '<img class="p_star" src="../img/pdf/favorite.png" alt="">';
+                }
+                $('#star_box').html(star_str);
+            }
+        }
+    })
+}
+/**
+ * 获取价格走势数据
+ */
+function fetchPriceTend() {
+    var monthArr = month12();
+    $('.p_price_tit_2').html('（' + (monthArr[0].split('-')[0] + '年' + monthArr[0].split('-')[1] + '月') + '-' + (monthArr[1].split('-')[0] + '年' + monthArr[1].split('-')[1] + '月') + '）');
+    var urlData = 'communityId=' + '588094067' + '&cityId=' + 2301 + '&districtId=' + 230104;
+    $.ajax({
+        async: false,
+        type: 'post',
+        url: server_url + '/rest/common/getMarket',
+        dataType:"jsonp",
+        data: urlData,
+        timeout: 40000,
+        error: function (json) {
+
+        },
+        success: function (json) {
+            if (json.statusCode == 1) {
+                var data = json.data;
+                var _series = [];
+                if(data.communityMarketList && data.communityMarketList.length > 0) {
+                    var tmp = dataFilter(data.communityMarketList);
+                    _series.push({
+                        name: data.communityMarketList[0].communityName,
+                        data: tmp.map(function(item) {
+                            return item ? item.salesqmprice : item
+                        }).reverse()
+                    });
+                }
+                if(data.districtMarketList && data.districtMarketList.length > 0) {
+                    var tmp = dataFilter(data.districtMarketList);
+                    _series.push({
+                        name: data.districtMarketList[0].districtName,
+                        data: tmp.map(function(item) {
+                            return item ? item.salesqmprice : item
+                        }).reverse()
+                    });
+                }
+                if(data.cityMarketList && data.cityMarketList.length > 0) {
+                    var tmp = dataFilter(data.cityMarketList);
+                    _series.push({
+                        name: data.cityMarketList[0].cityName,
+                        data: tmp.map(function(item) {
+                            return item ? item.salesqmprice : item
+                        }).reverse()
+                    });
+                }
+                draw(_series);
+                var el_arr = $('.p_price_details').find('.price_val');
+                for(var i = 0; i< el_arr.length; i++) {
+                    var el = $(el_arr[i]);
+                    var key = el.attr('data-field');
+                    if(key == 'date') {
+                        var m_item_arr = data[key].split('-');
+                        el.html(m_item_arr[0] + '年' + m_item_arr[1] + '月');
+                    }else if(key == 'risePercent') {
+                        if(data[key] < 0) {
+                            el.addClass('rate_down');
+                            $('.price_arrow').attr('src', '../img/ico_x.png');
+                        }else {
+                            el.addClass('rate_up');
+                            $('.price_arrow').attr('src', '../img/ico_s.png');
+                        }
+                    }else {
+                        el.html(data[key] || '--');
+                    }   
+                }
+                // console.log('tend', _series);
+            } else {
+
+            }
+        }
+    });
+}

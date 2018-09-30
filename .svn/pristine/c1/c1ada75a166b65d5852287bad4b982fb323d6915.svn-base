@@ -1,0 +1,744 @@
+
+dojo.require("dojo.on");
+dojo.require("esri.map");
+dojo.require("esri.toolbars.draw");
+dojo.require("esri.dijit.InfoWindow");
+dojo.require("esri.tasks.QueryTask");
+dojo.require("esri.tasks.query");
+dojo.require("esri.geometry.Circle");
+dojo.require("esri.layers.GraphicsLayer");
+dojo.require("esri.graphic");
+dojo.require("esri.symbols.SimpleFillSymbol");
+dojo.require("esri.tasks.BufferParameters");
+dojo.require("esri.units");
+var SimpleFillSymbol = esri.symbols.SimpleFillSymbol;
+var GraphicsLayer = esri.layers.GraphicsLayer;
+var Graphic = esri.graphic;
+var Circle = esri.geometry.Circle;
+var QueryTask = esri.tasks.QueryTask;
+var Query = esri.tasks.query;
+var mapobj;
+var renData;
+var is_map_show = false;
+var s_tag = 1; //是否第一次打开小区选择
+var cityPin = 'haerbin'; //城市拼音，默认哈尔滨
+$(function () {
+    addHistoryBackListener('./audio_search.html');
+    init();
+});
+
+function renderMap() {
+    if (!!mapobj) {
+        return;
+    }
+    var beijingExtent = new esri.geometry.Extent({ "xmin": 12910302.23, "ymin": 4839625.93, "xmax": 13000393.03, "ymax": 4871971.30, "spatialReference": { "wkid": 3785 } });
+
+    mapobj = new esri.Map("MyMapDiv",
+        {
+            logo: false,
+            slider: true,
+            sliderStyle: "large"
+        });
+    // mapobj.centerAndZoom(new esri.geometry.Point(14092135.945057, 5742801.25768, new esri.SpatialReference(102100)),14); 
+    // mapobj.setExtent(beijingExtent);
+    centerMap();
+    mapobj.infoWindow.resize(200, 75);
+    var BaseTileMapServiceLayer = new esri.layers.ArcGISTiledMapServiceLayer("http://111.40.214.181/arcgis/rest/services/comm/ChinaGray/MapServer?f=jsapi");
+    mapobj.addLayer(BaseTileMapServiceLayer, 0);
+    setTimeout(function () {
+        try {
+            queryGraphic(mapobj.extent.getCenter());
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, 100);
+    setTimeout(function () {
+        try {
+            queryAll(mapobj.extent.getCenter())
+        } catch (error) {
+            console.log(error);
+        }
+
+    }, 100);
+    
+    dojo.connect(mapobj, "onExtentChange", showExtent);
+}
+
+function showExtent(extent) {
+    var info = "XMin: " + extent.xmin + " YMin: " + extent.ymin + " XMax: " + extent.xmax + " YMax: " + extent.ymax;
+    var center_px = (extent.xmax - extent.xmin) / 2;
+    var center_py = (extent.ymax - extent.ymin) / 2;
+    console.log("center_px=" + center_px + ",center_py=" + center_py);
+    info = info + " " + "center_px=" + center_px + ",center_py=" + center_py;
+    var center_point = mapobj.extent.getCenter();
+    console.log(center_point.x);
+    clear();
+    showcenterpoint(center_point.x, center_point.y);
+    try {
+        queryAll(center_point);
+        queryGraphic(center_point);
+    } catch (error) {
+        console.log(error);
+    }
+
+    $(".panel-body").html(info);
+}
+
+function goposition() {
+    var px = $("#px").val();
+    var py = $("#py").val();
+    //alert("px="+px+",py="+py);
+    if (px != "" && py != "") {
+        showpoint(parseFloat(px), parseFloat(py), "定位点");
+    }
+}
+
+function showpoint(px, py, context) {
+    var point = new esri.geometry.Point(px, py, new esri.SpatialReference({ wkid: 3785 }));
+    //var pt = new esri.geometry.Point(x,y,new SpatialReference({ wkid: "3785" }));
+    var pictureMarkerSymbol = new esri.symbol.PictureMarkerSymbol('resources/image/marker/point_tag.png', 20, 20);
+    var g = new esri.Graphic(point, pictureMarkerSymbol);
+    var template = new esri.InfoTemplate();
+    template.setTitle("位置信息");
+    template.setContent(context);
+    g.setInfoTemplate(template);
+    mapobj.graphics.add(g);
+    // 将地图显示到指定的坐标及级别(15)
+    mapobj.centerAndZoom(point, 20);
+}
+
+function showcenterpoint(px, py, context) {
+    var point = new esri.geometry.Point(px, py, new esri.SpatialReference({ wkid: 3785 }));
+    //var pt = new esri.geometry.Point(x,y,new SpatialReference({ wkid: "3785" }));
+    var pictureMarkerSymbol = new esri.symbol.PictureMarkerSymbol('../img/point_tag.png', 20, 30);
+    var g = new esri.Graphic(point, pictureMarkerSymbol);
+    // var template = new esri.InfoTemplate();
+    // template.setTitle("位置信息");
+    // template.setContent(context);
+    // g.setInfoTemplate(template);
+    // mapobj.graphics.add(g);
+}
+
+function clear() {
+    mapobj.graphics.clear();
+}
+
+function init() {
+    
+    var cookie = eval("(" + $.cookie("cityInfo") + ")");
+    if (!renData) {
+        cityPin = getQueryString('pin');
+        renData = {
+            pin: getQueryString('pin'),
+            cityId: getQueryString('cityId'),
+            cityName: getQueryString('cityName'),
+            buildingId: getQueryString('buildingName') || '',
+            unitId: getQueryString('unitName') || '',
+            doorNum: getQueryString('doorNum') || '',
+            buildingsquare: getQueryString('buildingsquare') || ''
+        }
+    }
+    // console.log('renData:    ', renData);
+
+    setHtmlData(renData);
+    if (s_tag == 1) {
+        
+        if (!!getQueryString('key')) {
+            loading.show();
+            var key = getQueryString('key');
+            console.log('key:   ', key);
+            // getAddress(key);
+            getAddress(key);
+        } else {
+            getAddress();
+        }
+    }
+
+    /**地图 开关 */
+    $('.show_map').on('click', function (e) {
+        // e.stopPropagation();
+        showMap();
+    });
+    $('#map_container_li').on('click', '#map_close', function (e) {
+        e.stopPropagation();
+        hideMap();
+    });
+
+
+    // renderMap();
+}
+
+function centerMap() {
+    var lng = renData.point.split(',')[0];
+    var lat = renData.point.split(',')[1];
+    translatePoint(lng, lat, function (res) {
+        res = res || '';
+        if (res && res !== '') {
+            var x = res.split(',')[0] * 1;
+            var y = res.split(',')[1] * 1;
+            mapobj.centerAndZoom(new esri.geometry.Point(x, y, new esri.SpatialReference(102100)), 18);
+        }
+    });
+
+}
+
+function showMap() {
+    console.log('rendata:   ', renData);
+    if(!renData.communityId) {
+        showToast(3, '请先选择小区');
+        return;
+    }
+    if (!is_map_show) {
+        $('#map_container_li').show();
+        setTimeout(function () {
+            var w = document.getElementById('MyMapDiv').clientWidth / 2;
+            var img_w = document.getElementById('mapTag').clientWidth / 2;
+            $('#mapTag').css('left', (w - img_w) + 'px');
+            renderMap();
+            is_map_show = true;
+        }, 0);
+    }
+}
+function hideMap() {
+    $('#map_container_li').hide();
+    is_map_show = false;
+}
+function getOpentions() {
+    loading.show();
+    link_public.method(server_url + '/rest/common/getPubList', '', "post", true, function (json) {
+        if (json.success) {
+            console.log(json.data);
+            floorplantype(json.data.floorplantype);
+            initAspect(json.data.aspect);
+        } else {
+            showToast(3, '出错了！');
+        }
+        loading.hide();
+    });
+}
+
+function splitWorkds(info, cb) {
+    loading.show();
+    var urlData = "cityName=" + renData.cityName + '&info=' + info;
+    link_public.method(server_url + '/rest/common/splitHousseInfo', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data || {};
+            renData.buildingId = data.buildingName || '';
+            renData.unitId = data.unitName || '';
+            renData.doorNum = data.doorNum || '';
+            renData.buildingsquare = data.buildingsquare || '';
+            searchCommunity(data.communityName || info, renData, cb);
+        } else {
+            showToast(3, json.message);
+        }
+        loading.hide();
+    });
+}
+function communitytype(arr) {
+    var html = '';
+    for (var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>";
+    }
+    $('#communitytype').html(html);
+    console.log(html);
+}
+
+function floorplantype(arr) {
+    var html = '';
+    for (var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>";
+    }
+    $('#floorplantype').html(html);
+    console.log(html);
+}
+
+//init朝向options
+function initAspect(arr) {
+    var html = '';
+    for (var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>"
+    }
+    $('#aspect').html(html);
+    console.log(html);
+}
+
+function validate() {
+    if ($("#city").text() == null || $("#city").text() == "") {
+        showToast(1, "请选择城市！");
+        return false;
+    }
+    if ($("#address").html() == null || $("#address").html() == "") {
+        showToast(1, "请选择小区！");
+        return false;
+    }
+
+    if ($("#buildingsquare").val() == null || $("#buildingsquare").val() == "") {
+        showToast(1, "请填写建筑面积！");
+        return false;
+    }
+    // if(!checkNumber($("#buildingsquare").val())) {
+    //     showToast(1, '建筑面积为数字！');        
+    //     return false;
+    // }
+    // if ($("#currentfloor").val() == null || $("#currentfloor").val() == "") {
+    //     showToast(1, "请填写当前楼层！");
+    //     return false;
+    // }
+    // if(!checkNumber($("#currentfloor").val())) {
+    //     showToast(1, '楼层号为数字！');        
+    //     return false;
+    // }
+    // if ($("#totalfloor").val() == null || $("#totalfloor").val() == "") {
+    //     showToast(1, "请填写总楼层！");
+    //     return false;
+    // }
+    // if(!checkNumber($("#totalfloor").val())) {
+    //     showToast(1, '总楼层为数字');        
+    //     return false;
+    // }
+    // if($("#currentfloor").val() - $("#totalfloor").val() > 0) {
+    //     showToast(1, '当前楼层不可大于总楼层数！');
+    //     return false;
+    // }
+    return true;
+}
+function checkNumber(obj, warnText) {
+    var reg = /^[0-9]+(.[0-9]{2})?$/;
+    if (obj != "" && !reg.test(obj)) {
+        return false;
+    }
+    return true;
+}
+
+function addHouse() {
+    if (!validate()) {
+        return;
+    }
+    loading.show();
+    var houseData = getHtmlData();
+    // console.log('housedata', houseData);
+    link_public.method(server_url + '/rest/house/addHouse', houseData, "post", true, function (json) {
+        if (json.success) {
+            var houseId = json.data;
+            showToast(2, '保存成功！');
+            console.log("保存成功！");
+            setTimeout(function () {
+                target = './detail.html';
+                $(window).attr('location', target + '?houseId=' + houseId);
+            }, 500);
+            // window.location.replace('/');
+            // $(window).attr('location','/houseAvmInfo/houseAvmInfo.html?houseId='+houseId);            
+        } else {
+            showToast(3, '房产添加失败！');
+        }
+        loading.hide();
+    });
+
+}
+
+function setHtmlData(data) {
+    if (!data) {
+        return;
+    }
+    $("#city").text(data.cityName);
+    $("#city").attr("cityId", data.cityId);
+    $("#cityName").html(data.cityName);
+    $("#address").html(data.communityName);
+    $("#address").attr("communityId", data.communityId);
+    $("#address").attr("address", data.address);
+    $("#address").attr("district", data.districtId);
+    $("#communityName").html(data.communityName);
+    $("#buildingId").val(data.buildingId);
+    $("#unitId").val(data.unitId);
+    $("#doorNum").val(data.doorNum);
+    $("#buildingsquare").val(data.buildingsquare);
+    $("#currentfloor").val(data.currentfloor);
+    $("#totalfloor").val(data.totalfloor);
+    $("#floorplantype").val(data.floorplantype);
+    $("#fang_address").text(data.address);
+    console.log('data', data);
+    $("#aspect").find("option[value=" + data.aspect + "]").attr("selected", true);
+    $("#floorplantype").find("option[value=" + data.floorplantype + "]").attr("selected", true);
+
+
+
+}
+function getHtmlData() {
+    var cityName = $("#city").text();
+    var cityId = $("#city").attr("cityId");
+    var communityName = $("#address").html();
+    var communityId = $("#address").attr("communityId");
+    var address = $("#address").attr("address");
+    var districtId = $("#address").attr("district");
+    var buildingId = $("#buildingId").val();
+    var unitId = $("#unitId").val();
+    var doorNum = $("#doorNum").val();
+    var buildingsquare = $("#buildingsquare").val();
+    var currentfloor = $("#currentfloor").val();
+    var totalfloor = $("#totalfloor").val();
+    var floorplantype = $("#floorplantype").val();
+    var aspect = $("#aspect").val();
+    var floorplantypeName = $("#floorplantype").find("option:selected").text();
+    var aspectName = $("#aspect").find("option:selected").text();
+    var communitytype = $('#communitytype').val();
+
+    // var address = $("#fang_address").val(data.address);
+    var data = {};
+    data["cityName"] = cityName;
+    data["cityId"] = cityId;
+    data["communityName"] = communityName;
+    data["communityId"] = communityId;
+    data["buildingId"] = buildingId;
+    data["address"] = address;
+    data["unitId"] = unitId;
+    data["buildingsquare"] = buildingsquare;
+    data["doorNum"] = doorNum;
+    data["currentfloor"] = currentfloor;
+    data["totalfloor"] = totalfloor;
+    data["floorplantype"] = floorplantype;
+    data["aspect"] = aspect;
+    data["floorplantypeName"] = floorplantypeName;
+    data["aspectName"] = aspectName;
+    data["userId"] = userId;
+    data["communitytype"] = communitytype;//先写死
+    data["districtid"] = districtId;
+    console.log(data);
+    return data;
+
+}
+
+/**
+ * 清空表单信息
+ */
+function clearForm() {
+    $('#buildingId').val('');
+    $('#unitId').val('');
+    hideMap();
+}
+/**内嵌搜索页 */
+//选择城市
+function changeCity() {
+
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    clearForm();
+
+    setTimeout(function () {
+        addSearchListenter();
+        $('#search_city_input').val('');
+    }, 0)
+
+}
+
+//选择房产地址
+
+/**搜索弹窗部分代码 */
+function getAddress(key) {
+    if (!getHtmlData().cityId) {
+        showToast(1, '请先选择城市');
+        return;
+    }
+    // loading.show();
+    $('.search-community-box').show();
+    setTimeout(function () {
+        clearSearchMList();
+        initCommunity();
+        addCommunitySearchListener(doSearchCommunity);
+        if (typeof key != 'undefined') {
+            $('#search').val(getQueryString('key'));
+            splitWorkds(key, doSearchCommunity);
+            // searchCommunity(key, renData.cityId, doSearchCommunity);
+        } else {
+            $('#search').val('');
+        }
+
+        $('.search-community-box').on('click', '.btn_go_back', function (e) {
+            cancel();
+        });
+    }, 0)
+}
+
+function addSearchListenter() {
+
+
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('#search_city_input').on('input propertychange', function () {
+        var vm = this;
+        if (!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+
+    })
+
+    //根据拼音查找
+    $(".citynav li").click(function (e) {
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function () {
+        $('.search-box').hide();
+    })
+
+    $('.search_del').on('click', function (e) {
+        e.stopPropagation();
+        var cookie = eval("(" + $.cookie("cityInfo") + ")");
+        if (!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if (typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+
+        doSearch(cityId, areaName, cookie.pin);
+    });
+    addHotListener(doSearch); //热门搜索
+}
+
+function doSearchCommunity(data) {
+    s_tag = 0;
+    renData.cityId = data.cityId;
+    renData.communityId = data.communityId;
+    renData.communityName = data.communityName;
+    renData.address = data.address;
+    renData.districtId = data.districtId;
+    renData.point = data.point;
+    renData.pin = data.pin;
+    cityPin = data.pin;
+    if (!!data.cityName) {
+        renData.cityName = data.cityName;
+    }
+    // localStorage.setItem('communityData', encodeURI(encodeURI(JSON.stringify(renData))));  
+    init();
+    if (!!mapobj) {
+        centerMap();
+    }
+
+    $('.search-community-box').hide();
+
+}
+
+function doSearch(cityId, cityName, pin) {
+
+    renData = getHtmlData();
+    if (pin) {
+        cityPin = pin;
+        renData.pin = pin;
+    }
+    if (renData.cityId != cityId || !cityId) {
+        renData.communityName = '';
+        renData.communityId = '';
+        renData.address = '';
+    }
+
+    renData.cityId = cityId;
+    renData.cityName = cityName
+    console.log('renderdata', renData);
+    // localStorage.setItem('cityData', encodeURI(encodeURI(JSON.stringify(renData))));   
+    localStorage.setItem('audio_city', JSON.stringify({
+        cityId: cityId,
+        cityName: cityName,
+        pin: pin
+    }));
+    init();
+    $('.search-box').hide();
+}
+
+
+/**搜索房产地址 community */
+
+//搜索房产地址事件监听
+function addCommunitySearchListener(cb) {
+    //input 联想搜索
+    $('#search').on('input propertychange', function (e) {
+        e.preventDefault();
+        var vm = this;
+        if (!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            console.log('val:  ', $(vm).val());
+            //请求搜索接口
+            var searchContent = $(vm).val();
+            if (searchContent == '') {
+                //alert('请输入检索内容！');
+            } else {
+                var cityId = renData.cityId;
+                splitWorkds(searchContent, cb);
+                // searchCommunity(searchContent, cityId, cb);
+            }
+        }, 300);
+        return false;
+    })
+
+
+    $("#clearHistory").click(function () {
+        clearHistory();
+    })
+    $("#searchHistory").on('click', 'li', function (e) {
+        /**清空楼栋面积等 */
+        renData.buildingId = '';
+        renData.unitId = '';
+        renData.doorNum = '';
+        renData.buildingsquare = '';
+        /**end */
+        e.stopPropagation();
+        var cityName = $($(this).find('span')[1]).text();
+        console.log($(this).find('span')[0])
+        renData["communityName"] = $($(this).find('span')[0]).text();
+        renData["address"] = $(this).attr('data-address');
+        renData["communityId"] = $(this).attr('data-community');
+        renData["districtId"] = $(this).attr('data-district');
+        renData["cityId"] = $(this).attr('id');
+        renData["cityName"] = cityName.substring(1, cityName.length - 1);
+        var address = $(this).attr('data-address');
+        address = (typeof address == 'undefined' || address == 'undefined') ? '' : address;
+        var data = {
+            communityName: $($(this).find('span')[0]).text(),
+            address: address,
+            communityId: $(this).attr('data-community'),
+            cityId: $(this).attr('id'),
+            cityName: cityName.substring(1, cityName.length - 1),
+            districtId: $(this).attr('data-district'),
+            point: $(this).attr('data-point'),
+            pin: $(this).attr('data-pin')
+        }
+        doSearchCommunity(data);
+    });
+
+    //取消
+    $('#cs-cancel').on('click', function () {
+        cancel();
+    });
+    $('.btn_go_back').on('click', function () {
+        cancel();
+    });
+}
+function cancel() {
+    if (s_tag == 1) {
+        window.history.go(-1);
+    } else {
+        $('.search-community-box').hide();
+    }
+}
+
+function queryGraphic(geometry) {
+    var _name = renData.cityName;
+    fetchMapUrl(_name, function(data) {
+        //创建查询对象，注意：服务的后面有一个编号，代表对那一个图层进行查询
+        var _server = data.url;
+        // var _server = mapServer + renData.pin + mapServerSub;
+        var queryTask = new QueryTask(_server);
+        //创建查询参数对象
+        var query = new Query();
+        //空间查询的几何对象
+        // query.where="ADDR_FULL_NAME = '北京市东城区前门东大街4号'";
+        query.geometry = setCircle(geometry, 10).geometry;
+        // query.geometryType = 'Envelope';
+        //服务器给我们返回的字段信息，*代表返回所有字段
+        query.outFields = ["*"];
+        //空间参考信息
+        query.outSpatialReference = mapobj.spatialReference;
+        //查询的标准，此处代表和geometry相交的图形都要返回
+        query.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
+        //是否返回几何信息
+        query.returnGeometry = true;
+        //执行空间查询
+        queryTask.execute(query, showQueryResult);
+    })
+}
+
+function showQueryResult(queryResult) {
+    var res = queryResult.features[0];
+    if (!!res) {
+        var data = res.attributes;
+        var bId = getBId(data.ADDR_FULL_NAME);
+        var unit = getUnit(data.ADDR_FULL_NAME);
+        $('#buildingId').val(bId);
+        $('#unitId').val(unit);
+    }
+}
+//画圆  Circle类  
+//定义要画的图形的线条颜色
+function setCircle(point, radius) {
+    var symbol = new SimpleFillSymbol().setColor(null).outline.setColor("red");
+    var graLayer = new GraphicsLayer();
+
+    var radius = radius;
+    var circle = new Circle({
+        center: point,
+        geodesic: true,
+        radius: radius,
+        // radiusUnit: esri.units.MILES
+    });
+
+    var graphic = new Graphic(circle, symbol);
+    // mapobj.graphics.add(graphic);
+    return graphic;
+}  
+
+function queryAll(geometry) {
+    var _name = renData.cityName;
+    fetchMapUrl(_name, function(data) {
+        var _server = data.url;
+        //创建查询对象，注意：服务的后面有一个编号，代表对那一个图层进行查询
+        // var _server = mapServer + renData.pin + mapServerSub;
+        var queryTask = new QueryTask(_server);
+        //创建查询参数对象
+        var query = new Query();
+        //空间查询的几何对象
+        // query.where="ADDR_FULL_NAME = '北京市东城区前门东大街4号'";
+        query.geometry = setCircle(geometry, 60).geometry;
+        // query.geometryType = 'Envelope';
+        //服务器给我们返回的字段信息，*代表返回所有字段
+        query.outFields = ["*"];
+        //空间参考信息
+        query.outSpatialReference = mapobj.spatialReference;
+        //查询的标准，此处代表和geometry相交的图形都要返回
+        query.spatialRelationship = Query.SPATIAL_REL_INTERSECTS;
+        //是否返回几何信息
+        query.returnGeometry = true;
+        //执行空间查询
+        queryTask.execute(query, showAllPoints);
+    })
+    
+}
+function showAllPoints(queryResult) {
+    var res = queryResult.features;
+    var points = res.map(function(item) {
+        return item.geometry;
+    });
+    for(var i in points) {
+        addMapPoints(points[i]);
+    }
+    console.log('points', points);
+}
+
+function addMapPoints(point) {
+    // var point = new esri.geometry.Point(px, py, new esri.SpatialReference({ wkid: 3785 }));
+    //var pt = new esri.geometry.Point(x,y,new SpatialReference({ wkid: "3785" }));
+    var pictureMarkerSymbol = new esri.symbol.PictureMarkerSymbol('../img/point_red.png', 20, 30);
+    var g = new esri.Graphic(point, pictureMarkerSymbol);
+    // var template = new esri.InfoTemplate();
+    // template.setTitle("位置信息");
+    // template.setContent(context);
+    // g.setInfoTemplate(template);
+    mapobj.graphics.add(g);
+}

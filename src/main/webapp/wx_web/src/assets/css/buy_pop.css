@@ -1,0 +1,141 @@
+/* buy_pop components */
+.bp_container {
+    background: #fff;
+    position: relative;
+    padding-left: 0.35rem;
+}
+.bp_icon_close {
+    position: absolute;
+    width: 0.3rem;
+    height: auto;
+    top: 0.32rem;
+    right: 0.32rem;
+}
+.bp_block_1_row_1 {
+    line-height: 0.28rem;
+    padding-top: 0.53rem;
+    font-size: 0.3rem;
+    color: #555;
+}
+.bp_block_1_row_2 {
+    font-size: 0.52rem;
+    color: #fb344c;
+}
+.bp_block_1_row_3 {
+    height: 0.78rem;
+    line-height: 0.78rem;
+    vertical-align: middle;
+    font-size: 0.26rem;
+    color: #888;
+    position: relative;
+}
+.bp_block_1_row_4 {
+    padding-bottom: 0.4rem;
+}
+.bp_block_1_row_4_ctn {
+    width: 6.79rem;
+    background-color: #f8f8f8;
+    font-size: 0.26rem;
+    color: #555;
+    height: 5.7rem;
+    padding-top: 0.36rem;
+}
+.bp_block_1_row_4_ctn p {
+    padding-left: 0.31rem;
+    padding-right: 0.31rem;
+    padding-bottom: 0.1rem;
+    line-height: 0.65rem;
+}
+.bp_block_1_row_4_up {
+    text-align: center;
+}
+.bp_block_1_row_4_up img {
+    width: 0.12rem;
+    transform:rotate(-90deg);
+    -ms-transform:rotate(-90deg); 	/* IE 9 */
+    -moz-transform:rotate(-90deg); 	/* Firefox */
+    -webkit-transform:rotate(-90deg); /* Safari 和 Chrome */
+    -o-transform:rotate(-90deg); 	/* Opera */
+}
+
+
+.bp_icon_ok {
+    width: 0.26rem;
+    height: auto;
+    margin-right: 0.06rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+.bp_block_1_row_3_right {
+    position: absolute;
+    height: 0.78rem;
+    line-height: 0.78rem;
+    color: #388cff;
+    font-size: 0.26rem;
+    width: 50%;
+    top: 0;
+    right: 0;
+    text-align: right;
+    padding-right: 0.34rem;
+}
+.bp_block_1_row_3_right img {
+    width: 0.32rem;
+    height: auto;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 0.13rem;
+}
+.bt_tit {
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 0.3rem;
+    color: #555;
+    background: #f2f2f2;
+    margin-left: -0.35rem;
+    padding-left: 0.35rem;
+}
+.bt_block_2 {
+    height: 1.35rem;
+    line-height: 0.9;
+    vertical-align: middle;
+}
+.bt_block_2_checker {
+    height: 0.54rem;
+    line-height: 0.54rem;
+    outline: 1px solid #bbb;
+    text-align: center;
+    /* width: 1.46rem; */
+    padding: 0 0.22rem;
+    margin-right: 0.2rem;
+    color: #555;
+    font-size: 0.26rem;
+    font-family: PingFang-SC-Medium;
+}
+.bt_block_2_checker_active {
+    color: #388cff;
+    outline: 1px solid #388cff;
+}
+.bt_block_3 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.22rem;
+    line-height: 0;
+}
+.bt_block_4 {
+    background: #fff;
+    padding-top: 0.57rem;
+    padding-bottom: 0.43rem;
+}
+.bt_chart_pic {
+    width: 6.33rem;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+.bt_buy_btn {
+    font-size: 0.3rem;
+    color: #fff;
+    background-color: #388cff;
+    height: 1rem;
+    line-height: 1rem;
+    text-align: center;
+}

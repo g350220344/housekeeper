@@ -1,0 +1,43 @@
+package com.cindata.housekeeper.wx.dao;
+
+import com.cindata.housekeeper.wx.model.WxReportInfo;
+import com.cindata.housekeeper.wx.model.WxReportInfoExample;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+
+public interface WxReportInfoMapper {
+    int countByExample(WxReportInfoExample example);
+
+    int deleteByExample(WxReportInfoExample example);
+
+    int deleteByPrimaryKey(String id);
+
+    int insert(WxReportInfo record);
+
+    int insertSelective(WxReportInfo record);
+
+    List<WxReportInfo> selectByExample(WxReportInfoExample example);
+
+    WxReportInfo selectByPrimaryKey(String id);
+
+    int updateByExampleSelective(@Param("record") WxReportInfo record, @Param("example") WxReportInfoExample example);
+
+    int updateByExample(@Param("record") WxReportInfo record, @Param("example") WxReportInfoExample example);
+
+    int updateByPrimaryKeySelective(WxReportInfo record);
+
+    int updateByPrimaryKey(WxReportInfo record);
+    
+    /**
+     * 查询用户订阅列表
+     */
+    List<Map> selectUserReportByPage(Map param);
+    /**
+     * 查询用户订阅列表总数
+     */
+    Integer selectUserReportByPageCount(Map param);
+
+    int updateReporStatus();
+}

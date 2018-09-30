@@ -1,0 +1,449 @@
+var defaultCityId = "2301";//城市默认哈尔滨
+
+$(function() {
+    addListener();
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
+    sendWxCodeToServer(pageInit);
+    // sendCode();
+    // pageInit();
+});
+
+/**
+ * wx登录，向后台发送code
+ */
+function sendWxCodeToServer(cb) {
+    var code = getQueryString('code');
+    console.log('code-----', code);
+    if(!code) {
+        cb && cb();
+        return; //code为空
+    }
+    var params = 'code=' + code;
+    link_public.method(server_url + '/rest/wx/getWxUserInfo', params, 'post', true, function(json) {
+        console.log('user', json);
+        if(json.statusCode == 1) {
+            if(json.data && json.data.openid) {
+                localStorage.setItem('houseUserId', json.data.openid);
+                userId = json.data.openid;
+                cb && cb();
+            }else {
+                handleLoginErr();
+            }
+        }else {
+            handleLoginErr()
+        }
+        
+    });
+    function handleLoginErr() {
+        showToast(3, '登录失败！');
+        setTimeout(function() {
+            window.location.href = './login.html';
+        },500);
+    }
+}
+
+function getConfig() {
+    var params = 'url=' + 'http://e6aead24.ngrok.io/housekeeper/page_home/login.html';
+    link_public.method(server_url + '/rest/wx/getWxConfig', params, 'post', true, function(json) {
+        console.log(json);
+    });
+}
+
+function pageInit() {
+    // var data = decodeURIComponent(decodeURIComponent(localStorage.getItem('indexCityData')));    
+    // if(data==null||data=="null"){
+    //     //百度地图ip定位
+    //     getAddressByIp(function (result){
+    //         //百度定位返回地址
+    //         var cityId = defaultCityId;//如果定位失败或系统中没匹配到城市，按默认城市
+    //         if(result!=null){
+    //             var areaId = result.code;
+    //             //获取系统城市
+    //             var cityDate = "areaId="+areaId;
+    //             link_public.method(server_url+'/rest/city/getCityCode',cityDate,"post",false,function (json) {
+    //                 if(json.success) {
+    //                     cityId = json.data.cityId;
+    //                     $.cookie("cityInfo",JSON.stringify(json.data));
+    //                 }
+    //             });
+    //         }
+    //         init(cityId);
+    //     });
+    // }else{
+    //     data = JSON.parse(data);
+    //     var cityId = data.cityId;
+    //     var cityName = data.cityName;
+    //     console.log('cityname: ', cityName);
+    //     $("#cityName").html(data.cityName + "<img src=\"img/ico_move.png\" alt=\"\">");        
+    //     // getCityMarket(cityId);
+    //     init(cityId, cityName);
+    // }
+    getLocation(render);
+}
+function render(_city) {
+    var cityId = _city.cityId;
+    var cityName = _city.cityName;
+    console.log('cityname: ', cityName);
+    $("#cityName").html(_city.cityName + "<img src=\"img/ico_move.png\" alt=\"\">");        
+    // getCityMarket(cityId);
+    init(cityId, cityName);
+}
+function getCityMarket(cityId, cityName){
+    loading.show();
+    $("#cityName").html(cityName + "<img src=\"img/ico_move.png\" alt=\"\">");
+    //获取城市行情
+    var month = formatDate(new Date());
+    var cityDate = "cityId="+cityId+"&month="+month;
+    link_public.method(server_url+'/rest/city/getCityMarket',cityDate,"post",true,function (json) {
+        if(json.success) {
+            var data = json.data;
+            
+            if(!data) {
+                $("#price").html("<span class='f12' style='padding-right: 1rem'>城市均价 </span>" + '--');                
+                $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>同比去年 --</span>")
+                $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>环比上月 --</span>");
+                loading.hide();
+                return;
+            }
+            if(typeof data.cityName != 'undefined') {
+                $("#cityName").html(data.cityName + "<img src=\"img/ico_move.png\" alt=\"\">");
+            }
+            // $("#cityName").html(data.cityName + "<img src=\"img/ico_move.png\" alt=\"\">");
+            if(typeof data.salesqmprice != 'undefined') {
+                $("#price").html("<span class='f12' style='padding-right: 1rem'>城市均价 </span>" + parseInt(data.salesqmprice) + "<span style='font-size: 1.4rem' class=\"f12\">元/㎡</span>");                
+            }else {
+                $("#price").html("<span class='f12' style='padding-right: 1rem'>城市均价 </span>" + '--');                                
+            }
+            $('#saleSqmPriceOnYear_on_YearBasis').html('环比上月 <img src="img/ico_s.png"><span class="f11 up"></span>')
+            $('#saleSqmPriceLinkRelativeRatio').html('同比去年 <img src="img/ico_s.png"><span class="f11 up"></span>')            
+            var saleSqmPriceLinkRelativeRatio = (data.saleSqmPriceLinkRelativeRatio || '').toString() + '%';
+            var saleSqmPriceOnYear_on_YearBasis = (data.saleSqmPriceOnYear_on_YearBasis || '').toString() + '%';
+            console.log(saleSqmPriceLinkRelativeRatio)
+            if(saleSqmPriceLinkRelativeRatio.indexOf("-")>-1){
+                saleSqmPriceLinkRelativeRatio = saleSqmPriceLinkRelativeRatio.replace("-","");
+                $("#saleSqmPriceLinkRelativeRatio img").attr("src","img/ico_x.png");
+                $("#saleSqmPriceLinkRelativeRatio span").attr("class","f11 down");
+            }
+            
+            if(saleSqmPriceOnYear_on_YearBasis.indexOf("-")>-1){
+                saleSqmPriceOnYear_on_YearBasis = saleSqmPriceOnYear_on_YearBasis.replace("-","");
+                $("#saleSqmPriceOnYear_on_YearBasis img").attr("src","img/ico_x.png");
+                $("#saleSqmPriceOnYear_on_YearBasis span").attr("class","f11 down");
+            }
+            console.log(saleSqmPriceLinkRelativeRatio, saleSqmPriceOnYear_on_YearBasis)
+            $("#saleSqmPriceLinkRelativeRatio span").html((saleSqmPriceLinkRelativeRatio === '%' ? '--' : saleSqmPriceLinkRelativeRatio));
+            $("#saleSqmPriceOnYear_on_YearBasis span").html((saleSqmPriceOnYear_on_YearBasis === '%' ? '--' : saleSqmPriceOnYear_on_YearBasis));
+            if(!data.saleSqmPriceLinkRelativeRatio) {
+                $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>环比上月 --</span>")  
+            }
+            if(!data.saleSqmPriceOnYear_on_YearBasis) {
+                $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>同比去年 --</span>")                
+            }
+        }else {
+            showToast(3, json.message);
+            $("#price").html("<span class='f12' style='padding-right: 1rem'>城市均价 </span>" + '--');                
+            
+            $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>同比去年 --</span>")
+            
+            $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>环比上月 --</span>")
+        }
+        loading.hide();
+    });
+}
+function init(cityId, cityName){
+    getCityMarket(cityId, cityName || '');
+    loading.show();
+    //获取我的房产总值
+    var myHouserData = "userId="+userId;
+    console.log('myHouseData:  ', myHouserData)
+    link_public.method(server_url+'/rest/house/getHouseAvmByUserId',myHouserData,"post",true,function (json) {
+        if(json.statusCode == 1) {
+            var data = json.data;
+            if(data.houseCount == 0) {
+                $('.mi_bar').hide();
+            }else {
+                if(data.avmPrice == 0) {
+                    $("#amvPrice").html('暂无估价');
+                }else {
+                    $("#amvPrice").html(data.avmPrice+"<span class=\"f12\">万元</span>");
+                    var risePercent = data.risePercent.toString();
+                    if(risePercent.indexOf("-")>-1){
+                        risePercent = risePercent.replace("-","");
+                        $("#risePercent").prev().attr("src","img/ico_x.png");
+                        $("#risePercent").attr("class","f11 down");
+                    }
+                    $('#preMonth').html(data.lastMonth);
+                    $("#risePercent").html(risePercent + '%');
+                }
+            }
+            
+
+        }else if(json.statusCode == 3) {
+            var data = json.data;
+            if(data.houseCount == 0) {
+                $('.mi_bar').hide();
+            }else {
+                if(data.avmPrice == 0) {
+                    $("#amvPrice").html('暂无估价');
+                }else {
+                    $("#amvPrice").html(data.avmPrice+"<span class=\"f12\">万元</span>");
+                }
+                
+                // var risePercent = data.risePercent.toString();
+                // if(risePercent.indexOf("-")>-1){
+                //     risePercent = risePercent.replace("-","");
+                //     $("#risePercent").prev().attr("src","img/ico_x.png");
+                //     $("#risePercent").attr("class","f11 down");
+                // }
+                // $('#preMonth').html(data.lastMonth);
+                // $("#risePercent").html(risePercent + '%');
+                // $('#compare_box').hide();
+                $('#compare_box').html('我的房产总估值');
+            }
+            
+            // showToast(3, json.message);
+        }else {
+            showToast(3, json.message);
+        }
+        loading.hide();
+    });
+    //注册事件
+    // $('.to-wait').on('click', function() {
+    //     showToast(0, '敬请期待');
+    // });
+    // $('#go-valuation').on('click', function() {
+    //     localStorage.setItem('valuation_origin', '../index.html')
+    //     clearHouseLocalStorage();
+    //     window.location.href = './valuation/index.html';
+    // })
+    // $('#nav-go-valuation').on('click', function() {
+    //     localStorage.setItem('valuation_origin', '../index.html')
+    //     clearHouseLocalStorage();
+    //     window.location.href = './valuation/index.html';
+    // });
+    
+    // window.addEventListener('pageshow', function(e) {
+    //     var data = decodeURIComponent(decodeURIComponent(localStorage.getItem('indexCityData')));    
+    //     console.log(data);
+    //     if(!!data) {
+    //         if(typeof data != 'undefined') {
+    //             data = JSON.parse(data);
+    //             var cityId = data.cityId;
+    //             getCityMarket(cityId);
+    //         }
+    //     }
+        
+    // });
+    // window.addEventListener('unload',function () {
+    //     localStorage.removeItem('indexCityData');
+    // })
+    
+}
+function changeCity(){
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    setTimeout(function() {
+        addSearchListenter();
+        $('.search_input input').val('');
+    }, 0)
+    // var url = "/index.html"
+    // $(window).attr('location','public/searchCity.html?url='+url);
+}
+function myhouse(){
+    //var url = "/index.html"
+    localStorage.setItem('back_origin_houseList', location.href);
+    $(window).attr('location','houseproperty/houseList.html');
+}
+
+function addListener() {
+    $('.to_static').on('click', function(e) {
+        window.location.href = './demo/' + $(this).attr('data-tar');
+    });
+    //注册事件
+    $('.to-wait').on('click', function() {
+        showToast(0, '敬请期待');
+    });
+    $('.to-map-city').on('click', function() {
+        window.location.href = './plus/map_city.html';
+    })
+    $('#go-valuation').on('click', function() {
+        // localStorage.setItem('valuation_origin', '../index.html')
+        localStorage.setItem('back_origin_houseAvm', '../index.html');
+        localStorage.setItem('valuation_target', '../houseproperty/houseAvmInfo.html')
+        clearHouseLocalStorage();
+        window.location.href = './valuation/index.html';
+    })
+    $('#nav-go-valuation').on('click', function() {
+        // localStorage.setItem('valuation_origin', '../index.html');
+        localStorage.setItem('back_origin_houseAvm', '../index.html');  
+        localStorage.setItem('valuation_target', '../houseproperty/houseAvmInfo.html')      
+        clearHouseLocalStorage();
+        window.location.href = './valuation/index.html';
+    });
+    
+    //我要换房
+    $('#go-change').on('click', function(e) {
+        e.stopPropagation();
+        gotoChange();
+    });
+
+    //go-sell
+    $('#nav-go-sell').on('click', function(e) {
+        e.stopPropagation();
+        localStorage.setItem('back_origin_my', location.href);
+        window.location.href = './houseproperty/my.html?url=../sell/index.html'
+    });
+
+    //go-lease
+    $('#nav-go-lease').on('click', function(e) {
+        e.stopPropagation();
+        localStorage.setItem('back_origin_my', location.href);
+        window.location.href = './houseproperty/my.html?url=../lease/index.html'
+    })
+}
+
+function addSearchListenter() {
+    
+
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('.search_input input').on('input propertychange', function() {
+        var vm = this;
+        if(!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+        
+    })
+    
+    //根据拼音查找
+    $(".citynav li").click(function(e){
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function() {
+        $('.search-box').hide();
+    })
+
+    // $('#fixed-to-cur').on('click', function() {
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     if(!cookie) {
+    //         return;
+    //     }
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    // $('#dqcs').on('click', function(e) {
+    //     e.stopPropagation();
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    $('.search_del').on('click', function(e) {
+        e.stopPropagation();
+        var cookie = eval("("+$.cookie("cityInfo")+")");
+        if(!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+        
+        doSearch(cityId, areaName);
+    });
+
+
+    addHotListener(doSearch); //热门搜索
+    // $("dl dd").on('click', function(){
+    //     //var item = $(this).index();  //获取索引下标 也从0开始
+    //     var cityName = $(this).text();  //文本内容
+    //     var cityId = $(this).attr("data-id");
+    //     doSearch(cityId,cityName);
+    // });
+}
+
+function doSearch(cityId, cityName) {
+    if(!cityId || !cityName) {
+        $('.search-box').hide();
+        return;
+    }
+    // $.cookie("cityInfo",JSON.stringify({
+    //     areaName: cityName,
+    //     cityId: cityId
+    // }));
+    getCityMarket(cityId, cityName);
+    $('.search-box').hide();
+    localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify({
+        cityId: cityId,
+        cityName: cityName
+    }))));            
+}
+
+//跳转到换房
+function gotoChange() {
+    window.location.href = './change/index.html';
+    
+    // loading.show();    
+    // var houseData = "userId="+userId;
+    // link_public.method(server_url+'/rest/house/getHouseList',houseData,"post",true,function (json) {
+    //     if(json.success) {
+    //         var data = json.data;
+    //         if(!!data && data.length > 0) {
+    //             console.log('data', data);
+    //             window.location.href = '../change/index.html?houseId=' + data[0].houseId;
+    //         }else {
+    //             window.location.href = '../change/index.html';
+    //         }
+    //     }else {
+    //         showToast(3, json.message);
+    //     }
+    //     loading.hide();
+    // });
+}
+
+//向后台发送微信code
+// function sendCode() {
+//     var code = getQueryString('code');
+//     if(!code) {
+//         return;
+//     }
+//     var params = 'code=' + code;
+//     link_public.method(server_url + "/rest/wx/getWxUserInfo", params, "post", true, function (result) {
+// 		if (result.statusCode == 1) {
+//             console.log(result.data);
+// 		} else {
+
+//         }
+// 	});
+// }

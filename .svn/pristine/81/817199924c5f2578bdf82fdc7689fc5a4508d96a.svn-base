@@ -1,0 +1,53 @@
+$(function() {
+    $('#login_btn').on('click', function(e) {
+        login();
+    });
+    $('body').on('keypress', function(e) {
+        if(e.keyCode == 13) {
+            login();
+        }
+    })
+})
+
+function login() {
+    // loading.show();
+    
+    var username = $('#user').val();
+    var password = $('#pwd').val();
+    if(!username) {
+        swal("请输入用户名！");
+        // alert('请输入用户名！');
+        return;
+    }
+    if(!password) {
+        swal("请输入密码!");
+        return;
+    }
+    // var username = 'admin';
+    // var password = '123456';
+    var urlData = 'username=' + username + '&password=' + password;
+    link_public.method(server_url + '/rest/sys/user/login', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                localStorage.setItem('user', JSON.stringify(data));
+                window.location.href = './index.html';
+            }else {
+                swal('用户名或密码错误!');
+                $('#pwd').val('');
+                // $('#user').val('');
+                // location.reload();
+            }
+            // console.log('data', json.data);
+        } else {
+            // alert(2);
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+    });
+}

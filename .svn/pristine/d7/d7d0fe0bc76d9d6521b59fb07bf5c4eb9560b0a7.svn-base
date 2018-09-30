@@ -1,0 +1,411 @@
+var rang_arr = ['50㎡以下', '50~70', '70~90', '90~110', '110~150', '150~200', '200~300', '300㎡以上'];
+var rang_vals = ['10~50', '50~70', '70~90', '90~110', '110~150', '150~200', '200~300', '300~500'];
+var rang_key_arr = ['', 12, 27, 43, 57, 71, 95];
+var selected = [];
+var rangIndex = 1;
+var city = null;
+var flag = queryUrl('flag');
+$(function() {
+    init();
+});
+
+function init() {
+    // addHistoryBackListener('../index.html');
+    initCity();
+    var val = $('#range').val();
+    var left = $('#range').width();
+    $('#range').css('background-size', val + '% 100%');
+    $('#range-val').html(rang_arr[Math.ceil(val/16)]);
+    $('#range-val').css('left', left*val/100 - $('#range-val').width()/2 + 'px');
+    
+    $('#range').on('input', function(e) {
+        
+        var val = $(this).val(); 
+        console.log('val', val)
+        rangIndex = 0;
+        if(val > 0 && val <= 12) {
+            rangIndex = 1;
+            val = 12;
+        }else if(val > 12 && val <= 27) {
+            rangIndex = 2;
+            val = 27;
+        }else if(val > 27 && val <= 43) {
+            rangIndex = 3;
+            val = 43;
+        }else if(val > 43 && val <= 57) {
+            rangIndex = 4;
+            val = 57;
+        }else if(val > 57 && val <= 71) {
+            rangIndex = 5;
+            val = 71;
+        }else if(val > 71 && val <= 95) {
+            val = 88;
+            rangIndex = 6;
+        }else if(val > 95) {
+            val = 100;
+            rangIndex = 7;
+        }
+        renderRange(val);
+
+        // $(this).val(val);
+        // var left = 26/100 * val - 2.5;
+        // // rangIndex = Math.ceil(val/16);
+        // // rangIndex = rangIndex > 6 ? 6 : rangIndex;
+        // console.log('rangIndex', rangIndex)
+        // $(this).css('background-size', val + '% 100%');
+        // $('#range-val').html(rang_arr[Math.ceil(val/16)]);
+        // // $('#range-val').css('left', left*val/100 - 19 + 'px');
+        // if(val < 50) {
+        //     $('#range-val').css('left', left + 0.6 + 'rem');
+            
+        // }else if(val == 50) {
+        //     $('#range-val').css('left', left + 'rem');
+        // }else {
+        //     $('#range-val').css('left', left - 0.6 + 'rem');
+        // }
+        // // $('#range-val').css('left', left + 'rem');
+        // var _left = $('#range-val').css('left');
+        // console.log('_left', _left.replace('px', ''));
+    });
+
+    //获取置换建议
+    $('#get-advice').on('click', function(e) {
+        e.stopPropagation();
+        getAdvice();
+    });
+}
+function renderRange(val) {
+    var el = $('#range');
+    var value_el = $('#range-val');
+    el.val(val);
+    var left = 26/100 * val - 2.5;
+    // rangIndex = Math.ceil(val/16);
+    // rangIndex = rangIndex > 6 ? 6 : rangIndex;
+    console.log('rangIndex', rangIndex)
+    el.css('background-size', val + '% 100%');
+    value_el.html(rang_arr[Math.ceil(val/16)]);
+    // value_el.css('left', left*val/100 - 19 + 'px');
+    if(val < 50) {
+        value_el.css('left', left + 0.6 + 'rem');
+        
+    }else if(val == 50) {
+        value_el.css('left', left + 'rem');
+    }else {
+        value_el.css('left', left - 0.6 + 'rem');
+    }
+    // value_el.css('left', left + 'rem');
+    var _left = value_el.css('left');
+}
+function changeCity(){
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    setTimeout(function() {
+        addSearchListenter();
+        $('.search_input input').val('');
+    }, 0)
+    // var url = "/index.html"
+    // $(window).attr('location','public/searchCity.html?url='+url);
+}
+
+function addSearchListenter() {
+    
+
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('.search_input input').on('input propertychange', function() {
+        var vm = this;
+        if(!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+        
+    })
+    
+    //根据拼音查找
+    $(".citynav li").click(function(e){
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function() {
+        $('.search-box').hide();
+    })
+
+    // $('#fixed-to-cur').on('click', function() {
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     if(!cookie) {
+    //         return;
+    //     }
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    // $('#dqcs').on('click', function(e) {
+    //     e.stopPropagation();
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    $('.search_del').on('click', function(e) {
+        e.stopPropagation();
+        var cookie = eval("("+$.cookie("cityInfo")+")");
+        if(!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+        
+        doSearch(cityId, areaName);
+    });
+
+
+    addHotListener(doSearch); //热门搜索
+    // $("dl dd").on('click', function(){
+    //     //var item = $(this).index();  //获取索引下标 也从0开始
+    //     var cityName = $(this).text();  //文本内容
+    //     var cityId = $(this).attr("data-id");
+    //     doSearch(cityId,cityName);
+    // });
+}
+
+function doSearch(cityId, cityName) {
+    if(!cityId || !cityName) {
+        $('.search-box').hide();
+        return;
+    }
+    // if(!city) {
+    //     city = {
+    //         cityId: cityId,
+    //         cityName: cityName
+    //     }
+    // }else {
+    //     city.cityId = cityId,
+    //     city.cityName = cityName
+    // }
+    
+    initCity({
+        cityId: cityId,
+        cityName: cityName
+    });
+
+    $('.search-box').hide();
+    localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify({
+        cityId: cityId,
+        cityName: cityName
+    }))));            
+}
+function handleReset() {
+    
+    var register = JSON.parse(localStorage.getItem('changeInfo'));
+    if(!register) {
+        return;
+    }
+    selected = register.selected;
+    for(var i in selected) {
+        console.log($('#dis_box dd')[1]);
+        $($('#dis_box dd')[selected[i].index]).addClass('con_s');
+    }
+    var val = rang_key_arr[register.rangIndex];
+    rangIndex = register.rangIndex;
+    renderRange(val);
+}
+//意向区域选择
+function addAreaListener() {
+    $('#dis_box dd').on('click', function(e) {
+        console.log($(this).index());
+        // e.stopPropergation();
+        if($(this).hasClass('con_s')) {
+            var _cur = 0;
+            for(var i in selected) {
+                if(selected[i].index == $(this).index()) {
+                    _cur = i;
+                    break;
+                }
+            }
+            $(this).removeClass('con_s');
+            selected.splice(_cur, 1);
+            return;
+        }
+        if(selected.length == 3) {
+            // console.log($($('#dis_box dd')[selected[0].index]))
+            // $($('#dis_box dd')[selected[0].index]).removeClass('con_s');
+            // selected.shift();
+            showToast(1, '最多选择3个区域');
+            return;
+        }
+        selected.push({
+            index: $(this).index(),
+            code: $(this).attr('data-code'),
+            name: $(this).text()
+        });
+        console.log('selected', selected);
+        $(this).addClass('con_s');
+    });
+}
+//意向区域初始化，默认选中第一项
+function initArea() {
+    selected.push({
+        code: $($('#dis_box dd')[0]).attr('data-code'),
+        name: $($('#dis_box dd')[0]).text(),
+        index: 0
+    });
+    $($('#dis_box dd')[0]).addClass('con_s');
+}
+
+//写入city
+function initCity(data) {
+    selected = [];
+    city = JSON.parse(localStorage.getItem('changeCity'));
+    if(typeof data != 'undefined') {
+        city.cityId = data.cityId,
+        city.cityName = data.cityName
+        localStorage.setItem('changeCity', JSON.stringify(city));
+    }
+    console.log('city', city);
+    if(!!city) {
+        $('#cur_city').html(city.cityName);
+        $('#cur_city').attr('data-id', city.cityId);
+        loadDistricts(city.cityId);
+    }
+    
+}
+
+function getAdvice() {
+    if(selected.length == 0) {
+        showToast(3, '请选择区域');
+        return;
+    }
+    var data = {
+        selected: selected,
+        houseId: queryUrl('houseId'),
+        cityId: city.cityId,
+        cityName: city.cityName,
+        rangIndex: rangIndex,
+        minSquare: rang_vals[rangIndex].split('~')[0],
+        maxSquare: rang_vals[rangIndex].split('~')[1],
+        price: city.budget
+    }
+    console.log('data', data);
+    console.log('city', city);
+    
+    var record_data = {
+        cityId: city.cityId,
+
+        userid: userId,
+        houseid: queryUrl('houseId'),
+        accessHousePrice: city.accHousePrice,
+        havePrice: city.havePrice,
+        houseBudget: city.budget/10000,
+        changeWay: city.changeWay,
+        accessTime: city.accessTime,
+        totlePrice: isNaN(1 * city.totlePrice) ? '' : city.totlePrice,
+        intentionalMinArea: rang_vals[rangIndex].split('~')[0],
+        intentionalMaxArea: rang_vals[rangIndex].split('~')[1],
+        districtId: selected.map(function(item) {
+            return item.code
+        }).join(',')
+    }
+    console.log('record', record_data);
+    localStorage.setItem('changeInfo', JSON.stringify(data));
+    // window.location.href = './proposal.html';
+    record(record_data);
+}
+
+function record(data) {
+    loading.show();
+    var urlData = '';
+    var cur = 0;
+    for(var key in data) {
+        if(cur !== 0) {
+            urlData += '&' + key + '=' + data[key];
+        }else {
+            urlData += key + '=' + data[key];
+        }
+        cur ++;
+    }
+    // console.log(urlData);
+    link_public.method(server_url + '/rest/house/houseReplaceSuggestion', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            window.location.href = './proposal.html';
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        setTimeout(function () {
+            loading.hide();
+        }, 500);
+    });
+}
+
+//根据城市获取区县
+// district/getCityDistrictByCityId
+function loadDistricts(id) {
+    loading.show();
+    var urlData = "cityId=" + id;
+    link_public.method(server_url + '/rest/district/getCityDistrictByCityId', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                initDistrictList(data);
+            }
+            console.log('districts', json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        setTimeout(function () {
+            loading.hide();
+        }, 500);
+    });
+}
+
+//填充区域列表
+function initDistrictList(list) {
+    var html = '';
+
+    if(list && list.length > 0) {
+        for(var i in list) {
+            html += "<dd data-code=" + list[i].districtId + ">" + list[i].districtName + "</dd>";
+        }
+        
+    }else {
+        // html = "<div class='empty-content'>暂无可选区域</div>";
+    }
+    $('#dis_box').html(html);
+    setTimeout(function() {
+        if(flag) {
+            handleReset();
+        }
+        addAreaListener();
+    }, 0);
+}
+

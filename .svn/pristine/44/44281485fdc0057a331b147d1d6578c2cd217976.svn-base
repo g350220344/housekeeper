@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<!-- <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no"> -->
+	<title>城市页</title>
+	<!-- <link rel="stylesheet" type="text/css" href="../css/style.css"> -->
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.search-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+
+		.index_box_ctn {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+
+		#allmap {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+
+		.no_house {
+			line-height: 5rem;
+			text-align: center;
+			color: #bbbec4;
+		}
+
+		.map_qipao:before {
+			border: solid transparent;
+			content: ' ';
+			height: 0;
+			position: absolute;
+			width: 0;
+			border-width: 0.5rem;
+			border-top-color: #18ca8f;
+			bottom: -1.0rem;
+			right: 40%;
+		}
+
+		.overflow_box {
+			width: 100%;
+			height: 6.8rem;
+			padding: 0.6rem 1.2rem;
+			background: transparent;
+			overflow: hidden;
+			clear: both;
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 10;
+		}
+
+		.overflow_box_inner_l {
+			float: left;
+			width: 20%;
+			height: 5.6rem;
+			/* height: 100%; */
+			background: #fff;
+			border-radius: 0.25rem;
+			box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+			text-align: center;
+			color: #111;
+			/* line-height: 5.6rem; */
+			padding-top: 1.2rem;
+		}
+
+		.overflow_box_inner_l>img {
+			width: 1.1rem;
+			display: block;
+			margin: auto;
+			margin-top: 0.5rem;
+		}
+
+		.overflow_box_inner_r {
+			float: right;
+			height: 5.6rem;
+			width: 77%;
+		}
+
+		.overflow_box_inner_r ul {
+			height: 5.6rem;
+			margin: 0;
+			/* padding: 1.3rem 0; */
+			overflow: hidden;
+			clear: both;
+			background: #fff;
+			border-radius: 0.3rem;
+			box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+			padding-top: 1rem;
+		}
+
+		.overflow_box_inner_r ul li {
+			float: left;
+			text-align: center;
+		}
+
+		.overflow_box_inner_r ul li:not(:first-child) {
+			width: 30%;
+		}
+
+		.overflow_box_inner_r ul li:first-child {
+			width: 40%;
+		}
+
+		.overflow_box_inner_r_label {
+			/* font-weight: 200; */
+			font-size: 1.2rem;
+			color: #888;
+		}
+
+		.overflow_box_inner_r_label_value {
+			font-size: 1.5rem;
+			/* font-weight: 200; */
+		}
+
+		.overflow_box_inner_r_label_value:not(:first-child) {
+			margin-top: 0.2rem;
+		}
+
+		.increase {
+			color: #ff5350;
+		}
+
+		.decrease {
+			color: #1ecb92;
+		}
+
+		.overflow_box_inner_r_label_value img {
+			width: 0.75rem;
+			margin-right: 0.2rem;
+		}
+
+		.btn_record_box {
+			width: 100%;
+			/* height: 4.6rem; */
+			position: absolute;
+			z-index: 10;
+			bottom: 2.65rem;
+			left: 0;
+		}
+
+		#btn_record {
+			background: #388cff;
+			width: 90%;
+			height: 4.6rem;
+			margin: auto;
+			color: #fff;
+			font-size: 1.6rem;
+			text-align: center;
+			line-height: 4.6rem;
+			box-shadow: 0px 12px 24px 6px rgba(56, 140, 255, 0.35);
+			border-radius: 0.25rem;
+		}
+
+		#btn_record img {
+			margin-right: 0.2rem;
+			vertical-align: text-top;
+			width: 1.3rem;
+		}
+	</style>
+	<!-- <script>!function(e){function t(a){if(i[a])return i[a].exports;var n=i[a]={exports:{},id:a,loaded:!1};return e[a].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i=window;t["default"]=i.flex=function(normal,e,t){var a=e||100,n=t||1,r=i.document,o=navigator.userAgent,d=o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i),l=o.match(/U3\/((\d+|\.){5,})/i),c=l&&parseInt(l[1].split(".").join(""),10)>=80,p=navigator.appVersion.match(/(iphone|ipad|ipod)/gi),s=i.devicePixelRatio||1;p||d&&d[1]>534||c||(s=1);var u=normal?1:1/s,m=r.querySelector('meta[name="viewport"]');m||(m=r.createElement("meta"),m.setAttribute("name","viewport"),r.head.appendChild(m)),m.setAttribute("content","width=device-width,user-scalable=no,initial-scale="+u+",maximum-scale="+u+",minimum-scale="+u),r.documentElement.style.fontSize=normal?"50px": a/2*s*n+"px"},e.exports=t["default"]}]);  flex(false,10, 1);</script> -->
+</head>
+
+<body>
+	<div class="search-box">
+		<div class="index_box">
+			<ul class="citynav">
+				<li>热门</li>
+				<li>A</li>
+				<li>B</li>
+				<li>C</li>
+				<li>D</li>
+				<li>E</li>
+				<li>F</li>
+				<li>G</li>
+				<li>H</li>
+				<li>I</li>
+				<li>J</li>
+				<li>K</li>
+				<li>L</li>
+				<li>M</li>
+				<li>N</li>
+				<li>O</li>
+				<li>P</li>
+				<li>Q</li>
+				<li>R</li>
+				<li>S</li>
+				<li>T</li>
+				<li>W</li>
+				<li>X</li>
+				<li>Y</li>
+				<li>Z</li>
+
+			</ul>
+
+			<div class="search_box bac">
+				<div class="search_input">
+					<img src="../img/search.png" class="ding_w" onclick="cityName()">
+					<input class="text required" type="search" placeholder="搜索城市名称" name="cityName">
+				</div>
+				<a class="search_input_button f14">取消</a>
+			</div>
+			<div class="search_del">
+				<div class="search_del_list">
+					<p class="f11 col" id="dqcs">
+						<img src="../img/ding.png" alt="" class="ding_w">
+						<span></span>
+					</p>
+					<a id="fixed-to-cur" class="f11">当前城市</a>
+				</div>
+			</div>
+			<dl class="hotcity">
+				<dt>热门城市</dt>
+				<dd data-id="1101">北京</dd>
+				<dd>上海</dd>
+				<dd>广州</dd>
+				<dd>深圳</dd>
+				<dd>杭州</dd>
+				<dd>苏州</dd>
+				<dd>南京</dd>
+				<dd>天津</dd>
+				<dd>石家庄</dd>
+			</dl>
+			<dl class="citylist" id="a">
+				<dt id="py">A</dt>
+				<dd>阿坝</dd>
+				<dd>安泽</dd>
+				<dd>鞍山</dd>
+				<dd>敖汉旗</dd>
+			</dl>
+
+		</div>
+	</div>
+	<div class="index_box_ctn">
+		<div class="index_box">
+			<div class="map_box">
+				<div class="overflow_box">
+					<div id="change_city" class="overflow_box_inner_l">
+						<span id="o_f_city" class="f13">哈尔滨市</span>
+						<img style="width: 1.1rem;display: block;" src="../img/ico_move.png" alt="">
+					</div>
+					<div class="overflow_box_inner_r">
+						<ul>
+							<li>
+								<p class="overflow_box_inner_r_label">3月均价</p>
+								<p id="price" class="overflow_box_inner_r_label_value">55368元/㎡</p>
+							</li>
+							<li>
+								<p class="overflow_box_inner_r_label">环比上月</p>
+								<p class="overflow_box_inner_r_label_value" id="saleSqmPriceOnYear_on_YearBasis">
+									<img src="../img/ico_s.png">
+									<span class="increase">1.31%</span>
+								</p>
+							</li>
+							<li>
+								<p class="overflow_box_inner_r_label">同比去年</p>
+								<p id="saleSqmPriceLinkRelativeRatio" class="overflow_box_inner_r_label_value">
+									<img src="../img/ico_x.png">
+									<span class="decrease">2.66%</span>
+								</p>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="map_box_tcc">
+					<div id="allmap"></div>
+					<!-- <img src="../img/map.jpg" alt=""> -->
+				</div>
+				<div class="btn_record_box">
+					<div id="btn_record">
+						<img src="../img/audio.png"> 语音评估房
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+	<script type="text/javascript" src="../js/baiduMap.js"></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/lodash.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>
+	<script type="text/javascript" src="../js/public/searchC.js"></script>
+	<script type="text/javascript" src="../js/plus/map_city.js"></script>
+
+</body>
+
+</html>

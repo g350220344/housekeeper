@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.ChangeHomeInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.ChangeHomeInfo" >
+    <id column="STATEMENTID" property="statementid" jdbcType="VARCHAR" />
+    <result column="USERID" property="userid" jdbcType="VARCHAR" />
+    <result column="HOUSEID" property="houseid" jdbcType="DECIMAL" />
+    <result column="ACCESS_HOUSE_PRICE" property="accessHousePrice" jdbcType="DECIMAL" />
+    <result column="HAVE_PRICE" property="havePrice" jdbcType="VARCHAR" />
+    <result column="HOUSE_BUDGET" property="houseBudget" jdbcType="VARCHAR" />
+    <result column="CHANGE_WAY" property="changeWay" jdbcType="VARCHAR" />
+    <result column="ACCESS_TIME" property="accessTime" jdbcType="DATE" />
+    <result column="TOTLE_PRICE" property="totlePrice" jdbcType="DECIMAL" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="INTENTIONAL_MAX_AREA" property="intentionalMaxArea" jdbcType="VARCHAR" />
+    <result column="INTENTIONAL_MIN_AREA" property="intentionalMinArea" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    STATEMENTID, USERID, HOUSEID, ACCESS_HOUSE_PRICE, HAVE_PRICE, HOUSE_BUDGET, CHANGE_WAY, 
+    ACCESS_TIME, TOTLE_PRICE, CITY_NAME, PROVINCE_NAME, INTENTIONAL_MAX_AREA, INTENTIONAL_MIN_AREA
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_CHANGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_CHANGE
+    where STATEMENTID = #{statementid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from T_HOUSEKEEPER_CHANGE
+    where STATEMENTID = #{statementid,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfoExample" >
+    delete from T_HOUSEKEEPER_CHANGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfo" >
+    insert into T_HOUSEKEEPER_CHANGE (STATEMENTID, USERID, HOUSEID, 
+      ACCESS_HOUSE_PRICE, HAVE_PRICE, HOUSE_BUDGET, 
+      CHANGE_WAY, ACCESS_TIME, TOTLE_PRICE, 
+      CITY_NAME, PROVINCE_NAME, INTENTIONAL_MAX_AREA, 
+      INTENTIONAL_MIN_AREA)
+    values (#{statementid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{houseid,jdbcType=DECIMAL}, 
+      #{accessHousePrice,jdbcType=DECIMAL}, #{havePrice,jdbcType=VARCHAR}, #{houseBudget,jdbcType=VARCHAR}, 
+      #{changeWay,jdbcType=VARCHAR}, #{accessTime,jdbcType=DATE}, #{totlePrice,jdbcType=DECIMAL}, 
+      #{cityName,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{intentionalMaxArea,jdbcType=VARCHAR}, 
+      #{intentionalMinArea,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfo" >
+    insert into T_HOUSEKEEPER_CHANGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="statementid != null" >
+        STATEMENTID,
+      </if>
+      <if test="userid != null" >
+        USERID,
+      </if>
+      <if test="houseid != null" >
+        HOUSEID,
+      </if>
+      <if test="accessHousePrice != null" >
+        ACCESS_HOUSE_PRICE,
+      </if>
+      <if test="havePrice != null" >
+        HAVE_PRICE,
+      </if>
+      <if test="houseBudget != null" >
+        HOUSE_BUDGET,
+      </if>
+      <if test="changeWay != null" >
+        CHANGE_WAY,
+      </if>
+      <if test="accessTime != null" >
+        ACCESS_TIME,
+      </if>
+      <if test="totlePrice != null" >
+        TOTLE_PRICE,
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME,
+      </if>
+      <if test="provinceName != null" >
+        PROVINCE_NAME,
+      </if>
+      <if test="intentionalMaxArea != null" >
+        INTENTIONAL_MAX_AREA,
+      </if>
+      <if test="intentionalMinArea != null" >
+        INTENTIONAL_MIN_AREA,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="statementid != null" >
+        #{statementid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="houseid != null" >
+        #{houseid,jdbcType=DECIMAL},
+      </if>
+      <if test="accessHousePrice != null" >
+        #{accessHousePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="havePrice != null" >
+        #{havePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="houseBudget != null" >
+        #{houseBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="changeWay != null" >
+        #{changeWay,jdbcType=VARCHAR},
+      </if>
+      <if test="accessTime != null" >
+        #{accessTime,jdbcType=DATE},
+      </if>
+      <if test="totlePrice != null" >
+        #{totlePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="intentionalMaxArea != null" >
+        #{intentionalMaxArea,jdbcType=VARCHAR},
+      </if>
+      <if test="intentionalMinArea != null" >
+        #{intentionalMinArea,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfoExample" resultType="java.lang.Integer" >
+    select count(*) from T_HOUSEKEEPER_CHANGE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_HOUSEKEEPER_CHANGE
+    <set >
+      <if test="record.statementid != null" >
+        STATEMENTID = #{record.statementid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.houseid != null" >
+        HOUSEID = #{record.houseid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.accessHousePrice != null" >
+        ACCESS_HOUSE_PRICE = #{record.accessHousePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.havePrice != null" >
+        HAVE_PRICE = #{record.havePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.houseBudget != null" >
+        HOUSE_BUDGET = #{record.houseBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="record.changeWay != null" >
+        CHANGE_WAY = #{record.changeWay,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accessTime != null" >
+        ACCESS_TIME = #{record.accessTime,jdbcType=DATE},
+      </if>
+      <if test="record.totlePrice != null" >
+        TOTLE_PRICE = #{record.totlePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cityName != null" >
+        CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.provinceName != null" >
+        PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.intentionalMaxArea != null" >
+        INTENTIONAL_MAX_AREA = #{record.intentionalMaxArea,jdbcType=VARCHAR},
+      </if>
+      <if test="record.intentionalMinArea != null" >
+        INTENTIONAL_MIN_AREA = #{record.intentionalMinArea,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_HOUSEKEEPER_CHANGE
+    set STATEMENTID = #{record.statementid,jdbcType=VARCHAR},
+      USERID = #{record.userid,jdbcType=VARCHAR},
+      HOUSEID = #{record.houseid,jdbcType=DECIMAL},
+      ACCESS_HOUSE_PRICE = #{record.accessHousePrice,jdbcType=DECIMAL},
+      HAVE_PRICE = #{record.havePrice,jdbcType=VARCHAR},
+      HOUSE_BUDGET = #{record.houseBudget,jdbcType=VARCHAR},
+      CHANGE_WAY = #{record.changeWay,jdbcType=VARCHAR},
+      ACCESS_TIME = #{record.accessTime,jdbcType=DATE},
+      TOTLE_PRICE = #{record.totlePrice,jdbcType=DECIMAL},
+      CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      INTENTIONAL_MAX_AREA = #{record.intentionalMaxArea,jdbcType=VARCHAR},
+      INTENTIONAL_MIN_AREA = #{record.intentionalMinArea,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfo" >
+    update T_HOUSEKEEPER_CHANGE
+    <set >
+      <if test="userid != null" >
+        USERID = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="houseid != null" >
+        HOUSEID = #{houseid,jdbcType=DECIMAL},
+      </if>
+      <if test="accessHousePrice != null" >
+        ACCESS_HOUSE_PRICE = #{accessHousePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="havePrice != null" >
+        HAVE_PRICE = #{havePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="houseBudget != null" >
+        HOUSE_BUDGET = #{houseBudget,jdbcType=VARCHAR},
+      </if>
+      <if test="changeWay != null" >
+        CHANGE_WAY = #{changeWay,jdbcType=VARCHAR},
+      </if>
+      <if test="accessTime != null" >
+        ACCESS_TIME = #{accessTime,jdbcType=DATE},
+      </if>
+      <if test="totlePrice != null" >
+        TOTLE_PRICE = #{totlePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null" >
+        PROVINCE_NAME = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="intentionalMaxArea != null" >
+        INTENTIONAL_MAX_AREA = #{intentionalMaxArea,jdbcType=VARCHAR},
+      </if>
+      <if test="intentionalMinArea != null" >
+        INTENTIONAL_MIN_AREA = #{intentionalMinArea,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where STATEMENTID = #{statementid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cindata.housekeeper.web.model.ChangeHomeInfo" >
+    update T_HOUSEKEEPER_CHANGE
+    set USERID = #{userid,jdbcType=VARCHAR},
+      HOUSEID = #{houseid,jdbcType=DECIMAL},
+      ACCESS_HOUSE_PRICE = #{accessHousePrice,jdbcType=DECIMAL},
+      HAVE_PRICE = #{havePrice,jdbcType=VARCHAR},
+      HOUSE_BUDGET = #{houseBudget,jdbcType=VARCHAR},
+      CHANGE_WAY = #{changeWay,jdbcType=VARCHAR},
+      ACCESS_TIME = #{accessTime,jdbcType=DATE},
+      TOTLE_PRICE = #{totlePrice,jdbcType=DECIMAL},
+      CITY_NAME = #{cityName,jdbcType=VARCHAR},
+      PROVINCE_NAME = #{provinceName,jdbcType=VARCHAR},
+      INTENTIONAL_MAX_AREA = #{intentionalMaxArea,jdbcType=VARCHAR},
+      INTENTIONAL_MIN_AREA = #{intentionalMinArea,jdbcType=VARCHAR}
+    where STATEMENTID = #{statementid,jdbcType=VARCHAR}
+  </update>
+</mapper>

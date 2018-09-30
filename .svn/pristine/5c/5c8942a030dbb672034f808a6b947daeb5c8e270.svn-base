@@ -1,0 +1,35 @@
+/* login page */
+.login_title {
+    color: #388cff;
+    padding-top: 3.38rem;
+    font-size: 0.72rem;
+    text-align: center;
+    font-family: FZZZHONGJW--GB1-0;
+    line-height: 0.66rem;
+}
+.login_bg {
+    display: block;
+    width: 7.02rem;
+    margin: 0.68rem auto 0;
+}
+.login_btn {
+    width: 6.5rem;
+    height: 0.88rem;
+    line-height: 0.88rem;
+    color: #fff;
+    background-color: #388cff;
+	box-shadow: 0px 8px 18px 1px 
+        rgba(56, 140, 255, 0.3);
+    border-radius: 0.3rem;
+    font-size: 0.28rem;
+    vertical-align: middle;
+    margin: auto;
+    text-align: center;
+}
+.login_btn img {
+    width: 0.3rem;
+    height: 0.24rem;
+    vertical-align: baseline;
+    display: inline-block;
+    margin-right: 0.03rem;
+}

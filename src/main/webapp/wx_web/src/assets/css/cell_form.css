@@ -1,0 +1,24 @@
+/* cell_form component */
+.i_cell_form_box {
+    overflow: hidden;
+    clear: both;
+    width: 100%;
+}
+.i_cell_form_box_item {
+    width: 50%;
+    float: left;
+}
+.i_cell_form_box_label {
+    text-align-last: justify;
+    width: 1.4rem;
+    color: #888;
+    font-size: 0.28rem;
+    float: left;
+}
+.i_cell_form_box_val {
+    float: left;
+    font-size: 0.28rem;
+    color: #111;
+    margin-left: 0.44rem;
+    width: 1.5rem;
+}

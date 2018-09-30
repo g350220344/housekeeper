@@ -1,0 +1,22 @@
+/* compare_chart page */
+.cpc_chart_box {
+    background: #fff;
+    padding: 0 0.3rem;
+    margin-top: 0.2rem;
+    position: relative;
+}
+.cpc_chart_tit {
+    height: 0.9rem;
+    line-height: 0.9rem;
+    font-size: 0.3rem;
+    color: #111;
+}
+.cpc_chart_unit {
+    position: absolute;
+    font-size: 0.25rem;
+    color: #888;
+    top: 1.49rem;
+    right: 0.63rem;
+    line-height: 0.25rem;
+    z-index: 99;
+}

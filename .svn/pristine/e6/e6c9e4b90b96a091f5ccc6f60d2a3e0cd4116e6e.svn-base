@@ -1,0 +1,291 @@
+/*搜索记录相关*/
+//从localStorage获取搜索时间的数组
+var hisTime;
+//从localStorage获取搜索内容的数组
+var hisItem;
+//从localStorage获取最早的1个搜索时间
+var firstKey;
+//搜索定时器
+var timer = null;
+//搜索结果列表
+var cityList = [];
+var lock = false;
+//城市信息
+var cookie = eval("(" + $.cookie("cityInfo") + ")");
+// var cookie = !!$.cookie("cityInfo") ? JSON.parse($.cookie("cityInfo")) : {};
+// var cookie = JSON.parse($.cookie("cityInfo"));
+console.log('cookie:  ', cookie);
+var defaultCityId = "2301";//城市默认哈尔滨
+$(function () {
+    var url = queryUrl("url");
+    var data = decodeURI(queryUrl("data"));
+    console.log('data:   ', JSON.parse(data));
+    $('#search').on('input propertychange', function (e) {
+        e.preventDefault();
+        var vm = this;
+        if (!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            console.log('val:  ', $(vm).val());
+            //请求搜索接口
+            var searchContent = $(vm).val();
+            if (searchContent == '') {
+                //alert('请输入检索内容！');
+            } else {
+                var cityId = '';
+
+                if (data != null && data != "null") {
+                    if (JSON.parse(data).cityId != "" && JSON.parse(data).cityName != "") {
+                        cityId = JSON.parse(data).cityId;
+                    }
+                }
+                searchCommunity(searchContent, cityId);
+            }
+        }, 300);
+        return false;
+    })
+    //获取键盘搜索按钮事件
+    // $("#search").on('keyup', function(e) {
+
+    //     //var keycode = e.keyCode;
+    //     //获取搜索框的值
+    //     var searchContent = $(this).val();
+    //     //if (keycode == '13') {
+    //         e.preventDefault();
+    //         //请求搜索接口
+    //         if (searchContent == '') {
+    //             //alert('请输入检索内容！');
+    //         } else {
+    //             var cityId = null;
+
+    //             if(data!=null&&data!="null"){
+    //                 //alert(JSON.parse(data).cityId);
+    //                 if(JSON.parse(data).cityId!=""&&JSON.parse(data).cityName!=""){
+    //                     cityId = JSON.parse(data).cityId;
+    //                 }
+    //             }
+    //             searchCommunity(searchContent,cityId);
+
+
+    //         }
+    //     //}
+    // });
+    $("#clearHistory").click(function () {
+        clearHistory();
+    })
+    $("#searchHistory").on('click', 'li', function () {
+        // var text = $(this).find("span").eq(0).html();
+        // var cityId = $(this).attr("id");
+        // searchCommunity(text, cityId);
+        var renData = JSON.parse(data);
+        var cityName = $($(this).find('span')[1]).text();
+        console.log($(this).find('span')[0])
+        renData["communityName"] = $($(this).find('span')[0]).text();
+        renData["address"] = $(this).attr('data-address');
+        renData["communityId"] = $(this).attr('data-community');
+        renData["cityId"] = $(this).attr('id');
+        renData["cityName"] = cityName.substring(1, cityName.length - 1);
+        if (url != null && url != "null") {
+            localStorage.setItem('communityData', encodeURI(JSON.stringify(renData)));
+            location.href = '../valuation/index.html';
+            // window.history.go(-1);
+            // $(window).attr('location','../valuation/index.html?data='+encodeURI(encodeURI(JSON.stringify(renData))));
+        }
+    });
+    $("#search_box").on('click', 'li', function () {
+        var communityName = $(this).find("h1").html();
+        var address = $(this).find("p").html();
+        var communityId = $(this).find("span").html();
+        var renData = JSON.parse(data);
+        renData["communityName"] = communityName;
+        renData["address"] = address;
+        renData["communityId"] = communityId;
+        
+        var selectedItem = cityList.filter(function(item) {
+            return item.communityId == communityId;
+        })[0];
+        console.log(selectedItem);
+        saveHistory(selectedItem);
+        if (url != null && url != "null") {
+            if(lock) {
+                return;
+            }
+            lock = true;
+            localStorage.setItem('communityData', encodeURI(JSON.stringify(renData)));
+            // window.history.go(-1);
+            location.href = '../valuation/index.html';
+            // $(window).attr('location','../valuation/index.html?data='+encodeURI(encodeURI(JSON.stringify(renData))));
+        }
+
+    });
+    //取消
+    $('#cancel').on('click', function() {
+        window.history.go(-1);
+    });
+    init();
+});
+function clearHistory() {
+    // localStorage.clear();
+    for(var i in hisTime) {
+        localStorage.removeItem(hisTime[i]);
+    }
+    init();
+}
+var searchHistory;
+function searchCommunity(searchContent, cityId) {
+    $('#search-box').html('');
+    loading.show();
+    if (cityId == undefined && cityId == null) {
+        cityId = cookie.cityId;
+    }
+    var data = "communityName=" + searchContent + "&cityId=" + cityId;
+    $("#search_box").empty();
+    link_public.method(server_url + '/rest/community/searchCommunity', data, "post", true, function (json) {
+        $("#search_box").empty();
+        if (json.success) {
+
+
+            //alert(JSON.stringify(json));
+            var data = json.data;
+
+            var cityName = data[0].cityName;
+            var cityId = data[0].cityId;
+            cityList = data;
+            cookie = cookie || {};
+            var str = "#{cityName}" + cookie.areaName + "#{cityId}" + cookie.cityId;
+            if (cityName != "" && cityId != "") {
+                str = "#{cityName}" + cityName + "#{cityId}" + cityId;
+            }
+            //var history = searchContent+str;
+            //saveHistory(history);
+            searchHistory = searchContent + str;
+            if(data.length > 0) {
+                for (var i in data) {
+                    var html = "<li>" +
+                        "<h1 class=\"f13\">" + data[i].communityname + "</h1>" +
+                        "<p class=\"f11\">" + (data[i].detailaddress || '') + "</p>" +
+                        "<span style='display: none'>" + data[i].communityId + "</span>" +
+                        "</li>";
+                    $("#search_box").append(html);
+                }
+            }else {
+                $("#search_box").append('<div style="color: grey; text-align: center; line-height: 6rem;">暂无匹配结果</div>')                
+            }
+            
+            isSearchOver = true;
+        }else {
+            $("#search_box").append('<div style="color: grey; text-align: center; line-height: 6rem;">暂无匹配结果</div>')
+            // showToast(3, json.message);
+        }
+        loading.hide();
+    });
+    //显示列表 隐藏历史
+    $("#search_del").hide();
+    $("#search_box").show();
+}
+function init() {
+    //每次执行都把2个数组置空
+    hisTime = [];
+    hisItem = [];
+    //模拟localStorage本来有的记录
+    //localStorage.setItem("a",12333);
+    //本函数内的两个for循环用到的变量
+    for (var i = 0; i < localStorage.length; i++) {
+        if (!isNaN(localStorage.key(i))) {
+
+            hisTime.push(localStorage.key(i));
+        }
+    }
+    //执行init(),每次清空之前添加的节点
+    hisTime = hisTime.sort();
+    console.log('histime', hisTime);
+    for (var i = 0; i < hisTime.length; i++) {
+        var item = localStorage.getItem(hisTime[i]);
+        if(typeof item != 'undefined') {
+            hisItem.push(JSON.parse(item));
+        }
+        // if (localStorage.getItem(hisTime[i]) != null) {
+        //     hisItem.push(localStorage.getItem(hisTime[i]));
+        // }
+    }
+    console.log('hisItem', hisItem);
+    //alert(hisItem.length+hisItem);
+    $("#searchHistory").empty();
+
+    for (var i = hisItem.length - 1; i > -1; i--) {
+        var text = hisItem[i].communityName;
+        var cityName = '(' + hisItem[i].cityName + ')';
+        var cityId = hisItem[i].cityId;
+        var communityId = hisItem[i].communityId;
+        var address = hisItem[i].detailaddress;
+        // var text = hisItem[i].split("#{cityName}")[0];
+        // var cityName = "(" + hisItem[i].split("#{cityName}")[1].split("#{cityId}")[0] + ")";
+        // var cityId = hisItem[i].split("#{cityName}")[1].split("#{cityId}")[1];
+        var html = "<li data-address=" + address + " data-community=" + communityId + " id='" + cityId + "'><a><span style='color:#000'>" + text + "</span><span>" + cityName + "</span></a></li>";
+        $("#searchHistory").append(html);
+    }
+}
+function saveHistory(selected) {
+    if(!selected) {
+        return;
+    }
+    var record = {
+        communityName: selected.communityname,
+        detailaddress: selected.detailaddress,
+        communityId: selected.communityId,
+        cityId: selected.cityId,
+        cityName: selected.cityName
+    }
+    var time = (new Date()).getTime();
+    
+    for(i in hisItem) {
+        console.log(hisTime[i]);
+        if(hisItem[i].communityId == record.communityId) {
+            localStorage.removeItem(hisTime[i]);
+            localStorage.setItem(time, JSON.stringify(record));
+            return;
+        }
+    }
+    if(hisItem.length > 4) {
+        localStorage.removeItem(hisTime[0]);
+        localStorage.setItem(time, JSON.stringify(record));
+    }else {
+        localStorage.setItem(time, JSON.stringify(record));
+    }
+}
+// function saveHistory(searchContent) {
+
+//     var value = searchContent;
+//     var time = (new Date()).getTime();
+
+//     if (!value) {
+//         alert("你未输入搜索内容");
+//         return false;
+//     }
+// 	/*if(localStorage.length==0){
+//         firstKey = time;
+// 	}*/
+//     //输入的内容localStorage有记录
+//     if ($.inArray(value, hisItem) >= 0) {
+//         for (var j = 0; j < localStorage.length; j++) {
+//             if (value == localStorage.getItem(localStorage.key(j))) {
+//                 localStorage.removeItem(localStorage.key(j));
+//             }
+//         }
+
+//         localStorage.setItem(time, value);
+//     }
+//     //输入的内容localStorage没有记录
+//     else {
+//         //由于限制了只能有5条记录，所以这里进行判断
+//         if (hisItem.length > 4) {
+//             firstKey = hisTime[0];
+//             localStorage.removeItem(firstKey);
+//             localStorage.setItem(time, value);
+//         } else {
+//             localStorage.setItem(time, value)
+//         }
+//     }
+// }
+

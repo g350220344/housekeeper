@@ -1,0 +1,112 @@
+package com.cindata.housekeeper.wx.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.cindata.housekeeper.core.common.tools.CtrlerUtil;
+import com.cindata.housekeeper.core.common.tools.OpenapiPoster;
+import com.cindata.housekeeper.core.entity.JSONResult;
+import com.cindata.housekeeper.core.entity.Parameter;
+import com.cindata.housekeeper.web.model.ApplyCommunityInfo;
+import com.cindata.housekeeper.web.model.AssessResult;
+import com.cindata.housekeeper.wx.dao.SmsLogMapper;
+import com.cindata.housekeeper.wx.dao.WxReportInfoMapper;
+import com.cindata.housekeeper.wx.dao.WxSubCommunityMapper;
+import com.cindata.housekeeper.wx.model.WxReportInfo;
+import com.cindata.housekeeper.wx.model.WxReportInfoExample;
+import com.cindata.housekeeper.wx.model.WxSubCommunity;
+import com.cindata.housekeeper.wx.model.WxSubCommunityExample;
+import com.cindata.housekeeper.wx.model.WxSubCommunityExample.Criteria;
+import com.cindata.housekeeper.wx.service.WxSubscriptionService;
+import com.google.common.reflect.TypeToken;
+
+
+@Service
+public class WxSubscriptionServiceImpl implements WxSubscriptionService {
+
+	
+	@Resource
+	private WxSubCommunityMapper wxSubCommunityMapper;
+	@Resource
+	private WxReportInfoMapper wxReportInfoMapper;
+	
+	
+	@Override
+	public int subCommunity(WxReportInfo wxReportInfo) {
+		
+		//wxSubCommunity.setStatus(new BigDecimal(1));
+		int i = wxReportInfoMapper.insertSelective(wxReportInfo);
+		return i;
+	}
+
+
+	@Override
+	public List<WxReportInfo> selectSubCommunityByUserId(String userId) {
+		
+		WxReportInfoExample wxSubCommunityExample = new WxReportInfoExample();
+		com.cindata.housekeeper.wx.model.WxReportInfoExample.Criteria cri = wxSubCommunityExample.createCriteria();
+		cri.andUserIdEqualTo(userId);
+		List<WxReportInfo> list = wxReportInfoMapper.selectByExample(wxSubCommunityExample);
+		Parameter param = new Parameter();
+		ApplyCommunityInfo commInfo = null;
+		List<WxReportInfo> listSub = new ArrayList<WxReportInfo>();
+		BigDecimal isExpired = new BigDecimal(0);
+		for(WxReportInfo wxSubCommunity : list){
+			WxReportInfo wxSubCommunity1 = new WxReportInfo();
+			Long dataId = wxSubCommunity.getCommunityId().longValue();
+			  param.setCommunityId(dataId);
+			  
+			  Date subDate = new java.util.Date(wxSubCommunity.getSubscribeDate().getTime());
+			  Calendar calendar = Calendar.getInstance();
+			  calendar.setTime(subDate);
+			  Calendar now = Calendar.getInstance();
+			  if(now.after(calendar)){
+				  wxSubCommunity1.setIsExpired(new BigDecimal(1)); 
+			  }else{
+				  wxSubCommunity1.setIsExpired(new BigDecimal(0)); 
+			  }
+			  
+			  String resBody = OpenapiPoster.post(param, "community/getApplyCommunityInfo");
+	          JSONResult<ApplyCommunityInfo> bean = (JSONResult<ApplyCommunityInfo>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<ApplyCommunityInfo>>(){}.getType());
+	         ApplyCommunityInfo data = bean.getData();
+	         
+	       String communityname = data.getCommunityname();
+	       String address = data.getDetailaddress();
+	       
+	       
+	       wxSubCommunity1.setAddress(address);
+	       wxSubCommunity1.setCommunityName(communityname);
+	       listSub.add(wxSubCommunity1);
+		}
+		return listSub;
+	}
+
+
+	@Override
+	public int selectSubCommunityCountById(String communityId) {
+		WxReportInfoExample wxSubCommunityExample = new WxReportInfoExample();
+		com.cindata.housekeeper.wx.model.WxReportInfoExample.Criteria cri = wxSubCommunityExample.createCriteria();
+		cri.andCommunityIdEqualTo(new BigDecimal(communityId));
+		int i = wxReportInfoMapper.countByExample(wxSubCommunityExample);
+		return i;
+	}
+
+
+	@Override
+	public List<WxReportInfo> sqmPriceCompare(String userId) {
+		WxReportInfoExample wxSubCommunityExample = new WxReportInfoExample();
+		com.cindata.housekeeper.wx.model.WxReportInfoExample.Criteria cri = wxSubCommunityExample.createCriteria();
+		cri.andUserIdEqualTo(userId);
+		List<WxReportInfo> list = wxReportInfoMapper.selectByExample(wxSubCommunityExample);
+		return list;
+	}
+
+	
+}

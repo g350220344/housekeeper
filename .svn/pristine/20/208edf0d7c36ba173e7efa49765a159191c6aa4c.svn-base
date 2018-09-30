@@ -1,0 +1,459 @@
+var changeInfo = null;
+var nomore = false;
+var page = 1;
+var pageNum = 10;
+var districtContents = {};
+var is_empty = false; //全部区域都没有匹配数据
+var area = {
+    code: 'all',
+    name: '全部区域'
+}
+var order = {
+    code: 'default',
+    name: '默认排序'
+}
+var community_list = [];
+//myScroll
+var myScroll,
+    pullDown = $("#pullDown"),
+    pullUp = $("#pullUp"),
+    pullDownLabel = $(".pullDownLabel"),
+    pullUpLabel = $(".pullUpLabel"),
+    container = $('#propor_list'),
+    loadingStep = 0; //加载状态0默认，1显示加载状态，2执行加载数据，只有当为0时才能再次加载，这是防止过快拉动刷新    
+
+$(function () {
+    console.log(JSON.parse(localStorage.getItem('changeInfo')))
+    // load();
+    // FastClick.attach(document.body);  
+    init();
+});
+function addListener() {
+    $('.sel_area').on('click', function(e) {
+        e.stopPropagation();
+        // console.log(e.target.tagName.toLowerCase());
+        if(e.target.tagName.toLowerCase() != 'li') {
+            $(this).hide();
+            $('.propos_ul').find('i').removeClass('icon-sanjiaoxing-up')
+            $('.propos_ul').find('i').addClass('icon-sanjiao_xia')
+        }
+    })
+    $('#area li').on('click', function(e) {
+        var origin = area;
+        $('#area li').removeClass('active');
+        $(this).addClass('active');
+        $('#area').hide();
+        // console.log($(this).index())
+        area = {
+            code: $(this).attr('data-code'),
+            name: $(this).attr('data-name')
+        }
+        $('#area_sel').text(area.name);
+        $('#select_1').find('i').removeClass('icon-sanjiaoxing-up');
+        $('#select_1').find('i').addClass('icon-sanjiao_xia')
+        if(area.code !== origin.code) {
+            page = 1;
+            nomore = false;
+            $('#nomore').hide();
+            fetchSuggestions(page, function(data) {
+                if(data.length > 0) {
+                    $('#total').text(data[0].count);
+                }else {
+                    $('#total').text(0);
+                }
+                $("#propor_list").html('')
+                $("#propor_list").append(renderList(data));
+                $("#propor_list li").each(function(ide){  
+                    $(this).attr('pid',ide);  
+                });
+                addItemListener();
+                if(community_list.length == 0) {
+                    showEmpty();
+                }
+                page++;
+                myScroll.refresh();
+                myScroll.scrollTo(0, 0);
+            })
+        }
+    })
+    $('#select_1').on('click', function(e) {
+        e.stopPropagation();
+        $('#area').show();
+        $('#select_1').find('i').addClass('icon-sanjiaoxing-up');
+        $('#select_1').find('i').removeClass('icon-sanjiao_xia')
+    });
+    $('#order li').on('click', function(e) {
+        $('#order li').removeClass('active');
+        $(this).addClass('active');
+        $('#select_2').find('i').removeClass('icon-sanjiaoxing-up');
+        $('#select_2').find('i').addClass('icon-sanjiao_xia')
+        $('#order').hide();
+        page = 1;
+        nomore = false;
+        $('#nomore').hide();
+        fetchSuggestions(page, function(data) {
+            if(data.length > 0) {
+                $('#total').text(data[0].count);
+            }else {
+                $('#total').text(0);
+            }
+            $("#propor_list").html('')
+            $("#propor_list").append(renderList(data));
+            $("#propor_list li").each(function(ide){  
+                $(this).attr('pid',ide);  
+            });
+            addItemListener();
+            if(community_list.length == 0) {
+                showEmpty();
+            }
+            page++;
+            myScroll.refresh();
+            myScroll.scrollTo(0, 0);
+        })
+        // console.log($(this).index())
+    })
+    $('#select_2').on('click', function(e) {
+        e.stopPropagation();
+        // console.log('11')
+        $('#order').show();
+        $('#select_2').find('i').addClass('icon-sanjiaoxing-up');
+        $('#select_2').find('i').removeClass('icon-sanjiao_xia')
+    });
+    $('#goMap').on('click', function(e) {
+        localStorage.setItem('districtContents', JSON.stringify(districtContents));
+        window.location.href = './map.html';
+    })
+}
+
+function init() {
+    addHistoryBackListener('../index.html');
+    changeInfo = JSON.parse(localStorage.getItem('changeInfo'));
+    console.log('fjdifjd', changeInfo);
+    if(!!changeInfo) {
+        load();
+        // fetchSuggestions(changeInfo);
+    }
+    initNav();
+    addListener(); //注册事件
+}
+
+function initNav() {
+    var order_html = '';
+    var selected = changeInfo.selected;
+    for(var s in selected) {
+        order_html += "<li data-code=" + selected[s].code + " data-name=" + selected[s].name + ">" + selected[s].name + '<i class="iconfont icon-finish"></i>' + "</li>";
+    }
+    $('#area ul').append(order_html);
+    for(var i in selected) {
+        loadListByDistrict({
+            index: i,
+            districtId: selected[i].code,
+            districtName: selected[i].name
+        });
+    }
+}
+
+function updatePosition() {
+    // console.log($('#wrapper').height(), this.y);
+    var wrapperHeight = $('#wrapper').height();
+    var vm = this;
+    if(-this.y/wrapperHeight >= 2){
+        $('#toTop').show();
+        $('#toTop').on('click', function(e) {
+            e.stopPropagation();
+            vm.scrollTo(0,0);
+            $(this).hide();
+        })
+    }else {
+        $('#toTop').hide();
+    }
+}
+
+
+function asd(obj){  
+    alert($(obj).attr('pid'));  
+}  
+function load() {  
+    var html = '';  
+
+    var windowH = $(window).height();
+    var titHeight = $('#header').height();
+    var footer = $('#footer').height();
+    var contentH = windowH - titHeight;
+    var contentHfooter = windowH - titHeight - footer;
+    if ($("#propor_list").height() < contentHfooter) {
+        $("#propor_list").css({
+            'min-height': contentHfooter
+        })
+    }  
+      
+      
+    
+        pullDown.hide();  
+        pullUp.hide();  
+
+    myScroll = new IScroll("#wrapper", {  
+        scrollbars: true,  
+        mouseWheel: false,  
+        interactiveScrollbars: true,  
+        shrinkScrollbars: 'scale',  
+        fadeScrollbars: true,  
+        scrollY: true,  
+        probeType: 2,  
+        bindToWrapper: true,
+        tap: true 
+    });  
+    myScroll.on("scroll", function() {  
+        updatePosition.bind(this)();
+        // console.log(this.maxScrollY, this.y, loadingStep == 0, !pullDown.attr("class").match('refresh|loading'), !pullUp.attr("class").match('refresh'))
+        if(loadingStep == 0 && !pullDown.attr("class").match('refresh|loading') && !pullUp.attr("class").match('refresh')) {  
+            if(this.y > 40) { //下拉刷新操作    
+                // console.log(11111);
+                $(".pulldown-tips").hide();  
+                pullDown.addClass("refresh").show();  
+                pullDownLabel.text("松手刷新数据");  
+                loadingStep = 1;  
+                myScroll.refresh();  
+                
+            } else if(this.y < (this.maxScrollY - 10)) { //上拉加载更多    
+                
+                if(nomore) {
+                    $('#nomore').show();
+                    // pullUpLabel.text("没有更多了");
+                }else {
+                    pullUp.addClass("refresh").show();  
+                    pullUpLabel.text("正在载入");
+                    loadingStep = 1;  
+                    pullUpAction();  
+                }
+            }  
+        }  
+    });  
+    myScroll.on("scrollEnd", function() { 
+        // console.log(loadingStep); 
+        if(loadingStep == 1) {  
+            if(pullDown.attr("class").match("refresh")) { //下拉刷新操作    
+                pullDown.removeClass("refresh").addClass("loading");  
+                pullDownLabel.text("正在刷新");  
+                loadingStep = 2;  
+                pullDownAction();  
+            }  
+        }  
+    });  
+    fetchSuggestions(page, function(data) {
+        if(data.length > 0) {
+            $('#total').text(data[0].count);
+        }
+        $("#propor_list").append(renderList(data))  
+        $("#propor_list li").each(function(ide){  
+            $(this).attr('pid',ide);  
+        });
+        addItemListener();
+        page++;
+        if(community_list.length == 0) {
+            showEmpty();
+        }
+        myScroll.refresh();
+    })
+
+    function pullDownAction() {  
+        page = 1;
+        nomore = false;
+        $('#nomore').hide();
+        fetchSuggestions(page, function(data) {
+            container.html("");
+            container.prepend(renderList(data));
+            pullDown.attr('class', '').hide();  
+            myScroll.refresh();  
+            loadingStep = 0;  
+            page ++;
+            $(".pulldown-tips").show();  
+            $("#propor_list li").each(function(ide){  
+                $(this).attr('pid',ide);  
+            })  
+            addItemListener();
+            if(community_list.length == 0) {
+                showEmpty();
+            }
+        });
+        // setTimeout(function() {  
+        //     var li, i;  
+        //     for(i = 0, li = ""; i < 3; i++) {  
+        //         li += "<li onclick='asd(this)'>"+i+"</li>";  
+        //     }  
+        //     container.prepend(li);  
+        //     pullDown.attr('class', '').hide();  
+        //     myScroll.refresh();  
+        //     loadingStep = 0;  
+        //     $(".pulldown-tips").show();  
+        //     $("#propor_list li").each(function(ide){  
+        //         $(this).attr('pid',ide);  
+        //     })  
+        // }, 1000);  
+    }  
+
+    function pullUpAction() {  
+        // console.log('page', page);
+        if(nomore) {
+            return;
+        }
+        fetchSuggestions(page, function(data) {
+            if(data && data.length > 0) {
+                container.append(renderList(data));  
+                // pullUp.attr('class', '').hide();  
+                myScroll.refresh();  
+                // loadingStep = 0;  
+                $("#propor_list li").each(function(ide){  
+                    $(this).attr('pid',ide);  
+                });   
+                addItemListener();
+                page ++;
+            }else {
+                
+                page--;
+                nomore = true;
+                $('#nomore').show();
+            }
+            if(community_list.length == 0) {
+                showEmpty();
+            }
+            pullUp.attr('class', '').hide();  
+            loadingStep = 0;  
+        });
+        // setTimeout(function() {  
+        //     var li, i;  
+        //     for(i = 0, li = ""; i < 3; i++) {  
+        //         li += "<li onclick='asd(this)'>"+i+"</li>";  
+        //     }  
+        //     container.append(li);  
+        //     pullUp.attr('class', '').hide();  
+        //     myScroll.refresh();  
+        //     loadingStep = 0;  
+        //     $("#propor_list li").each(function(ide){  
+        //         $(this).attr('pid',ide);  
+        //     })  
+        // }, 1000);  
+    }  
+    document.addEventListener('touchmove', function(e) { e.preventDefault(); }, false);  
+}  
+
+//获取意向小区
+function fetchSuggestions(page, cb) {
+    $('.empty_words').hide();
+    loading.show();
+    var _data = changeInfo;
+    var districtId = area.code;
+    var sort_order = $('#order .active').attr('data-val');
+    console.log('sort_order', sort_order);
+    if(area.code == 'all') {
+        districtId = _data.selected.map(function(item) {
+            return item.code;
+        }).join(',');
+    }
+    var urlData = "districtId=" + districtId + "&price=" + _data.price + "&minSquare=" + _data.minSquare + "&maxSquare=" + _data.maxSquare + "&page=" + page + "&rows=" + pageNum + "&orderByClause=" + sort_order;
+    link_public.method(server_url + '/rest/community/suggestionCommunityList', urlData, "post", true, function (json) {
+        if (json.success) {
+            var data = json.data;
+            if (data != null) {
+                // console.log(renderList(data));
+                if(page == 1) {
+                    if(data.length == 0 && area.code == 'all' && sort_order  === '') {
+                        $('#goMap').hide();
+                        is_empty = true;                  
+                    }
+                    community_list = data;
+                }else {
+                    community_list = community_list.concat(data);
+                }
+                
+                cb && cb(data);
+            }
+            // console.log('districts', json.data);
+        } else {
+            showEmpty();
+            // $('.index_box').html(emptyContent);
+        }
+        loading.hide();
+    });
+}
+
+//绘制列表
+function renderList(list) {
+    var html = "";
+
+    for(var i in list) {
+        var item = list[i];
+        var address = item.detailaddress || '';
+        address = GetLength(address) > 28 ? address.substr(0, 14) + '...' : address;
+        html += '<li class="pro_li" data-code=' + item.communityId + ' data-district=' + item.districtId + ' data-city=' + item.cityId + '>' + 
+            '<div class="propor_list_left">' + 
+                '<a>' + 
+                    '<img src=' + (item.pictureurl || '../img/a2.jpg') + '>' + 
+                '</a>' + 
+            '</div>' +
+            '<div class="propor_list_right">' + 
+                '<h1 class="f14">' + 
+                    '<a>' + (item.communityName || '') + '</a>' + 
+                '</h1>' + 
+                // '<p class="f11">' + (item.detailaddress || 'xxxx-xx-xxx') + '</p>' + 
+                '<p class="f11 address-p">' + address + '</p>' + 
+                '<h2 class="f15">' + (item.salesqmprice || '') + 
+                    '<span class="f11"> 元/㎡</span>' + 
+                '</h2>' +
+            '</div>' + 
+        '</li>'
+    }
+    return html
+}
+
+function addItemListener() {
+    // alert(1)
+    $(".pro_li").on('tap', function () {
+        localStorage.setItem('back_origin_details', location.href);
+        var query = '?communityId=' + $(this).attr('data-code') + '&cityId=' + $(this).attr('data-city') + '&districtId=' + $(this).attr('data-district');
+        $(window).attr('location', 'details.html' + query);
+    });
+}
+
+function loadListByDistrict(item) {
+    loading.show();
+    var _data = changeInfo;
+    var districtId = item.districtId;
+    var urlData = "districtId=" + districtId + "&price=" + _data.price + "&minSquare=" + _data.minSquare + "&maxSquare=" + _data.maxSquare;
+    link_public.method(server_url + '/rest/community/suggestionCommunityListByDistrict', urlData, "post", true, function (json) {
+        if (json.success) {
+            var data = json.data;
+            if (data != null) {
+                var name = $($('#area').find('li')[parseInt(item.index) + 1]).attr('data-name');
+                $($('#area').find('li')[parseInt(item.index) + 1]).attr('data-num', data.length);
+                $($('#area').find('li')[parseInt(item.index) + 1]).html(name + '(' + data.length + ')' + '<i class="iconfont icon-finish"></i>');
+                districtContents[item.index] = {
+                    districtName: item.districtName,
+                    districtId: item.districtId,
+                    list: data
+                }
+            }
+            // console.log(item.districtId, json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        loading.hide();
+    });
+}
+
+function showEmpty() {
+    if(is_empty) {
+        $('.propor_list').html('<div class="empty_words">暂无数据<div id="change_condition">修改需求</div></div>');             
+        addChangeConditionListener();
+    }else {
+        $('.propor_list').html('<div class="empty_words">暂无数据</div>');             
+    }
+}
+
+//修改需求
+function addChangeConditionListener() {
+    $('#change_condition').on('click', function(e) {
+        window.location.href = 'index.html?flag=1';
+    });
+}

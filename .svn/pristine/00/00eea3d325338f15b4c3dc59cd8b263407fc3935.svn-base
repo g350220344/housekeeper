@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>我要换房-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<link rel="stylesheet" type="text/css" href="../css/jquery.range.css">
+	
+	<style>
+		.search-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+
+		.index_box_ctn {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+
+		.change_ic {
+			/* padding-left: 1.5rem; */
+			/* padding-right: 1.5rem; */
+			margin-top: 1rem;
+			padding-bottom: 1rem;
+		}
+
+		#range-outer {
+			width: 26rem;
+			margin: auto;
+		}
+
+		#range-val {
+			width: 5rem;
+			text-align: center;
+			display: inline-block;
+			border: 0.1rem solid #388cff;
+			position: absolute;
+			left: 0;
+			font-size: 1rem;
+			top: -2rem;
+			background: #388cff;
+			color: #fff;
+			/* padding: 0 0.5rem; */
+			border-radius: 0.3rem
+		}
+
+		#range-val:after {
+			content: '';
+			width: 1px;
+			height: 2rem;
+			position: absolute;
+			/* background: #5cadff; */
+			left: 2rem;
+			top: 1.5rem;
+			width: 0;
+			height: 0;
+			border-left: 0.5rem solid transparent;
+			border-right: 0.5rem solid transparent;
+			border-top: 0.5rem solid #5cadff;
+		}
+
+		.range-tag {
+			width: 26rem;
+			margin: auto;
+		}
+		.range_box {
+			text-align: center;
+			height: 5rem;
+			background: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="search-box">
+		<div class="index_box">
+			<ul class="citynav">
+				<li>热门</li>
+				<li>A</li>
+				<li>B</li>
+				<li>C</li>
+				<li>D</li>
+				<li>E</li>
+				<li>F</li>
+				<li>G</li>
+				<li>H</li>
+				<li>I</li>
+				<li>J</li>
+				<li>K</li>
+				<li>L</li>
+				<li>M</li>
+				<li>N</li>
+				<li>O</li>
+				<li>P</li>
+				<li>Q</li>
+				<li>R</li>
+				<li>S</li>
+				<li>T</li>
+				<li>W</li>
+				<li>X</li>
+				<li>Y</li>
+				<li>Z</li>
+
+			</ul>
+
+			<div class="search_box bac">
+				<div class="search_input">
+					<img src="../img/search.png" class="ding_w" onclick="cityName()">
+					<input class="text required" type="search" placeholder="搜索城市名称" name="cityName">
+				</div>
+				<a class="search_input_button f14">取消</a>
+			</div>
+			<div class="search_del">
+				<div class="search_del_list">
+					<p class="f11 col" id="dqcs">
+						<img src="../img/ding.png" alt="" class="ding_w">
+						<span></span>
+					</p>
+					<a id="fixed-to-cur" class="f11">当前城市</a>
+				</div>
+			</div>
+			<dl class="hotcity">
+				<dt>热门城市</dt>
+				<dd data-id="1101">北京</dd>
+				<dd>上海</dd>
+				<dd>广州</dd>
+				<dd>深圳</dd>
+				<dd>杭州</dd>
+				<dd>苏州</dd>
+				<dd>南京</dd>
+				<dd>天津</dd>
+				<dd>石家庄</dd>
+			</dl>
+			<dl class="citylist" id="a">
+				<dt id="py">A</dt>
+				<dd>阿坝</dd>
+				<dd>安泽</dd>
+				<dd>鞍山</dd>
+				<dd>敖汉旗</dd>
+			</dl>
+
+		</div>
+	</div>
+	<div class="index_box_ctn">
+		<div class="index_box">
+			<dl class="changelist">
+				<dt>
+					<p>意向区域
+						<i>（最多可选3个）</i>
+					</p>
+					<span onclick="changeCity()" class="f11 col">
+						<img src="../img/ding.png" alt="" class="ding_w">
+						<span id="cur_city">哈尔滨</span>
+					</span>
+				</dt>
+				<div id="dis_box"></div>
+			</dl>
+			<div class="change_lis bac">
+				<h1 class="f13">意向面积
+					<i>（㎡）</i>
+				</h1>
+				<div class="change_ic">
+					<!-- <img src="../img/a1.jpg" alt=""> -->
+					<div id="range-outer" style="position: relative;">
+						<input class='range' id='range' type="range" value="12" />
+						<div id="range-val"></div>
+					</div>
+					<ul class="range-tag">
+						<!-- <li></li> -->
+						<li>50</li>
+						<li>70</li>
+						<li>90</li>
+						<li>110</li>
+						<li>150</li>
+						<li>200
+							<!-- <div style="float: right">300</div> -->
+						</li>
+						<li>300</li>
+						<!-- <li></li> -->
+					</ul>
+				</div>
+			</div>
+
+			<div class="button_box">
+				<button id="get-advice" class="button-1 f14">获得置换建议</button>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/lodash.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>	
+	<script type="text/javascript" src="../js/jquery.range.js"></script>	
+	
+	<script type="text/javascript" src="../js/config.js"></script>
+	<script type="text/javascript" src="../js/baiduMap.js"></script>
+	
+	<script type="text/javascript" src="../js/public/searchC.js"></script>	
+	<script type="text/javascript" src="../js/change/change.js"></script>
+</body>
+
+</html>

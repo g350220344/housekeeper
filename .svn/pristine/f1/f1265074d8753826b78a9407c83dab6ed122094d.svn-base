@@ -1,0 +1,57 @@
+package com.cindata.housekeeper.wx.common.tools;
+
+import com.cindata.housekeeper.core.common.tools.CommonHelper;
+import com.cindata.housekeeper.core.common.tools.StringUtil;
+import com.cindata.housekeeper.web.model.WxTemplate;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+@Component
+public class MsgUtil {
+	private static org.slf4j.Logger log = LoggerFactory.getLogger(MsgUtil.class);
+	public static int rentDay = 5;// 收租提醒，提前天数
+	public static String rentTitle = "收租提醒：租客#leaseName#的租金#money#元应于#date#收取，请及时处理。";
+	//公众号测试环境
+	//public static String rentTemplateId = "FzyKEIyFMRpzYXM42Pq4YNZJKCfsyd2N6F58BSeqAtE";
+	//公众号正式环境
+	public static String rentTemplateId = "32lMl3ffxcbtmC7I0qT323TkJQiMjkRnyXMs8O0GjE8";
+	public static int monthDay = 3;//月供提醒，提前天数
+	public static String monthTitle = "月供提醒：您的#channelName##typeName#应于#date#还款#money#元（第#text#期），请及时处理。";
+	//公众号测试环境
+	//public static String monthTemplateId = "37MAwqz8gDJ4pKu0yRslE5XlkiiiGHk-Qq1c0T0aJtA";
+	//公众号正式环境
+	public static String monthTemplateId = "sL2Tls2DTW_X37fnY_spJz9K2SaM-WzcZ3dQgyJTI_Y";
+
+	public static String priceTitle = "房价提醒：您的房产 [#name#] #date#房价#text#，详情请至微信公众号";
+	//公众号测试环境
+	//public static String priceTemplateId = "EnNEyT9Xq218X-b9IL91m9P1qVoQRdLK0MyE9_uX4Kw";
+	//公众号正式环境
+	public static String priceTemplateId = "pU5mQZGU_3YWVJH-4qhaMXlIOPs4f2zxH1HU9yECpaI";
+
+	public static void main(String[] args){
+		String date = "2018-08-02";
+		date = StringUtil.getDayDate(StringUtil.formatStringDate(date,"yyyy-MM-dd"),0-rentDay);
+		WxTemplate wxTemplate = new WxTemplate();
+		/*Map map = new HashMap();
+		map.put("value","123");
+		map.put("color","321");
+		wxTemplate.setFirst(map);
+		wxTemplate.setKeyword1("ddd");
+		String ret = null;
+		Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+		ret = g.toJson(wxTemplate);
+		log.error(ret);*/
+		Double d = CommonHelper.getRisePercent(new BigDecimal(100),new BigDecimal(200));
+		BigDecimal b = (new BigDecimal(6505).multiply(new BigDecimal(600))).divide(new BigDecimal(10000),2);
+		BigDecimal a = new BigDecimal(1);
+		a.add(new BigDecimal(1));
+
+		log.error(a.toString());
+		log.error((new BigDecimal(6505).multiply(new BigDecimal(600))).divide(new BigDecimal(10000),2,BigDecimal.ROUND_HALF_UP).toString());
+		log.error((new BigDecimal(6505).multiply(new BigDecimal(600))).divide(new BigDecimal(10000)).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+		log.error(StringUtil.getTwoMonthsDifference(new Date(),StringUtil.formatStringDate("2018-01-21","yyyy-MM-dd"))+"");
+	}
+}

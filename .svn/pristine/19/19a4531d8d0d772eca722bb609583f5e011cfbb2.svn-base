@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>贷款-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<link rel="stylesheet" type="text/css" href="../css/swiper.min.css">
+	<style>
+		.loan_box li {
+			padding-top: 1.5rem;
+		}
+		.loan_box_right_1 {
+			padding-bottom: 0.8rem;
+		}
+		.loan_box_right_1 h2{
+			text-align: left;
+		}
+		.loan_box_right_1 h2 p {
+			padding-bottom: 0.8rem;
+		}
+		.loan_box_left {
+			margin-top: 1.5rem;
+		}
+
+	</style>
+</head>
+<body>
+<div class="index_box">
+	<div class="banner">
+		  <div class="swiper-container">
+			    <div class="swiper-wrapper">
+				      <div class="swiper-slide"><img src="../img/5号.jpg"></div>
+				      <!-- <div class="swiper-slide"><img src="../img/banner.jpg"></div> -->
+				      <!-- <div class="swiper-slide"><img src="../img/banner.jpg"></div> -->
+			    </div>
+  		  </div>
+	</div>
+
+<ul class="loan_box" id="loan_box">
+	<li class="bac">
+		<div class="loan_box_left">
+			<p><img src="../img/s1.jpg"></p>
+		</div>
+		<div class="loan_box_right">
+			<div class="loan_box_right_1">
+				<h2>
+					<p class="f18">1.1%</p>
+					<span class="f11 col">月利率低至</span>
+				</h2>
+				<h2>
+					<p class="f18">48<em class="f11">个月</em></p>
+					<span class="f11 col">期限长至</span>
+				</h2>
+				<h2>
+					<p class="f18">50<em class="f11">万</em></p>
+					<span class="f11 col">额度高至</span>
+				</h2>
+			</div>
+			<div class="loan_box_right_2">
+				<span class="f11 col">新一贷</span>
+				<div class="f11 "><p>无抵押</p><p>免担保</p><p>需月入4000</p></div>
+			</div>
+		</div>
+	</li>
+	<li class="bac">
+		<div class="loan_box_left">
+			<p><img src="../img/s1.jpg"></p>
+		</div>
+		<div class="loan_box_right">
+			<div class="loan_box_right_1">
+				<h2>
+					<p class="f18">1.1%</p>
+					<span class="f11 col">月利率低至</span>
+				</h2>
+				<h2>
+					<p class="f18">48<em class="f11">个月</em></p>
+					<span class="f11 col">期限长至</span>
+				</h2>
+				<h2>
+					<p class="f18">50<em class="f11">万</em></p>
+					<span class="f11 col">额度高至</span>
+				</h2>
+			</div>
+			<div class="loan_box_right_2">
+				<span class="f11 col">新一贷</span>
+				<div class="f11 "><p>无抵押</p><p>免担保</p><p>需月入4000</p></div>
+			</div>
+		</div>
+	</li>
+	<li class="bac">
+		<div class="loan_box_left">
+			<p><img src="../img/s1.jpg"></p>
+		</div>
+		<div class="loan_box_right">
+			<div class="loan_box_right_1">
+				<h2>
+					<p class="f18">1.1%</p>
+					<span class="f11 col">月利率低至</span>
+				</h2>
+				<h2>
+					<p class="f18">48<em class="f11">个月</em></p>
+					<span class="f11 col">期限长至</span>
+				</h2>
+				<h2>
+					<p class="f18">50<em class="f11">万</em></p>
+					<span class="f11 col">额度高至</span>
+				</h2>
+			</div>
+			<div class="loan_box_right_2">
+				<span class="f11 col">新一贷</span>
+				<div class="f11 "><p>无抵押</p><p>免担保</p><p>需月入4000</p></div>
+			</div>
+		</div>
+	</li>
+</ul>
+	
+
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script>
+
+    $("#loan_box").on('click', 'li', function() {
+        $(window).attr('location','apply.html');
+    });
+
+
+ var mySwiper = new Swiper('.swiper-container',{
+    autoplay : 8000,    //可选选项，自动滑动
+    autoplayDisableOnInteraction : false,    //注意此参数，默认为true
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.wx.dao.WxRentInfoMapper">
+	<resultMap id="BaseResultMap" type="com.cindata.housekeeper.wx.model.WxRentInfo">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="HOUSE_ID" property="houseId" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+		<result column="LEASE_NAME" property="leaseName" jdbcType="VARCHAR" />
+		<result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+		<result column="CYCLE" property="cycle" jdbcType="DECIMAL" />
+		<result column="MONEY" property="money" jdbcType="DECIMAL" />
+		<result column="TERM" property="term" jdbcType="DECIMAL" />
+		<result column="LEASE_TIME" property="leaseTime" jdbcType="DATE" />
+		<result column="DEPOSIT" property="deposit" jdbcType="DECIMAL" />
+		<result column="STATE" property="state" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<resultMap id="BaseResultMapNew"
+		type="com.cindata.housekeeper.wx.model.WxSelectLease">
+		<result column="CYCLE" property="cycle" jdbcType="VARCHAR" />
+		<result column="LEASE_TIME" property="leaseTime" jdbcType="DATE" />
+		<result column="LEASE_NAME" property="leaseName" jdbcType="VARCHAR" />
+		<result column="MONEY" property="money" jdbcType="VARCHAR" />
+		<result column="TERM" property="term" jdbcType="INTEGER" />
+		<result column="YEUDANJIA" property="monthPrice" jdbcType="VARCHAR" />
+		<result column="STATE" property="state" jdbcType="VARCHAR" />
+		<result column="LV" property="lv" jdbcType="DECIMAL" />
+	</resultMap>
+
+
+	<resultMap id="BaseResultMapNew2"
+		type="com.cindata.housekeeper.wx.model.WxSelectLeaseList">
+		<result column="CYCLE" property="cycle" jdbcType="VARCHAR" />
+		<result column="LEASE_TIME" property="leaseTime" jdbcType="DATE" />
+		<result column="LEASE_NAME" property="leaseName" jdbcType="VARCHAR" />
+		<result column="MONEY" property="money" jdbcType="VARCHAR" />
+		<result column="TERM" property="term" jdbcType="INTEGER" />
+		<result column="STATE" property="state" jdbcType="VARCHAR" />
+		<result column="FUKUAN" property="paymentMethod" jdbcType="VARCHAR" />
+		<result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria"
+				separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value}
+									and
+									#{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem"
+										open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		ID, HOUSE_ID, USER_ID, LEASE_NAME, MOBILE, CYCLE, MONEY,
+		TERM,
+		LEASE_TIME, DEPOSIT,
+		STATE
+	</sql>
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.cindata.housekeeper.wx.model.WxRentInfoExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from WX_HOUSEKEEPER_LEASE
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from WX_HOUSEKEEPER_LEASE
+		where ID = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		WX_HOUSEKEEPER_LEASE
+		where ID = #{id,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByExample" parameterType="com.cindata.housekeeper.wx.model.WxRentInfoExample">
+		delete from WX_HOUSEKEEPER_LEASE
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="com.cindata.housekeeper.wx.model.WxRentInfo">
+		insert into
+		WX_HOUSEKEEPER_LEASE (ID, HOUSE_ID, USER_ID,
+		LEASE_NAME, MOBILE, CYCLE,
+		MONEY, TERM, LEASE_TIME,
+		DEPOSIT, STATE)
+		values (#{id,jdbcType=VARCHAR},
+		#{houseId,jdbcType=VARCHAR},
+		#{userId,jdbcType=VARCHAR},
+		#{leaseName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},
+		#{cycle,jdbcType=DECIMAL},
+		#{money,jdbcType=DECIMAL},
+		#{term,jdbcType=DECIMAL},
+		#{leaseTime,jdbcType=DATE},
+		#{deposit,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL})
+	</insert>
+	<insert id="insertSelective" parameterType="com.cindata.housekeeper.wx.model.WxRentInfo">
+		insert into WX_HOUSEKEEPER_LEASE
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="houseId != null">
+				HOUSE_ID,
+			</if>
+			<if test="userId != null">
+				USER_ID,
+			</if>
+			<if test="leaseName != null">
+				LEASE_NAME,
+			</if>
+			<if test="mobile != null">
+				MOBILE,
+			</if>
+			<if test="cycle != null">
+				CYCLE,
+			</if>
+			<if test="money != null">
+				MONEY,
+			</if>
+			<if test="term != null">
+				TERM,
+			</if>
+			<if test="leaseTime != null">
+				LEASE_TIME,
+			</if>
+			<if test="deposit != null">
+				DEPOSIT,
+			</if>
+			<if test="state != null">
+				STATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="houseId != null">
+				#{houseId,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="leaseName != null">
+				#{leaseName,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				#{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="cycle != null">
+				#{cycle,jdbcType=DECIMAL},
+			</if>
+			<if test="money != null">
+				#{money,jdbcType=DECIMAL},
+			</if>
+			<if test="term != null">
+				#{term,jdbcType=DECIMAL},
+			</if>
+			<if test="leaseTime != null">
+				#{leaseTime,jdbcType=DATE},
+			</if>
+			<if test="deposit != null">
+				#{deposit,jdbcType=DECIMAL},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=DECIMAL},
+			</if>
+		</trim>
+	</insert>
+	<select id="countByExample" parameterType="com.cindata.housekeeper.wx.model.WxRentInfoExample"
+		resultType="java.lang.Integer">
+		select count(*) from WX_HOUSEKEEPER_LEASE
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByExampleSelective" parameterType="com.cindata.housekeeper.wx.model.WxRentInfo">
+		update WX_HOUSEKEEPER_LEASE
+		<set>
+			<if test="record.id != null">
+				ID = #{record.id,jdbcType=VARCHAR},
+			</if>
+			<if test="record.houseId != null">
+				HOUSE_ID = #{record.houseId,jdbcType=VARCHAR},
+			</if>
+			<if test="record.userId != null">
+				USER_ID = #{record.userId,jdbcType=VARCHAR},
+			</if>
+			<if test="record.leaseName != null">
+				LEASE_NAME = #{record.leaseName,jdbcType=VARCHAR},
+			</if>
+			<if test="record.mobile != null">
+				MOBILE = #{record.mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="record.cycle != null">
+				CYCLE = #{record.cycle,jdbcType=DECIMAL},
+			</if>
+			<if test="record.money != null">
+				MONEY = #{record.money,jdbcType=DECIMAL},
+			</if>
+			<if test="record.term != null">
+				TERM = #{record.term,jdbcType=DECIMAL},
+			</if>
+			<if test="record.leaseTime != null">
+				LEASE_TIME = #{record.leaseTime,jdbcType=DATE},
+			</if>
+			<if test="record.deposit != null">
+				DEPOSIT = #{record.deposit,jdbcType=DECIMAL},
+			</if>
+			<if test="record.state != null">
+				STATE = #{record.state,jdbcType=DECIMAL},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByExample" parameterType="map">
+		update WX_HOUSEKEEPER_LEASE
+		set ID = #{record.id,jdbcType=VARCHAR},
+		HOUSE_ID = #{record.houseId,jdbcType=VARCHAR},
+		USER_ID =
+		#{record.userId,jdbcType=VARCHAR},
+		LEASE_NAME =
+		#{record.leaseName,jdbcType=VARCHAR},
+		MOBILE =
+		#{record.mobile,jdbcType=VARCHAR},
+		CYCLE =
+		#{record.cycle,jdbcType=DECIMAL},
+		MONEY =
+		#{record.money,jdbcType=DECIMAL},
+		TERM =
+		#{record.term,jdbcType=DECIMAL},
+		LEASE_TIME =
+		#{record.leaseTime,jdbcType=DATE},
+		DEPOSIT =
+		#{record.deposit,jdbcType=DECIMAL},
+		STATE =
+		#{record.state,jdbcType=DECIMAL}
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="com.cindata.housekeeper.wx.model.WxRentInfo">
+		update WX_HOUSEKEEPER_LEASE
+		<set>
+			<if test="houseId != null">
+				HOUSE_ID = #{houseId,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				USER_ID = #{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="leaseName != null">
+				LEASE_NAME = #{leaseName,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				MOBILE = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="cycle != null">
+				CYCLE = #{cycle,jdbcType=DECIMAL},
+			</if>
+			<if test="money != null">
+				MONEY = #{money,jdbcType=DECIMAL},
+			</if>
+			<if test="term != null">
+				TERM = #{term,jdbcType=DECIMAL},
+			</if>
+			<if test="leaseTime != null">
+				LEASE_TIME = #{leaseTime,jdbcType=DATE},
+			</if>
+			<if test="deposit != null">
+				DEPOSIT = #{deposit,jdbcType=DECIMAL},
+			</if>
+			<if test="state != null">
+				STATE = #{state,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.cindata.housekeeper.wx.model.WxRentInfo">
+		update
+		WX_HOUSEKEEPER_LEASE
+		set HOUSE_ID = #{houseId,jdbcType=VARCHAR},
+		USER_ID = #{userId,jdbcType=VARCHAR},
+		LEASE_NAME =
+		#{leaseName,jdbcType=VARCHAR},
+		MOBILE = #{mobile,jdbcType=VARCHAR},
+		CYCLE = #{cycle,jdbcType=DECIMAL},
+		MONEY = #{money,jdbcType=DECIMAL},
+		TERM = #{term,jdbcType=DECIMAL},
+		LEASE_TIME =
+		#{leaseTime,jdbcType=DATE},
+		DEPOSIT = #{deposit,jdbcType=DECIMAL},
+		STATE = #{state,jdbcType=DECIMAL}
+		where ID = #{id,jdbcType=VARCHAR}
+	</update>
+
+
+	<select id="selectNextRent" resultMap="BaseResultMapNew">
+    <![CDATA[ 
+   	select wt.CYCLE,
+       to_char(wt.LEASE_TIME, 'yyyy-MM-dd') as LEASE_TIME ,
+       wt.LEASE_NAME,
+       wt.MONEY,
+       wt.TERM,
+       wt.YEUDANJIA,
+       wt.STATE,
+       decode(wt.zongjia, 0, 0, trunc((wt.YEUDANJIA *12)/ wt.zongjia * 100,2)) as lv
+		  from (select t.*,
+		               (select sum(w.monthPrice)
+		                  from (select t.*,
+		                               CASE CYCLE
+		                                 WHEN 1 THEN
+		                                  nvl(MONEY, 0)
+		                                 WHEN 2 THEN
+		                                  ceil(nvl(MONEY, 0) / 3)
+		                                 WHEN 3 THEN
+		                                  ceil(nvl(MONEy, 0) / 12)
+		                                 ELSE
+		                                  0
+		                               END as monthPrice
+		                          from WX_HOUSEKEEPER_LEASE t
+		                         where t.house_id = #{0}
+		                           and t.state = 0
+		                        
+		                        ) w
+		                 group by w.HOUSE_ID) as yeudanjia,
+		               t1.buildingsquare * t1.assess_sale_price as zongjia
+		          from WX_HOUSEKEEPER_LEASE t, wx_housekeeper_house_info t1
+		         where t.house_id = #{0}
+		           and t.house_id = t1.house_id
+		             and t.state = 0
+		         order by t.LEASE_TIME desc) wt
+		 where rownum = 1
+		   ]]>
+	</select>
+
+
+	<select id="selectNextRentList" resultMap="BaseResultMapNew2">
+    <![CDATA[ 
+         select
+           t.ID,
+           t.CYCLE,
+	       to_char(t.LEASE_TIME, 'yyyy-MM-dd') as LEASE_TIME,
+	       t.LEASE_NAME,
+	       t.MONEY,
+	       t.TERM,
+	       t.MOBILE,
+	       t.STATE,
+                CASE CYCLE
+                  WHEN 1 THEN
+                   nvl(MONEY, 0)
+                  WHEN 2 THEN
+                   ceil(nvl(MONEY, 0) / 3)
+                  WHEN 3 THEN
+                   ceil(nvl(MONEy, 0) / 12)
+                  ELSE
+                   0
+                END as yigeyuezujin,
+                  CASE CYCLE
+                  WHEN 1 THEN
+                   '按月'
+                  WHEN 2 THEN
+                  '按季'
+                  WHEN 3 THEN
+                   '按年'
+                  ELSE
+                  '--'
+                END as fukuan
+	           from WX_HOUSEKEEPER_LEASE t
+	           where t.house_id = #{0}
+	             and t.state in (0, 1)
+	           order by t.lease_time
+		   ]]>
+	</select>
+	<update id="updateRentStatus" >
+		UPDATE WX_HOUSEKEEPER_LEASE T
+		SET T .state = 1
+		WHERE
+		T .state = 0
+		AND ADD_MONTHS (T .LEASE_TIME, T .TERM) &lt;= SYSDATE
+	</update>
+</mapper>

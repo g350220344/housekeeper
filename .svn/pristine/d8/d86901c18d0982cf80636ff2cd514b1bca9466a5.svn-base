@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<link rel="stylesheet" type="text/css" href="../css/swiper.min.css">
+	<style>
+		input {
+			border: none;
+			outline: none;
+			background: transparent;
+		}
+		.search-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+		.index_box_ctn {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+		.b_city {
+			display: block;
+			float: left;
+			margin-left: 1rem;
+			color: #555;
+			line-height: 2.4rem;
+		}
+		.b_input_box {
+			width: 65%;
+			float: right;
+			height: 2.4rem;
+			line-height: 2.4rem;
+			border-radius: 0.3rem;
+			background: #f8f8f8;
+			margin-left: 8rem;
+			position: absolute;
+			padding-left: 0.5rem;
+		}
+		.b_input_box input {
+			width: 85%;
+		}
+		.b_input_box input:focus {
+			outline: none;
+		}
+		.index_box {
+			position: relative;
+			height: 100%;
+			overflow: hidden;
+			background: #fff;
+		}
+		.b_audio_btn_box {
+			width: 100%;
+			height: 9.5rem;
+			left: 0;
+			bottom: 0;
+			position: absolute;
+			text-align: center;
+		}
+		.r_start_btn_mask {
+			position: absolute;
+			background-color: transparent;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			z-index: 10;
+		}
+		.r_start_btn {
+			background-image: url('../img/audio_btn_2.png');
+			width: 25rem;
+			height: 100%;
+			background-size: 100% 100%;
+			margin: auto;
+		}
+		.b_audio_btn {
+			/* width: 85%; */
+			height: 100%;
+			margin: auto;
+		}
+		.b_audio_text {
+			position: absolute;
+			bottom: 10rem;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			line-height: 5.5rem;
+			color: #333;
+		}
+		.ding_w {
+			width: 1.2rem;
+			height: 1.2rem;
+			vertical-align: middle;
+			margin-right: 0.3rem;
+		}
+		.b_content {
+			text-align: center;
+		}
+		.b_content_tit {
+			color: #111;
+			font-size: 1.5rem;
+			margin-top: 3.5rem;
+		}
+		.b_content_eg {
+			color: #888;
+			font-size: 1.3rem;
+			margin-top: 3.5rem;
+		}
+		.ico_move_down {
+			width: 1.1rem;
+    		margin-left: 0.5rem;
+		}
+
+		/**动效*/
+		@keyframes warn {
+            0% {
+                transform: scale(0.3);
+				-webkit-transform: scale(0.3);
+                opacity: 0.0;
+                
+            }
+            25% {
+                transform: scale(0.3);
+				-webkit-transform: scale(0.3);
+                opacity: 0.1;
+            }
+            50% {
+                transform: scale(0.5);
+				-webkit-transform: scale(0.5);
+                opacity: 0.3;
+            }
+            75% {
+                transform: scale(0.8);
+				-webkit-transform: scale(0.8);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+				-webkit-transform: scale(1);
+                opacity: 0.0;
+            }
+        }
+        @keyframes warn1 {
+            0% {
+                transform: scale(0.3);
+				-webkit-transform: scale(0.3);
+                opacity: 0.0;
+            }
+            25% {
+                transform: scale(0.3);
+				-webkit-transform: scale(0.3);
+                opacity: 0.1;
+            }
+            50% {
+                transform: scale(0.3);
+				-webkit-transform: scale(0.3);
+                opacity: 0.3;
+            }
+            75% {
+                transform: scale(0.5);
+				-webkit-transform: scale(0.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0.8);
+				-webkit-transform: scale(0.8);
+                opacity: 0.0;
+            }
+        }
+        @-webkit-keyframes "warn" {
+            0% {
+				transform: scale(0);
+                -webkit-transform: scale(0);
+                opacity: 0.0;
+            }
+            25% {
+				transform: scale(0);
+                -webkit-transform: scale(0);
+                opacity: 0.1;
+            }
+            50% {
+				transform: scale(0.1);
+                -webkit-transform: scale(0.1);
+                opacity: 0.3;
+            }
+            75% {
+				transform: scale(0.5);
+                -webkit-transform: scale(0.5);
+                opacity: 0.5;
+            }
+            100% {
+				transform: scale(1);
+                -webkit-transform: scale(1);
+                opacity: 0.0;
+            }
+        }
+
+        .container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            /*border: 1px solid #000;*/
+        }
+        
+        .dot {
+            /* position: absolute; */
+			margin: auto;
+            background:#388cff; 
+            width: 96px;
+            height: 96px;
+            /* left: 120px;
+            top: 120px; */
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            z-index: 2;
+            text-align:center; 
+        }
+
+		.pulse_container {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: -100%;
+			left: 0;
+		}
+       
+        .pulse {
+            /* position: absolute;
+			left: 2px;
+            top: 2px; */
+			margin: auto;
+            width: 320px;
+            height: 320px;
+            
+            border: 6px solid #388cff;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0;
+            -webkit-animation: warn 1s ease-out;
+            -moz-animation: warn 1s ease-out;
+            animation: warn 1s ease-out;
+            -webkit-animation-iteration-count: infinite;
+            -moz-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+            box-shadow: 1px 1px 30px #388cff;
+
+        }
+        .pulse1 {
+            /* position: absolute;
+			left: 2px;
+            top: 2px; */
+			margin: auto;
+            width: 320px;
+            height: 320px;
+            
+            border: 6px solid #388cff;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0;
+            -webkit-animation: warn1 1s ease-out;
+            -moz-animation: warn1 1s ease-out;
+            animation: warn1 1s ease-out;
+            -webkit-animation-iteration-count: infinite;
+            -moz-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+            box-shadow: 1px 1px 30px #388cff;
+        }
+	</style>
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+</head>
+<body>
+
+<div class="search-box">
+	<div class="index_box">
+		<ul class="citynav">
+			<li>热门</li>
+			<li>A</li>
+			<li>B</li>
+			<li>C</li>
+			<li>D</li>
+			<li>E</li>
+			<li>F</li>
+			<li>G</li>
+			<li>H</li>
+			<li>I</li>
+			<li>J</li>
+			<li>K</li>
+			<li>L</li>
+			<li>M</li>
+			<li>N</li>
+			<li>O</li>
+			<li>P</li>
+			<li>Q</li>
+			<li>R</li>
+			<li>S</li>
+			<li>T</li>
+			<li>W</li>
+			<li>X</li>
+			<li>Y</li>
+			<li>Z</li>
+		
+		</ul>
+	
+		<div class="search_box bac">
+			<div class="search_input"><img src="../img/search.png" class="ding_w" onclick="cityName()"><input class="text required" type="search" placeholder="搜索城市名称"  name = "cityName" ></div><a class="search_input_button f14">取消</a>
+		</div>
+		<div class="search_del">
+			<div class="search_del_list"><p class="f11 col" id="dqcs"><img src="../img/ding.png" alt="" class="ding_w"><span></span></p><a id="fixed-to-cur" class="f11">当前城市</a></div>
+		</div>
+		<dl class="hotcity">
+			<dt>热门城市</dt>
+			<dd data-id="1101">北京</dd>
+			<dd>上海</dd>
+			<dd>广州</dd>
+			<dd>深圳</dd>
+			<dd>杭州</dd>
+			<dd>苏州</dd>
+			<dd>南京</dd>
+			<dd>天津</dd>
+			<dd>石家庄</dd>
+		</dl>
+		<dl class="citylist" id="a">
+			<dt id="py">A</dt>
+			<dd>阿坝</dd>
+			<dd>安泽</dd>
+			<dd>鞍山</dd>
+			<dd>敖汉旗</dd>
+		</dl>
+	
+	</div>
+</div>
+<div class="index_box_ctn">
+	<div class="index_box">
+		<div class="search_box bac">
+			<a class="b_city f13"><span>哈尔滨市</span><img class="ico_move_down" src="../img/ico_move.png" alt=""></a><div class="b_input_box"><img src="../img/search.png" class="ding_w" onclick="cityName()"><input class="text required" type="search" placeholder="或手动输入小区名称/地址"  name = "cityName" ></div>
+		</div>
+		<div id="b_content_box" class="b_content">
+			<div class="b_content_tit">您可以这样说</div>
+			<div class="b_content_eg">“上海康城32栋2单元502室72平米”</div>
+			<div class="b_content_eg">“中远两湾城”</div>
+			<div class="b_content_eg">“中潭路99弄5号301室103平米”</div>
+		</div>
+		<div id="b_audio_text" class="b_audio_text">按住说话</div>
+		<div class="b_audio_btn_box">
+			<div id="r_start" class="dot"><img src="../img/c11.png" style="width: 34px;margin-top: 23px;"></div>
+			<div class="pulse_container">
+				<div class="pulse" style="display:none"></div>
+			</div>
+			<div class="pulse_container">
+				<div class="pulse1" style="display:none"></div>
+			</div>
+			
+			<!-- <div class="r_start_btn_mask" id="r_start"></div> -->
+			<!-- <img class="b_audio_btn" src="../img/audio_btn_2.png"> -->
+			<!-- <div class="r_start_btn" id="r_start"></div> -->
+		</div>
+	</div>
+	<!-- <div>
+		<button id="r_start">开始录音</button>
+		<button id="r_end">结束录音</button>
+	</div>
+	<div>
+		<button id="r_play">播放录音</button>
+	</div> -->
+</div>
+<div id="b_container"></div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/lodash.js"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script>
+	
+
+// getConfig();
+// var localId = '';
+// $('#r_start').on('click', function() {
+// 	wx.startRecord();
+// });
+// $('#r_end').on('click', function () {
+// 	wx.stopRecord({
+// 		success: function (res) {
+// 			localId = res.localId;
+// 			console.log('localId', localId);
+// 			// wx.translateVoice({
+// 			// 	localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+// 			// 	isShowProgressTips: 1, // 默认为1，显示进度提示
+// 			// 	success: function (res) {
+// 			// 		alert(res.translateResult); // 语音识别的结果
+// 			// 	}
+// 			// });
+// 			wx.uploadVoice({
+// 				localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+// 				isShowProgressTips: 1, // 默认为1，显示进度提示
+// 				success: function (res) {
+// 					var serverId = res.serverId; // 返回音频的服务器端ID
+// 					console.log('serverId:  ',serverId);
+// 				}
+// 			});
+// 		}
+// 	});
+// });
+// $('#r_play').on('click', function () {
+// 	wx.playVoice({
+// 		localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+// 	});
+// })
+</script>
+<script type="text/javascript" src="../js/baiduMap.js"></script>
+<script type="text/javascript" src="../js/tools_xie.js"></script>
+
+<script type="text/javascript" src="../js/public/searchC.js"></script>
+<script type="text/javascript" src="../js/plus/audio_search.js"></script>
+<script>
+ var mySwiper = new Swiper('.swiper-container',{
+    autoplay : 8000,    //可选选项，自动滑动
+    autoplayDisableOnInteraction : false,    //注意此参数，默认为true
+})
+</script>
+</body>
+</html>

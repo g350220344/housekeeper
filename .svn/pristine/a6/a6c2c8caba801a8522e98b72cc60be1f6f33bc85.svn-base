@@ -1,0 +1,18 @@
+package com.cindata.housekeeper.wx.service;
+
+import java.util.List;
+
+import com.cindata.housekeeper.wx.model.WxReportInfo;
+import com.cindata.housekeeper.wx.model.WxSubCommunity;
+
+public interface WxSubscriptionService {
+
+	int subCommunity(WxReportInfo wxReportInfo);
+
+	List<WxReportInfo> selectSubCommunityByUserId(String userId);
+
+	int selectSubCommunityCountById(String communityId);
+
+	List<WxReportInfo> sqmPriceCompare(String userId);
+
+}

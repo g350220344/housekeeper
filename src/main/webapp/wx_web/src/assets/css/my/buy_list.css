@@ -1,0 +1,63 @@
+/* buy_list page */
+.bl_list_box {
+    overflow: auto;
+}
+.bl_list_item {
+    position: relative;
+}
+.bl_list_item_address {
+    font-size: 0.26rem;
+    color: #888;
+    line-height: 0.25rem;
+}
+.bl_list_item_icon_new {
+    position: absolute;
+    width: 0.7rem;
+    height: 0.7rem;
+    right: 0;
+    top: 0;
+}
+.bl_page .card_tit_box {
+    padding-top: 0.1rem;
+}
+.bl_page .card_icon_box img {
+    margin-right: 0.1rem;
+}
+.bl_list_item_btm {
+    padding-top: 0.69rem;
+    overflow: hidden;
+    clear: both;
+}
+.bl_list_item_btm_item {
+    width: 33.3%;
+    float: left;
+    text-align: center;
+}
+.bl_list_item_btm_item_val {
+    font-size: 0.36rem;
+    color: #111;
+    line-height: 0.3rem;
+    padding-bottom: 0.26rem;
+}
+.bl_list_item_btm_item_val_unit {
+    font-size: 0.26rem;
+}
+.bl_list_item_btm_item_label {
+    font-size: 0.24rem;
+    color: #888;
+    line-height: 0.23rem;
+    padding-bottom: 0.35rem;
+}
+.bl_btn_box {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.bl_list_box {
+    position: relative;
+}
+.bl_wrapper {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+}

@@ -1,0 +1,346 @@
+//城市信息
+var timer = null; //搜索定时器
+var cityList = []; //城市列表
+var lock = false;
+
+var defaultCityId = "2301";//城市默认哈尔滨
+
+
+$(function(){
+    
+    // cityPy();
+    // searchByPin('热门');
+    // addHotListener();
+    // dw();
+    // window.addEventListener("popstate", function (e) {
+    //     //检测到用户点击浏览器返回按钮，进行操作
+    //     console.log(document.referrer);
+
+    //     //使用href的形式去用跳转的形式，跳转到上一页
+    //     document.location.href = document.referrer;
+    // }, false);
+    // var state = {
+    //     title: "",
+    //     url: ""
+    // };
+    // window.history.pushState(state, "", "");
+});
+//定位当前默认为A
+function cityPy(cb){
+	loading.show();
+	var params = "";
+    link_public.method(server_url+'/rest/city/getCityInfoListByCityNameAndPinyin', params, "post", false, function (result) {
+        if(result.success) {
+            renderByPin(result.data, cb);
+        }else {
+            var html = "<dt>"+cityPy+"</dt>";
+            html += "<div style='text-align: center; line-height: 3.5rem; color: grey;'>暂无匹配结果</div>"            
+            $( "#a" ).html(html);
+            // showToast(3, result.message);
+        }
+        loading.hide();
+    });
+    
+}
+
+
+// function jumpBackUrl(cityId,cityName){
+//     if(lock) {
+//         return;
+//     }
+//     lock = true;
+//     var url = queryUrl("url");
+//     var data = JSON.parse(decodeURI(queryUrl("data")));
+//     var renData = {};
+//     if(data != null&&data != "null"){
+//         renData = data;
+//     }
+//     renData["cityId"] = cityId;
+//     renData["cityName"] = cityName;
+//     renData['communityName'] = '';
+//     renData['communityId'] = '';
+//     localStorage.removeItem('communityData');    
+//     if(queryUrl('url') == '/index.html') {
+//         localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify(renData))));        
+//     }else {
+//         localStorage.setItem('cityData', encodeURI(encodeURI(JSON.stringify(renData))));  
+//     }
+//     $('.search-box').hide();
+//     init();
+
+// }
+
+//查询城市名称
+function cityName(cb){
+    loading.show();
+    var cityName = $("input[name='cityName']").val();
+    
+    var params = "cityName=" + cityName;
+    link_public.method(server_url+'/rest/city/getCityInfoListByCityNameAndPinyin', params, "post", false, function (result) {
+        if(result.success) {
+            if(cityName === '') {
+                renderByPin(result.data, cb);
+            }else {
+                var html="";
+                if(result.data.length > 0) {
+                    html += "<dt>搜索结果</dt>"
+                }else {
+                    html +="<dt style='text-align: center'>暂无匹配结果</dt>"
+                }
+                for(var i in result.data){
+                    var data = result.data[i]
+                    html+="<dd data-pin=" + data.cityPy.toLowerCase().split('shi')[0] + " city_id="+data.cityId+"  >"+data.cityName+"</dd>";
+                }
+                $( "#a" ).html(html);
+
+                $("#a dd").on('click', function(e) {
+                    e.stopPropagation();
+                    var cityId = $(this).attr("city_id");
+                    var cityName = $(this).html();
+                    console.log(cityId, cityName, this);
+                    var pin = $(this).attr("data-pin");
+                    cb && cb(cityId,cityName, pin);
+                    // jumpBackUrl(cityId,cityName);
+                    return false;
+                });
+            }
+            
+        }else {
+            var html = '';
+            html +="<dt style='text-align: center'>暂无匹配结果</dt>"
+            // showToast(3, result.message);
+        }
+        loading.hide();
+    });
+    
+}
+
+function loadHotCitys(cb) {
+    
+    loading.show();
+    var params = '';
+    link_public.method(server_url+'/rest/city/getCityInfoListHoT', params, "post", false, function (result) {
+        if(result.success) {
+        	initHot(result.data, cb);
+        }else {
+            var html = "<dt>"+cityPy+"</dt>";
+            html += "<div style='text-align: center; line-height: 3.5rem; color: grey;'>暂无匹配结果</div>"            
+            $( "#a" ).html(html);
+            // showToast(3, result.message);
+        }
+        loading.hide();
+    });
+}
+
+//按拼音查找
+function searchByPin(cityPy, cb) {
+    console.log(cityPy);
+    if(cityPy=="热门"){
+        //接口支持搜索热门后去掉注释
+        // initHot(result.data);
+        return;
+    }
+    loading.show();
+    var params = "cityPy=" + cityPy;
+    link_public.method(server_url+'/rest/city/getCityInfoListBycityName', params, "post", false, function (result) {
+        if(result.success) {
+        	var html="";
+            if(cityPy=="热门"){
+                //接口支持搜索热门后去掉注释
+                // initHot(result.data);
+                // loading.hide();
+                // return;
+            }else{
+                html+="<dt>"+cityPy+"</dt>";
+            }
+            // initHot(result.data);
+            for(var i in result.data){
+                var data = result.data[i];
+                html+="<dd data-pin=" + data.cityPy.toLowerCase().split('shi')[0] + " city_id="+data.cityId+"  >"+data.cityName+"</dd>";
+            }
+            if(result.data.length == 0) {
+                html+="<div style='text-align: center; line-height: 3.5rem; color: grey;'>暂无匹配结果</div>"
+            }
+            $( "#a" ).html(html);
+            $("#a dd").on('click', function(e) {
+                e.stopPropagation();
+                
+                
+                var cityId = $(this).attr("city_id");
+                var cityName = $(this).html();
+                console.log(cityId, cityName, this);
+                var pin = $(this).attr("data-pin");
+                cb && cb(cityId,cityName, pin);
+                // jumpBackUrl(cityId,cityName);
+                return false;
+            });
+        }else {
+            var html = "<dt>"+cityPy+"</dt>";
+            html += "<div style='text-align: center; line-height: 3.5rem; color: grey;'>暂无匹配结果</div>"            
+            $( "#a" ).html(html);
+            // showToast(3, result.message);
+        }
+        loading.hide();
+    });
+}
+
+
+// $('.search_input input').on('input propertychange', function() {
+//     var vm = this;
+//     if(!!timer) {
+//         clearTimeout(timer);
+//     }
+//     timer = setTimeout(function() {
+//         console.log('val:  ', $(vm).val());
+//         cityName();
+//     }, 300);
+    
+// })
+
+//根据拼音查找
+// $(".citynav li").click(function(){
+//     console.log('fdjjiij')
+//     //var item = $(this).index();  //获取索引下标 也从0开始
+//     var cityPy = $(this).text();  //文本内容
+//     searchByPin(cityPy);
+// });
+
+//热门城市搜索
+function addHotListener(cb) {
+    $(".hotcity dd").on('click', function(e){
+        e.stopPropagation();
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityName = $(this).text();  //文本内容
+        var cityId = $(this).attr("data-id");
+        var pin = $(this).attr("data-pin");
+        cb && cb(cityId,cityName, pin);
+    });
+}
+//写入热门列表
+function initHot(data, cb) {
+    console.log('hot', data);
+    var arr = ['<dt>热门城市</dt>'];
+    if(!!data && data.length > 0) {
+        for(var i = 0; i < 9; i++) {
+            arr.push("<dd data-pin=" + data[i].cityPy.toLowerCase().split('shi')[0] + " data-id=" + data[i].cityId + ">" + data[i].cityName + "</dd>")
+        }
+        $(".hotcity").html(arr.join(''))
+        setTimeout(function() {
+            addHotListener(cb);            
+        }, 0)
+    }else {
+        $(".hotcity").html('');
+    }
+}
+
+//定位
+function dw(type){
+    
+    // var cookie = eval("("+$.cookie("cityInfo")+")");
+    // if(!cookie) {
+    //     getAddressByIp(function (result){
+    //         //百度定位返回地址
+    //         var cityId = defaultCityId;//如果定位失败或系统中没匹配到城市，按默认城市
+    //         if(result!=null){
+    //             var areaId = result.code;
+    //             //获取系统城市
+    //             var cityDate = "areaId="+areaId;
+    //             link_public.method(server_url+'/rest/city/getCityCode',cityDate,"post",false,function (json) {
+    //                 if(json.success) {
+    //                     cityId = json.data.cityId;
+    //                     $.cookie("cityInfo",JSON.stringify(json.data));
+    //                     $("#dqcs span").text(json.data.areaName);
+    //                 }else {
+    //                     $( "#dqcs" ).html('定位失败，请手动选择！');
+    //                 }
+    //             });
+    //         }else {
+    //             $( "#dqcs" ).html('定位失败，请手动选择！');
+    //         }
+    //     });
+        
+    // }else {
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     $("#dqcs span").text(areaName);
+    // }
+    
+    // $( "#dqcs" ).html("<img class='ding_w' src='../img/ding.png' >" + areaName);
+    // getAddressByIp(function (result){
+    //     //百度定位返回地址
+    //     var cityId = defaultCityId;//如果定位失败或系统中没匹配到城市，按默认城市
+    //     if(result!=null){
+    //         var areaId = result.code;
+    //         //获取系统城市
+    //         var cityDate = "areaId="+areaId;
+    //         link_public.method(server_url+'/rest/city/getCityCode',cityDate,"post",false,function (json) {
+    //             if(json.success) {
+    //                 cityId = json.data.cityId;
+    //                 $.cookie("cityInfo",JSON.stringify(json.data));
+    //                 $("#dqcs span").text(json.data.areaName);
+    //             }else {
+    //                 $( "#dqcs" ).html('定位失败，请手动选择！');
+    //             }
+    //         });
+    //     }else {
+    //         $( "#dqcs" ).html('定位失败，请手动选择！');
+    //     }
+    // });
+    getLocation(renderDw);
+}
+
+function renderDw(_city) {
+    if(_city) {
+        $("#dqcs span").text(_city.cityName);
+    }else {
+        $( "#dqcs" ).html('定位失败，请手动选择！');
+    }
+}
+
+function renderByPin(data, cb) {
+    var html = '';
+    var cityList = data.map(function(item) {
+        var cur = item;
+        cur.pin = item.cityPy[0];
+        return cur;
+    })
+    var searchRes = _.groupBy(cityList, 'pin');
+    
+    for(var key in searchRes) {
+        html += "<dt>" + key + "</dt>";
+        var cur_arr = searchRes[key];
+        for(var i in cur_arr){
+            var data = cur_arr[i];
+            html+="<dd data-pin=" + data.cityPy.toLowerCase().split('shi')[0] + " city_id="+data.cityId+"  >"+data.cityName+"</dd>";
+        }
+    }
+    $("#a").html(html);
+    $("#a dd").on('click', function(e) {
+        e.stopPropagation();
+        var cityId = $(this).attr("city_id");
+        var cityName = $(this).html();
+        console.log(cityId, cityName, this);
+        var pin = $(this).attr("data-pin");
+        cb && cb(cityId,cityName, pin);
+        return false;
+    });
+}
+//取消按钮事件
+// $('.search_input_button').on('click', function() {
+//     // window.history.back();
+//     // window.location.replace(queryUrl("url"));
+//     $('.search-box').hide();
+//     // init();
+// })
+
+// $('#fixed-to-cur').on('click', function() {
+//     var cookie = eval("("+$.cookie("cityInfo")+")");
+//     console.log(cookie);
+//     var cityId = cookie.cityId;
+//     var areaName = cookie.areaName;
+//     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+//         return;
+//     }
+//     jumpBackUrl(cityId, areaName);
+// })
+

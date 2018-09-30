@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>出售分析</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.empty-words {
+			text-align: center;
+			color: gray;
+			width: 100%;
+			height: 5rem;
+			line-height: 5rem;
+		}
+
+		.lease_bar {
+			margin-top: 0;
+		}
+
+		.sh_bar_2 {
+			border-top: 1px solid #eee;
+			margin-top: 0.5rem;
+		}
+
+		.sh_bar_2 li {
+			border: none;
+			text-align: left;
+			padding-right: 0.5rem;
+		}
+
+		.tii p {
+			padding-left: 0!important;
+		}
+
+		.tii1 p {
+			padding-left: 0!important;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="index_box">
+		<div class="lease_box bac" id="information">
+			<!-- <h1 class="f25">855~868</h1>
+		<p class="f11 col">建议挂牌价（万元）</p>
+		<div class="lease_bar">
+			<h1 class="f14">梧桐花园<span class="f10">公寓</span></h1>
+			<p class="f11 col" id="address">上海 徐汇 建国西路273号</p>
+			<p class="f11 col" id="">A区 - A3 - 302 | 132㎡</p>
+		</div> -->
+		</div>
+
+		<!-- <div class="Advertisement">
+			<img src="../img/3号.jpg" alt="">
+		</div> -->
+
+		<div class="lease_deal bac">
+			<h1 class="f13 padding">成交房源案例</h1>
+
+			<div class="top">
+				<div class="tii f11">
+					<p class="cor" id="communityName">鑫苑·汤泉世家</p>
+					<p>附近小区</p>
+				</div>
+				<div class="tcc padding part_loading_box">
+					<div id="deal_loading" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul id="alist1">
+						<!-- <li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li> -->
+					</ul>
+				</div>
+
+				<div class="tcc padding part_loading_box" style="display:none">
+					<div id="deal_loading_nearby" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul id="alist2">
+						<!-- <li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li> -->
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="lease_deal bac lease_dealt">
+			<h1 class="f13 padding">挂牌房源参考</h1>
+
+			<div class="top">
+				<div class="tii1 f11">
+					<p class="cor" id="gcommunityName">鑫苑·汤泉世家</p>
+					<p>附近小区</p>
+				</div>
+				<div class="tcc1 padding part_loading_box">
+					<div id="onseal_loading" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul id="listing">
+						<!-- <li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li> -->
+					</ul>
+				</div>
+
+				<div class="tcc1 padding part_loading_box" style="display:none">
+					<div id="onseal_loading_nearby" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul id="nearbyDistrict">
+						<!-- <li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li>
+								<li>
+									<div class="tcc_center">
+										<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+										<p class="f12 col">150平 | 南北 | 10866元/㎡</p>
+									</div>
+									<div class="tcc_right">
+										<p class="f12"><span class="f_big f_red">960</span><span class="f11">万元</span></p>
+										<p class="f12 col">2017-11-26</p>
+									</div>
+								</li> -->
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!-- <div class="lease_button">
+			<a id="add-house" class="lease_button_1 f13">一键发布房源</a>
+			<a href="../loan/index.html" class="lease_button_2 f13">我要贷款</a>
+		</div> -->
+	</div>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>
+	<script type="text/javascript" src="../js/sell/sell.js"></script>
+</body>
+
+</html>

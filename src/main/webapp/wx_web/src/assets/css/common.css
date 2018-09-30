@@ -1,0 +1,130 @@
+/* common.css 通用样式 */
+/* 重写vux 样式 */
+.weui-cells {
+    line-height: 1!important;
+    font-size: 0.3rem!important;
+}
+.weui-cell {
+    padding: 0 0.29rem!important;
+    min-height: 1rem;
+}
+.weui-cells_radio {
+    font-size: 0.3rem;
+}
+.vux-x-input input::-webkit-input-placeholder {
+    font-size: 0.28rem;
+    color: #888;
+}
+.vux-label, .weui-label {
+    color: #111;
+    font-size: 0.3rem;
+    width: 1.5rem!important;
+    text-align-last: justify;
+}
+.vux-datetime p {
+    width: 1.5rem!important;
+    text-align-last: justify;
+}
+.vux-cell-value, .weui-cell__ft {
+    color: #888!important;
+    font-size: 0.28rem;
+}
+.weui-cell__bd {
+    color: #888!important;
+    font-size: 0.28rem;
+}
+.weui-cells__title {
+    font-size: 0.28rem!important;
+    padding-left: 0.24rem!important;
+    /* color: #111!important; */
+}
+.weui-switch:checked, .weui-switch-cp__input:checked ~ .weui-switch-cp__box {
+    background-color: #388cff!important;
+    border-color: #388cff!important;
+}
+.vux-slider > .vux-indicator > a > .vux-icon-dot, .vux-slider .vux-indicator-right > a > .vux-icon-dot {
+    background-color: #fff;
+}
+.vux-slider > .vux-indicator > a > .vux-icon-dot.active, .vux-slider .vux-indicator-right > a > .vux-icon-dot.active {
+    background-color: #fff;
+    width: 0.2rem;
+}
+.weui-loading_toast .weui-toast {
+    width: 3rem;
+    top: 5rem;
+}
+.weui-toast_success {
+    top: 5rem;
+    width: 3rem!important;
+    min-height: 2.5rem!important;
+}
+.weui-tabbar__icon {
+    width: 0.36rem;
+    height: 0.36rem;
+}
+.vux-popup-dialog {
+    max-height: 9.49rem;
+}
+.weui-dialog__hd {
+    padding: 0;
+}
+/* end */
+.sub_btn {
+    margin: auto;
+    width: 6.5rem;
+    height: 0.88rem;
+    line-height: 0.88rem;
+    color: #fff;
+    border-radius: 0.3rem;
+    text-align: center;
+    font-size: 0.28rem;
+    background-color: #388cff;
+}
+.sub_btn_disabled {
+    background: #ddd;
+    color: #888;
+}
+.sub_btn_middle {
+    margin: auto;
+    width: 3rem;
+    height: 0.78rem;
+    line-height: 0.78rem;
+    color: #fff;
+    border-radius: 0.39rem;
+    text-align: center;
+    font-size: 0.28rem;
+    background-color: #388cff;
+}
+.dot {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.12rem;
+    height: 0.12rem;
+    border-radius: 50%;
+    margin-right: 0.04rem;
+    margin-bottom: 0.02rem;
+}
+.dot_green {
+    background-color: #00d0c2;
+}
+.dot_blue {
+    background-color: #388cff;
+}
+.dot_red {
+    background-color: #f9354d;
+}
+.scroll-top-tip {
+    position: absolute;
+    text-align: center;
+    color: #bbb;
+    font-size: 0.24rem;
+    padding: 0.48rem 0;
+    line-height: 0.23rem;
+}
+.loading-wrapper {
+    text-align: center;
+    color: #bbb;
+    font-size: 0.24rem;
+    padding: 0.48rem 0;
+    line-height: 0.23rem;
+}

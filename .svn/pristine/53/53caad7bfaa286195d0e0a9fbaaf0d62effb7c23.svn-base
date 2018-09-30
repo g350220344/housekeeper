@@ -1,0 +1,283 @@
+// var host = 'http://tt.cindata.cn';
+var host = 'http://housekeeper.cindata.cn';
+// var root = '/housekeeper/page_home/';
+
+//  var host = 'http://10.200.8.20:8080';
+// var host = 'http://10.200.11.237:8080';
+
+// var root = '/'
+
+var server_url = "/housekeeper";
+var userId = localStorage.getItem('houseUserId') || 'user1';
+
+console.log('userId', userId);
+var loadingTimer = null;
+
+// $(document).ajaxComplete(function (event, xhr, settings) {
+//     var res = xhr.responseJSON;
+//     // console.log('statusCode: ', res.statusCode);
+//     if(res.statusCode == 99) {
+//         window.location.href = res.data;
+//     }
+// });
+
+
+function queryUrl(key,href){
+    
+    var href=href||window.location.search.substr(1),reg=new RegExp('(^|&)'+key+'=([^&]*)(&|$)','i');
+    if(href.length){
+        href=href.match(reg);
+        if(!href){
+            return null;
+        };
+        return unescape(href[2]);
+        // return href[2]
+    }else{
+        return null;
+    };
+}
+//通用
+var link_public = {
+    //ajax请求数据
+    method:function(murl,mdata,method,masync,success){
+        if(!userId && location.href.indexOf('login.html') < 0) {
+            showToast(1, '请先登陆！');
+            setTimeout(function() {
+                loading.show('跳转中...');
+                setTimeout(function() {
+                    window.location.href = root + 'login.html';
+                },500);
+            },500);
+            return;
+        }
+        $.ajax({
+            async:masync,
+            type:method,
+            url: murl,
+            dataType:"jsonp",
+            data: mdata,
+            timeout: 20000,
+            error: function (json) {
+                console.log(json);
+            },
+            success: function (json) {
+                success?success(json):function(){};
+            }
+        });
+    }
+}
+/**
+ * 获取上一个月
+ *
+ * @date 格式为yyyy-mm-dd的日期，如：2014-01-25
+ */
+function getPreMonth(date) {
+    var arr = date.split('-');
+    var year = arr[0]; //获取当前日期的年份
+    var month = arr[1]; //获取当前日期的月份
+    var day = arr[2]; //获取当前日期的日
+    var days = new Date(year, month, 0);
+    days = days.getDate(); //获取当前日期中月的天数
+    var year2 = year;
+    var month2 = parseInt(month) - 1;
+    if (month2 == 0) {//如果是1月份，则取上一年的12月份
+        year2 = parseInt(year2) - 1;
+        month2 = 12;
+    }
+    var day2 = day;
+    var days2 = new Date(year2, month2, 0);
+    days2 = days2.getDate();
+    if (day2 > days2) {//如果原来日期大于上一月的日期，则取当月的最大日期。比如3月的30日，在2月中没有30
+        day2 = days2;
+    }
+    if (month2 < 10) {
+        month2 = '0' + month2;//月份填补成2位。
+    }
+    //var t2 = year2 + '-' + month2 + '-' + day2;
+    var t2 =  month2 ;
+    return t2;
+}
+
+//格式化日期
+function getFormatDate(_date) {
+    var date = _date || new Date();
+    var seperator1 = "-";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = year + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+}
+//验证手机号
+function isMobileMethod(email){
+    var regPhone = /^(13[0-9]|15[012356789]|18[0123456789]|147|145|17[0-9])\d{8}$/;
+    if(regPhone.test(email)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+var toastTimer = null;
+//show Toast 
+function showToast(type, text, timeout) {
+    $('.toast-container').remove();
+    var icons = {
+        'waiting': root + 'img/u222.png',
+        'warning': root + 'img/icon-warning.png',
+        'success': root + 'img/icon-success.png',
+        'error': root + 'img/icon-error.png'
+    }
+    var img_arr = [];
+    img_arr.push("<img class='toast-img' src=" + icons.waiting + ">"); //敬请期待
+    img_arr.push("<img class='toast-img' src=" + icons.warning + ">"); //warning
+    img_arr.push("<img class='toast-img' src=" + icons.success + ">"); //success
+    img_arr.push("<img class='toast-img' src=" + icons.error + ">"); //error
+    // img_arr.push("<i class='iconfont icon-tishishuoming' style='color:#ed3f14;'></i>"); //warning
+    // img_arr.push("<i class='iconfont icon-yigouxuan' style='color:#19be6b;'></i>");    //success
+    // img_arr.push("<i class='iconfont icon-guanbi' style='color:#ed3f14;'></i>");    //error    
+    var html = '<div class="toast-container">' + 
+                    '<div class="toast-outer">' + 
+                        '<div class="toast">' + 
+                            img_arr[type] + 
+                            '<div class="toast-text">' + text + '</div>' + 
+                        '</div>' + 
+                    '</div>'
+                '</div>'
+    $('body').append(html);
+    toastTimer = setTimeout(function() {
+        $('.toast-container').remove();
+    }, timeout || 500);
+}
+
+//loading
+var loading = (function() {
+    this.show = showLoading;
+    this.hide = hideLoading;
+    return this;
+})();
+
+
+function showLoading(text) {
+    clearTimeout(loadingTimer);
+    // console.log($('.loading'))
+    var loadingImg = root + 'img/icon-loading.png';
+    // $('.loading').remove();
+    var html = '<div class="toast-container loading">' + 
+                    '<div class="toast-outer">' + 
+                        '<div class="toast">' + 
+                        "<img class='toast-img demo-spin-icon-load' src=" + loadingImg + ">" + 
+                            // '<img class="toast-img" ' + 'src=' + img_arr[type] + '>' + 
+                            '<div class="toast-text">' + (text || 'loading...') + '</div>' + 
+                        '</div>' + 
+                    '</div>'
+                '</div>'
+    
+    if($('.loading').length == 0) {
+        $('body').append(html);
+    }else {
+        $('.loading').show();
+    }
+}
+
+function hideLoading() {
+    loadingTimer = setTimeout(function() {
+        $('.loading').hide();
+        // $('.loading').remove();
+    }, 300)
+}
+
+
+//清除房产搜索的localstorage缓存
+function clearHouseLocalStorage() {
+    localStorage.removeItem('cityData');
+    localStorage.removeItem('communityData');
+}
+
+var emptyContent = '<div class="empty-content">' +
+    '<p>该房产不存在！</p>' +
+    '</div'
+
+//处理浏览器回退事件
+function pushHistory() {
+    var state = {
+        title: "title",
+        url: "#"
+    };
+    window.history.pushState(state, "title", "#");
+}
+function addHistoryBackListener(url) {
+    pushHistory();
+    window.addEventListener('popstate', function(e) {
+        window.location.replace(url);
+    }, false);
+}
+
+//input数字、小数校验
+function clearNoNum(obj) {
+    obj.value = obj.value.replace(/[^\d.]/g, ""); //清除"数字"和"."以外的字符  
+    obj.value = obj.value.replace(/^\./g, ""); //验证第一个字符是数字而不是  
+    obj.value = obj.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的  
+    obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+    var tmp = obj.value;
+    if(tmp > 100000) {
+        tmp = Math.floor(tmp/10);
+        if(tmp > 100000) {
+            tmp = Math.floor(tmp/10);
+        }
+        obj.value = tmp;
+    }
+}
+
+
+// ref https://github.com/WICG/EventListenerOptions/pull/30
+function isPassive() {
+    var supportsPassiveOption = false;
+    try {
+        addEventListener("test", null, Object.defineProperty({}, 'passive', {
+            get: function () {
+                supportsPassiveOption = true;
+            }
+        }));
+    } catch(e) {}
+    return supportsPassiveOption;
+}
+            
+//计算字符串实际长度
+function GetLength(str) {
+  return str.replace(/[\u0391-\uFFE5]/g,"aa").length;  //先把中文替换成两个字节的英文，在计算长度
+};  
+
+var s = "fooStyleCss";
+  
+function tuofengToUnderLine(str) {
+    // return str;
+    return str.replace(/([A-Z])/g,"_$1").toLowerCase();
+}
+
+//比较日期大小
+function CompareDate(d1, d2) {
+    return ((new Date(d1.replace(/-/g, "\/"))) > (new Date(d2.replace(/-/g, "\/"))));
+}
+
+//获取数据值和单位
+function formatValue(str) {
+    if(typeof str == 'undefined') {
+        return {
+            var: '--',
+            unit: ''
+        }
+    }
+    var arr = str.split('|');
+    return {
+        val: arr[0],
+        unit: arr[1]
+    }
+}

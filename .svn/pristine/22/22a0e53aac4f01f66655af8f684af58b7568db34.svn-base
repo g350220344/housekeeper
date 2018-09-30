@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>位置及周边</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<link rel="stylesheet" type="text/css" href="../icon-font/iconfont.css">	
+	<style type="text/css">
+		body, html {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+		#allmap{
+			width:100%;
+		}
+		p{margin-left:5px; font-size:14px;}
+		#nav_bar {
+			height: 5rem;
+			width: 100%;
+			background: #fff;
+			position: absolute;
+			left: 0;
+			bottom: 0;
+		}
+		.nav_bar_ul {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			clear: both;
+			text-align: center;
+		}
+		.nav_bar_ul li {
+			display: inline-block;
+			width: 12%;
+			/* float: left; */
+			height: 100%;
+			padding-top: 0.5rem;
+			color: grey;
+		}
+		.nav_active {
+			color: #5cadff!important;
+		}
+		.iconfont {
+			font-size: 2.3rem;
+		}
+	</style>
+</head>
+<body>
+<div class="index_box">
+	<div id="allmap"></div>
+	<div id="nav_bar">
+		<ul class="nav_bar_ul">
+			<li class="nav_active">
+				<i class="iconfont icon-gongjiao"></i>
+				<div>公交</div>
+			</li>
+			<li>
+				<i class="iconfont icon-ditiexiao"></i>
+				<div>地铁</div>
+			</li>
+			<li>
+				<i class="iconfont icon-boshimao"></i>
+				<div>学校</div>
+			</li>
+			<li>
+				<i class="iconfont icon-yiyuan"></i>
+				<div>医院</div>
+			</li>
+			<li>
+				<i class="iconfont icon-yinhangdaishou"></i>
+				<div>银行</div>
+			</li>
+			<li>
+				<i class="iconfont icon-ai48"></i>
+				<div>购物</div>
+			</li>
+			<li>
+				<i class="iconfont icon-dashaxiaoqudizhi01"></i>
+				<div>房屋</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+<script type="text/javascript" src="../js/baiduMap.js"></script>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/change/map_e.js"></script>
+
+</body>
+</html>

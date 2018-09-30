@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>评估结果</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+        html,body {
+            font-family: PingFang-SC-Medium;
+        }
+		.lease_bar {
+			margin-top: 0;
+		}
+		.sh_bar_2 {
+			border-top: 1px solid #eee;
+    		margin-top: 0.5rem;
+		}
+		.sh_bar_2 li{
+			border: none;
+			text-align: left;
+			padding-right: 0.5rem;
+		}
+		#container {
+			padding-top: 1rem;
+		}
+		.chart-unit {
+			display: none;
+		}
+		.empty_words {
+			text-align: center;
+			line-height: 4rem;
+			color: #888;
+		}
+		.loading_mask img {
+			margin-top: 35%;
+		}
+        #plus_house_type_span {
+            border-radius: 0.1rem;
+            display: inline-block;
+            border: solid 0.1rem #fff;
+            color: #fff;
+            margin-left: 0.5rem;
+            padding: 0.1rem 0.2rem 0rem;
+            font-size: 1rem;
+            vertical-align: top;
+        }
+        .lease_box {
+            background-image: url('../img/plus_bg_1.png');
+            background-size: cover;
+        }
+        #suggestPrice {
+            color: #fff;
+            font-size: 3.3rem;
+        }
+        .col {
+            color: #fff!important;
+        }
+        #communityName {
+            color: #fff;
+        }
+        #add_house_a {
+            color: #fff;
+            vertical-align: top;
+        }
+        #add_house_a img {
+            width: 1.2rem;
+            margin-right: 0.3rem;
+        }
+        #add_house_a span {
+            vertical-align: 0.2rem;
+            font-size: 1.1rem;
+        }
+        .lease_bar {
+            margin-top: 3.3rem!important;
+        }
+        .sh_bar_2 {
+            margin-top: 0;
+        }
+        .sh_bar_2 li {
+            border: none;
+            text-align: left;
+            padding-left: 1.2rem;
+            font-size: 1.1rem;
+            color: #bbb;
+            line-height: 3.5rem;
+        }
+        .plus_card {
+            background: transparent;
+            margin-top: 1rem;
+        }
+        .p_c_t {
+            padding: 1.5rem 1.2rem;
+            font-size: 1.4rem;
+            color: #111;
+            line-height: 0;
+            background: #fff;
+            position: relative;
+        }
+        .p_c_t img {
+            width: 1.9rem;
+        }
+        .p_c_t span {
+            vertical-align: 0.4rem;
+        }
+        .p_tool_bar {
+            position: absolute;
+            right: 1.5rem;
+            top: 0;
+            height: 100%;
+            line-height: 6rem;
+        }
+        .p_tool_bar>span {
+            vertical-align: 0.1rem;
+        }
+        .arrow_right_grey {
+            width: 0.6rem!important;
+        }
+        .p_c_c {
+            background: #fff;
+            margin-top: 0.2rem;
+            padding: 0 1.5rem;
+            color: #888;
+        }
+        
+        .p_nav {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            clear: both;
+        }
+        .p_nav li {
+            list-style: none;
+            font-size: 1.2rem;
+            line-height: 2rem;
+            text-align: center;
+            float: left;
+            width: 50%;
+            padding: 1.2rem 0;
+            color: #888;
+            border-bottom: 0.2rem solid #f0f0f0;
+        }
+        .p_nav_active {
+            color: #388cff!important;
+            border-bottom: 0.2rem solid #388cff!important;
+        }
+        .p_content_title {
+            text-align: center;
+            color: #ffba27;
+            font-size: 1.2rem;
+            line-height: 2rem;
+            padding-top: 1.5rem;
+        }
+        .p_content_title>img {
+            width: 1rem;
+        }
+        .p_content_title>span {
+            vertical-align: top;
+        }
+        .p_content_tag {
+            padding: 0 0 0.9rem 0;
+            text-align: center;
+            color: #bbb;
+            font-family: PingFang-SC-Medium;
+            font-size: 1rem;
+        }
+        .p_shadow_block {
+            /* width: 690px; */
+            height: 14rem;
+            background-color: #fff;
+            box-shadow: 0px 0px 1.7rem 0.02rem rgba(56, 140, 255, 0.08);
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        .p_shadow_block_ul {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            clear: both;
+        }
+        .p_shadow_block_ul li {
+            padding-top: 3.1rem;
+            list-style: none;
+            float: left;
+            width: 50%;
+        }
+        .price_box_1 {
+            font-size: 1.1rem;
+            color: #888;
+            text-align: center;
+            padding-bottom: 0.7rem;
+        }
+        .price_notice {
+            padding: 0 0 0.2rem 0;
+            text-align: center;
+            color: #bbb;
+            font-family: PingFang-SC-Medium;
+            font-size: 1rem;
+        }
+        .price_box_1>span {
+            font-size: 1.9rem;
+            color: #ff504d;
+        }
+        
+        .p_qipao {
+            background-color: #ff504d;
+            border-radius: 2rem;
+            position: absolute;
+            bottom: 2rem;
+            right: 4.15rem;
+            color: #fff;
+            font-size: 1rem;
+            padding: 0.4rem 1.45rem;
+            line-height: 1rem;
+        }
+        .p_qipao:before {
+            border: solid transparent;
+            content: ' ';
+            height: 0;
+            position: absolute;
+            width: 0;
+            border-width: 0.7rem;
+            border-bottom-color: #ff504d;
+            top: -1rem;
+            right: 2.5rem;
+        }
+        .p_qipao_green {
+            background-color: #18ca8f;
+            border-radius: 2rem;
+            position: absolute;
+            bottom: 2rem;
+            right: 4.15rem;
+            color: #fff;
+            font-size: 1rem;
+            padding: 0.4rem 1.45rem;
+            line-height: 1rem;
+        }
+        .p_qipao_green:before {
+            border: solid transparent;
+            content: ' ';
+            height: 0;
+            position: absolute;
+            width: 0;
+            border-width: 0.7rem;
+            border-bottom-color: #18ca8f;
+            top: -1rem;
+            right: 2.5rem;
+        }
+        .ul_four_blok {
+            margin-top: 1rem;
+            position: relative;
+        }
+        .parting_line {
+            width: 1px;
+            background-color: #f0f0f0;
+            height: 10.6rem;
+            top: 2rem;
+            left: 50%;
+            position: absolute;
+            z-index: 10;
+        }
+        .ul_four {
+            padding: 0;
+            overflow: hidden;
+            clear: both;
+        }
+        .ul_four li {
+            padding: 1.5rem 0;
+            list-style: none;
+            float: left;
+            width: 50%;
+            text-align: center;
+        }
+        .ul_four li:first-child {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .ul_four li:nth-child(2) {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .p_f_blue {
+            /* font-size: 1.8rem; */
+            color: #388cff;
+        }
+        .p_f_grey {
+            color: #888;
+        }
+        .p_f_reb_big {
+            font-size: 1.9rem;
+            color: #ff504d;
+        }
+        .p_red {
+            color: #ff504d;
+        }
+        .fangchanshui_block_1 {
+            width: 100%;
+            height: 5.5rem;
+            background: #fff;
+        }
+        .fangchanshui_block_2 {
+            text-align: center;
+            height: 6.3rem;
+            width: 100%;
+            background-image: url('../img/plus_bg_2.png');
+            background-size: cover;
+        }
+        .yushouxin_block {
+            background-image: url('../img/plus_bg_3.png');
+            width: 100%;
+            height: 9rem;
+            background-size: cover;
+            padding-top: 2rem;
+        }
+        .yushouxin_block p {
+            text-align: center;
+            padding-bottom: 0.2rem;
+        }
+        .licai_card {
+            background: #fff;
+            padding-top: 1.6rem;
+            text-align: center;
+        }
+        .licai_card_tit {
+            color: #111;
+            font-size: 1.3rem;
+        }
+        .licai_card_tags_box {
+            padding: 0.3rem 0;
+        }
+        .tag_blue {
+            border-radius: 0.1rem;
+            border: 1px solid #4795ff;
+            padding: 0.2rem 0.5rem;
+            font-size: 1rem;
+            color: #388cff;
+            font-weight: 100;
+        }
+        .licai_card_ul {
+            padding: 1.7rem 0;
+            overflow: hidden;
+            clear: both;
+        }
+        .licai_card_ul li {
+            list-style: none;
+            width: 33.3%;
+            float: left;
+        }
+        .licai_card_ul li:not(:last-child) {
+            border-right: 1px solid #e8e8e8;
+        }
+        .licai_card_li_item {
+            color: #ff504d;
+            font-size: 1.5rem;
+        }
+        .licai_card_li_label {
+            color: #bbb;
+            font-size: 1.1rem;
+        }
+        .bottom_line {
+            font-size: 1rem;
+            color: #bbb;
+            line-height: 4rem;
+            text-align: center;
+            background: #fff;
+            margin-top: 1rem;
+        }
+        #p_keep_info {
+            display: none;
+        }
+        .p_f_bbb {
+            color: #bbb;
+        }
+	</style>
+</head>
+<body>
+<div class="index_box">
+	<div class="lease_box bac move_result">
+		<div style="width: 7rem;" class="move_resultc f11">
+			<a id="add_house_a"><img src="../img/plus_icon_6.png"><span>添加房产</span></a>
+		</div>
+        <h1 style="font-size: 1.1rem; color: #b7d5ff;" class="f11">房产估值(万元)</h1>
+        <p id="suggestPrice">--</p>
+		<div class="lease_bar">
+			<p class="f13" id="communityName">----</p>
+			<p id="address" class="f11 col">xx xx xxxxxx号 <span id="info"></span></p>
+		</div>
+	</div>
+    <ul class="sh_bar_2 f12 h28">
+        <li id="assessSalePrice">评估单价：0元/㎡</li>
+        <li id="assessTime">评估日期：--/--/--</li>
+    </ul>
+    <div class="plus_card">
+        <div class="p_c_t">
+            <img src="../img/plus_icon_2.png">
+            <span>房产增值分析</span>
+        </div>
+        <div class="p_c_c part_loading_box">
+            <div id="score_loading" class="loading_mask" style="background: #fff;display: block;">
+				<img style="margin-top: 35%;" class="demo-spin-icon-load" src="../img/loading_inline.png">
+			</div>
+            <ul class="p_nav">
+                <li class="p_nav_active" data-value="1">
+                    出售评分
+                    <span id="sale_score"></span>
+                </li>
+                <li data-value="2">
+                    持有评分
+                    <span id="keep_score"></span>
+                </li>
+            </ul>
+            <p class="p_content_title">
+                <img src="../img/plus_icon_5.png">
+                <span>预期收益</span>
+            </p>
+            <div id="p_sale_info" class="p_info_box">
+                <p class="p_content_tag">(如出售此套房产，并将此资金用于固收理财)</p>
+                <div class="p_shadow_block">
+                    <ul class="p_shadow_block_ul">
+                        <li>
+                            <div class="price_box_1">
+                                <span id="salefirstYearManagerResult">45.28</span>万元
+                            </div>
+                            <p class="price_notice">第1年收益</p>
+                            <p class="price_notice">(去除交易时间损耗)</p>                        
+                        </li>
+                        <li>
+                            <div class="price_box_1">
+                                <span id="salefiveTotalManageResult">315.16</span>万元
+                            </div>
+                            <p class="price_notice">5年总收益</p>
+                            <p class="price_notice">(收益再投资)</p>                        
+                        </li>
+                    </ul>
+                    <div class="compare p_qipao">5年收益高于持有房产127.51万</div>
+                </div>
+                <div class="ul_four_blok">
+                    <div class="parting_line"></div>
+                    <ul class="ul_four">
+                        <li class="to_static" data-tar="002涨跌分析">
+                            <p class="p_f_blue f15 SaleSqmPriceOnYear_on_YearBasis">+2%</p>
+                            <p class="price_notice">未来1年房价涨跌预测</p>
+                        </li>
+                        <li class="to_static" data-tar="005出售分析">
+                            <p class="p_f_blue f15 p_range">965~975</p>
+                            <p class="price_notice">出售价格(万元)</p>
+                        </li>
+                        <li class="to_static" data-tar="003出售挂牌周期">
+                            <p class="p_f_blue f15 days">60天</p>
+                            <p class="price_notice">出售成交平均天数</p>
+                            <p class="price_notice">(含交易放款周期)</p>
+                        </li>
+                        <li class="to_static" data-tar="007理财产品">
+                            <p class="p_f_blue f15 earnings">1.61%</p>
+                            <p class="price_notice">稳定理财年收益</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="p_keep_info" class="p_info_box">
+                <p class="p_content_tag">(如继续持有此套房产，用于出租及房价增值)</p>
+                <div class="p_shadow_block">
+                    <ul class="p_shadow_block_ul">
+                        <li>
+                            <div class="price_box_1">
+                                <span id="rentfirstYearManagerResult">45.28</span>万元
+                            </div>
+                            <p class="price_notice">第1年收益</p>
+                            <p class="price_notice">(去除交易时间损耗)</p>
+                        </li>
+                        <li>
+                            <div class="price_box_1">
+                                <span id="rentfiveTotalManageResult">315.16</span>万元
+                            </div>
+                            <p class="price_notice">5年总收益</p>
+                            <p class="price_notice">(收益再投资)</p>
+                        </li>
+                    </ul>
+                    <div class="compare p_qipao">5年收益高于持有房产127.51万</div>
+                </div>
+                <div class="ul_four_blok">
+                    <div class="parting_line"></div>
+                    <ul class="ul_four">
+                        <li class="to_static" data-tar="002涨跌分析">
+                            <p class="p_f_blue f15 SaleSqmPriceOnYear_on_YearBasis">+2%</p>
+                            <p class="price_notice">未来1年房价涨跌预测</p>
+                        </li>
+                        <li class="to_static" data-tar="006出租分析">
+                            <p class="p_range p_f_blue f15">2000~5000</p>
+                            <p class="price_notice">出租价格(元/月)</p>
+                        </li>
+                        <li class="to_static" data-tar="004出租挂牌周期">
+                            <p class="days p_f_blue f15">60天</p>
+                            <p class="price_notice">出租成交平均天数</p>
+                        </li>
+                        <li class="to_static" data-tar="006出租分析">
+                            <p class="earnings p_f_blue f15">1.61%</p>
+                            <p class="price_notice">租金回报年收益</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="plus_card">
+        <div class="p_c_t">
+            <img src="../img/plus_icon_1.png">
+            <span>房产税</span>
+        </div>
+        <div class="p_c_c">
+            <div class="fangchanshui_block_1"></div>
+            <div class="fangchanshui_block_2">
+                <span class="p_f_grey f11">敬请期待...</span>
+            </div>
+        </div>
+    </div>
+    <div class="plus_card">
+        <div class="p_c_t">
+            <img src="../img/plus_icon_8.png">
+            <span>预授信</span>
+        </div>
+        <div class="p_c_c">
+            <div style="padding: 1rem;background: #fff;">
+                <div class="yushouxin_block">
+                    <p><span class="p_f_grey f11">预计最高可贷</span><span id="yushouxin_val" style="margin-left: 0.6rem;" class="p_f_reb_big">603</span><span class="f11 p_red">万元</span></p>
+                    <p id="goto_loan"><span style="margin-right: 0.3rem;" class="p_f_bbb f11">立即申请 ></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 固定理财模块 -->
+    <!-- <div class="plus_card">
+        <div class="p_c_t">
+            <img src="../img/plus_icon_8.png">
+            <span>固收类理财产品</span>
+        </div>
+        <div class="p_c_c">
+            <div class="licai_card">
+                <p class="licai_card_tit f13">季季高</p>
+                <div class="licai_card_tags_box">
+                    <span class="tag_blue">按月返息</span>
+                    <span class="tag_blue">到期还本</span>
+                    <span class="tag_blue">收益滚存</span>                                        
+                </div>
+                <ul style="border-bottom: 1px solid #e8e8e8;" class="licai_card_ul">
+                    <li>
+                        <p class="licai_card_li_item">3.87%</p>
+                        <p class="licai_card_li_label">年化收益率</p>
+                    </li>
+                    <li>
+                        <p class="licai_card_li_item">365天</p>
+                        <p class="licai_card_li_label">期限</p>
+                    </li>
+                    <li>
+                        <p class="licai_card_li_item">4767元</p>
+                        <p class="licai_card_li_label">每百万收益</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="licai_card">
+                <p class="licai_card_tit f16">年年高</p>
+                <div class="licai_card_tags_box">
+                    <span class="tag_blue">按月返息</span>
+                    <span class="tag_blue">到期还本</span>
+                </div>
+                <ul class="licai_card_ul">
+                    <li>
+                        <p class="licai_card_li_item">6.8%</p>
+                        <p class="licai_card_li_label">年化收益率</p>
+                    </li>
+                    <li>
+                        <p class="licai_card_li_item">90天</p>
+                        <p class="licai_card_li_label">期限</p>
+                    </li>
+                    <li>
+                        <p class="licai_card_li_item">6.8万元</p>
+                        <p class="licai_card_li_label">每百万收益</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div> -->
+    <div class="bottom_line">就到此为止吧～</div>
+</div>
+<div class="remove_box">
+	<div class="remove_bar">
+		<h1 class="f12 col">确定要删除这套房子的评估记录吗？</h1>
+		<a class="Determine" onclick="deleteHouse()">确认删除</a>
+		<a class="cancelbu">取消</a>
+	</div>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/tools_xie.js"></script>
+<script type="text/javascript" src="../js/plus/detial.js"></script>
+
+<script>
+	$(".move_resultc a").click(function (e) {
+		e.stopPropagation();
+		$(".move_resultc p").toggle();
+		return false;
+	});
+	$(document).on('click', function(e) {
+		var _con = $('.move_resultc a');
+		if(!_con.is(e.target) && _con.has(e.target).length === 0) {
+			$(".move_resultc p").hide();
+		}
+	})
+	$(".move_resultc p").click(function () {
+		$(".remove_box").show();
+		$("body").addClass('b_add')
+		$(this).hide();
+	});
+</script>
+</body>
+</html>

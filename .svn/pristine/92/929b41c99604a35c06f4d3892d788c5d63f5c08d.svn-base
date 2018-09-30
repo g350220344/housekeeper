@@ -1,0 +1,242 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+.home_block_1 {
+    background: url('../../img/homepage/home-bg.png');
+    background-size: cover;
+    width: 100%;
+    height: 5.7rem;
+    position: relative;
+}
+.search_box {
+    width: 100%;
+    /* height: 1.02rem; */
+    overflow: hidden;
+    clear: both;
+    padding: 0.2rem 0;
+    text-align: center;
+    color: #fff;
+    position: relative;
+}
+.chose_city {
+    float: left;
+    width: 1.37rem;
+    height: 0.62rem;
+    line-height: 0.62rem;
+    font-size: 0.3rem;
+}
+.chose_city img {
+    vertical-align: middle;
+    display: inline-block;
+}
+.search_input {
+    float: left;
+    width: 5.12rem;
+    height: 0.62rem;
+    line-height: 0.62rem;
+    background: rgba(255, 255, 255, .35);
+    border-radius: 0.31rem;
+    font-size: 0.26rem;
+}
+.msg_btn {
+    float: left;
+    width: 1.01rem;
+    height: 0.62rem;
+    line-height: 0.62rem;
+    vertical-align: middle;
+    font-size: 0;
+}
+.msg_btn img {
+    width: 0.34rem;
+    height: 0.34rem;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+}
+.msg_btn_active:after {
+    content: "f";
+    position: absolute;
+    top: 0.28rem;
+    right: 0.28rem;
+    width: 0.12rem;
+    height: 0.12rem;
+    border-radius: 50%;
+    background-color: #ed6b2c;
+    z-index: 100;
+}
+.chart_box {
+    width: 100%;
+    height: 4.68rem;
+}
+.tool_box {
+    width: 100%;
+    height: 0.52rem;
+    overflow: hidden;
+    clear: both;
+    position: absolute;
+    top: 1.02rem;
+    z-index: 99;
+}
+.chart_title {
+    height: 0.52rem;
+    float: left;
+    /* line-height: 0.52rem; */
+    color: #fff;
+    font-size: 0.3rem;
+    margin-left: 0.24rem;
+}
+.tabs {
+    height: 0.52rem;
+    float: right;
+    line-height: 0.52rem;
+    overflow: hidden;
+}
+.tab_item {
+    /* height: 0.49rem; */
+    line-height: 0.49rem;
+    border-radius: 0.26rem;
+    border: solid 1px rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+    margin-right: 0.16rem;
+    font-size: 0.26rem;
+    float: left;
+    padding: 0 0.2rem;
+}
+.tab_item_active {
+    border: 1px solid #fff;
+    color: #fff;
+}
+.bar-icon-class {
+    width: 0.36rem;
+    height: 0.36rem;
+    margin-top: 0.1rem;
+}
+.house_count {
+    font-size: 0.22rem;
+    line-height: 0.7rem;
+    color: #888;
+}
+.city_tag {
+    color: #00d0c2;
+    font-size: 0.22rem;
+    font-family: PingFang-SC-Medium;
+    padding: 0 0.13rem;
+    line-height: 0.7rem;
+    background: rgba(0, 208, 194, 0.1);
+}
+.house_value_lable {
+    font-size: 0.26rem;
+    color: #555;
+    text-align: center;
+    margin-top: 0.35rem;
+}
+.house_total_val {
+    font-size: 0.52rem;
+    line-height: 0.7rem;
+    text-align: center;
+    margin-top: 0.1rem;
+}
+.house_rate_info {
+    margin-top: 0.2rem;
+    font-size: 0.24rem;
+    line-height: 0.7rem;
+    color: #888;
+    text-align: center;
+}
+.house_rate_val {
+    color: #ed6b2c;
+}
+.rease_info_box {
+    height: 1.47rem;
+    position: relative;
+    overflow: hidden;
+    clear: both;
+}
+.rease_info_item {
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+.rease_info_divider {
+    position: absolute;
+    left: 50%;
+    height: 0.67rem;
+    width: 1px;
+    bottom: 0.35rem;
+}
+.rease_info_item_val {
+    font-size: 0.3rem;
+    color: #555;
+    text-align: center;
+    line-height: 0.7rem;
+    vertical-align: middle;
+    margin-top: 0.2rem;
+}
+.rease_info_item_val img{
+    width: 0.13rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+.rease_info_item_label {
+    color: #bbb;
+    font-size: 0.24rem;
+    text-align: center;
+}
+.tool_ul {
+    overflow: hidden;
+    clear: both;
+}
+.tool_ul li {
+    list-style: none;
+}
+.tool_item {
+    width: 25%;
+    float: left;
+    height: 1.75rem;
+    text-align: center;
+}
+.tool_item img{
+    width: 0.42rem;
+    height: 0.42rem;
+    margin: 0.44rem auto 0.21rem;
+    display: inherit;
+}
+.tool_item_label {
+    font-size: 0.26rem;
+    color: #888;
+    line-height: 0.3rem;
+}
+.no_house {
+    padding: 0.35rem;
+    text-align: center;
+    font-size: 0.24rem;
+    line-height: 0.34rem;
+}
+.empty_gif {
+    width: 3.1rem;
+    height: 2.1rem;
+}
+.no_house_label {
+    color: #bbb;
+    padding-top: 0.32rem;
+}
+.btn_add_house {
+    width: 2.2rem;
+    height: 0.58rem;
+    border-radius: 0.29rem;
+    border: solid 1px #4b9af8;
+    font-size: 0.26rem;
+    color: #388cff;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0.35rem auto 0.2rem;
+    line-height: 0.58rem;
+}
+.btn_add_house_icon {
+    width: 0.24rem;
+    height: 0.24rem;
+    display: inline-block;
+    vertical-align: middle;
+}

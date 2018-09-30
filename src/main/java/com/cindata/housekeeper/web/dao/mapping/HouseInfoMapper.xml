@@ -1,0 +1,1712 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.HouseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.HouseInfo" >
+    <result column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
+    <result column="HOUSE_ID" property="houseId" jdbcType="DECIMAL" />
+    <result column="BUILDING_ID" property="buildingId" jdbcType="DECIMAL" />
+    <result column="COMMUNITY_ID" property="communityId" jdbcType="DECIMAL" />
+    <result column="UNIT_ID" property="unitId" jdbcType="DECIMAL" />
+    <result column="STREET_ID" property="streetId" jdbcType="DECIMAL" />
+    <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="BUILDYEAR" property="buildyear" jdbcType="VARCHAR" />
+    <result column="DOOR_NUM" property="doorNum" jdbcType="VARCHAR" />
+    <result column="ISFIRST" property="isfirst" jdbcType="DECIMAL" />
+    <result column="TOTALFLOOR" property="totalfloor" jdbcType="DECIMAL" />
+    <result column="CURRENTFLOOR" property="currentfloor" jdbcType="DECIMAL" />
+    <result column="ASPECT" property="aspect" jdbcType="VARCHAR" />
+    <result column="BUILDINGSQUARE" property="buildingsquare" jdbcType="DECIMAL" />
+    <result column="LIVINGSQUARE" property="livingsquare" jdbcType="DECIMAL" />
+    <result column="PROPERTY" property="property" jdbcType="VARCHAR" />
+    <result column="DECORATELEVEL" property="decoratelevel" jdbcType="VARCHAR" />
+    <result column="FLOORPLANTYPE" property="floorplantype" jdbcType="VARCHAR" />
+    <result column="ROOMCOUNT" property="roomcount" jdbcType="DECIMAL" />
+    <result column="LOUNGECOUNT" property="loungecount" jdbcType="DECIMAL" />
+    <result column="BATHROOMCOUNT" property="bathroomcount" jdbcType="DECIMAL" />
+    <result column="KITCHENCOUNT" property="kitchencount" jdbcType="DECIMAL" />
+    <result column="BALCONYCOUNT" property="balconycount" jdbcType="DECIMAL" />
+    <result column="SQMPRICE" property="sqmprice" jdbcType="DECIMAL" />
+    <result column="TOTALPRICE" property="totalprice" jdbcType="DECIMAL" />
+    <result column="TIMEOFLISTING" property="timeoflisting" jdbcType="DATE" />
+    <result column="DATASOURCE" property="datasource" jdbcType="VARCHAR" />
+    <result column="CONTACTPERSON" property="contactperson" jdbcType="VARCHAR" />
+    <result column="AGENCYCOMPANY" property="agencycompany" jdbcType="VARCHAR" />
+    <result column="TELEPHONE" property="telephone" jdbcType="VARCHAR" />
+    <result column="LONGITUDE" property="longitude" jdbcType="DECIMAL" />
+    <result column="LATITUDE" property="latitude" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="FLOORTYPE" property="floortype" jdbcType="VARCHAR" />
+    <result column="IFLIFT" property="iflift" jdbcType="VARCHAR" />
+    <result column="ARCHITECTUREPERIOD" property="architectureperiod" jdbcType="VARCHAR" />
+    <result column="DONEPERIOD" property="doneperiod" jdbcType="VARCHAR" />
+    <result column="ABHOR_FACTOR" property="abhorFactor" jdbcType="VARCHAR" />
+    <result column="HOUSE_PROPERTY" property="houseProperty" jdbcType="VARCHAR" />
+    <result column="CASE_SOURCE" property="caseSource" jdbcType="VARCHAR" />
+    <result column="PLANARSTRUCTURE" property="planarstructure" jdbcType="VARCHAR" />
+    <result column="FLOORS_OCCUPPIED" property="floorsOccuppied" jdbcType="DECIMAL" />
+    <result column="FLOOR_START" property="floorStart" jdbcType="DECIMAL" />
+    <result column="COMMUNITYTYPE" property="communitytype" jdbcType="VARCHAR" />
+    <result column="BUILDINGTYPE" property="buildingtype" jdbcType="VARCHAR" />
+    <result column="SUPPORTINGSERVICE" property="supportingservice" jdbcType="VARCHAR" />
+    <result column="GOOD_FACTOR" property="goodFactor" jdbcType="VARCHAR" />
+    <result column="CREATED_DT" property="createdDt" jdbcType="DATE" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="DEAL_PERSON" property="dealPerson" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="DATE" />
+    <result column="UPDATE_NUM" property="updateNum" jdbcType="DECIMAL" />
+    <result column="HOUSE_NAME" property="houseName" jdbcType="VARCHAR" />
+    <result column="BUILDING_NAME" property="buildingName" jdbcType="VARCHAR" />
+    <result column="COMMUNITY_NAME" property="communityName" jdbcType="VARCHAR" />
+    <result column="UNIT_NAME" property="unitName" jdbcType="VARCHAR" />
+    <result column="STREET_NAME" property="streetName" jdbcType="VARCHAR" />
+    <result column="PRECINCTID" property="precinctid" jdbcType="DECIMAL" />
+    <result column="PRECINCTNAME" property="precinctname" jdbcType="VARCHAR" />
+    <result column="DISTRICTID" property="districtid" jdbcType="DECIMAL" />
+    <result column="DISTRICTNAME" property="districtname" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="IFAGENCY" property="ifagency" jdbcType="VARCHAR" />
+    <result column="STORE" property="store" jdbcType="VARCHAR" />
+    <result column="PARKING_NUM" property="parkingNum" jdbcType="DECIMAL" />
+    <result column="TOTALHOUSEHOLDCOUNT" property="totalhouseholdcount" jdbcType="DECIMAL" />
+    <result column="COMMUNITYDESCRIPTION" property="communitydescription" jdbcType="VARCHAR" />
+    <result column="BUILDINGAREA" property="buildingarea" jdbcType="DECIMAL" />
+    <result column="LIVINGYEAR" property="livingyear" jdbcType="DECIMAL" />
+    <result column="UPFLOOR" property="upfloor" jdbcType="DECIMAL" />
+    <result column="GARDENAREA" property="gardenarea" jdbcType="DECIMAL" />
+    <result column="UNDERAREA" property="underarea" jdbcType="DECIMAL" />
+    <result column="GARAGENUM" property="garagenum" jdbcType="DECIMAL" />
+    <result column="OCCUPANCY" property="occupancy" jdbcType="DECIMAL" />
+    <result column="SCHOOL" property="school" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="PMFEE" property="pmfee" jdbcType="DECIMAL" />
+    <result column="GREENINGRATE" property="greeningrate" jdbcType="DECIMAL" />
+    <result column="PLOTRATIO" property="plotratio" jdbcType="DECIMAL" />
+    <result column="STR_ORDER" property="strOrder" jdbcType="VARCHAR" />
+    <result column="HOUSEPICTURE" property="housepicture" jdbcType="VARCHAR" />
+    <result column="ISREAL" property="isreal" jdbcType="VARCHAR" />
+    <result column="SOURCEURL" property="sourceurl" jdbcType="VARCHAR" />
+    <result column="RESERVE1" property="reserve1" jdbcType="VARCHAR" />
+    <result column="RESERVE2" property="reserve2" jdbcType="VARCHAR" />
+    <result column="RESERVE3" property="reserve3" jdbcType="VARCHAR" />
+    <result column="RESERVE4" property="reserve4" jdbcType="VARCHAR" />
+    <result column="RESERVE5" property="reserve5" jdbcType="VARCHAR" />
+    <result column="RESERVE6" property="reserve6" jdbcType="VARCHAR" />
+    <result column="IS_SALE" property="isSale" jdbcType="DECIMAL" />
+    <result column="IS_RENT" property="isRent" jdbcType="DECIMAL" />
+    <result column="IS_DEAL" property="isDeal" jdbcType="DECIMAL" />
+    <result column="RENT_TOTALPRICE" property="rentTotalprice" jdbcType="DECIMAL" />
+    <result column="RENT_SQMPRICE" property="rentSqmprice" jdbcType="DECIMAL" />
+    <result column="ROOM_TYPE_IMG" property="roomTypeImg" jdbcType="VARCHAR" />
+    <result column="DEAL_TIME" property="dealTime" jdbcType="DATE" />
+    <result column="LEASEHOLD_WAY" property="leaseholdWay" jdbcType="VARCHAR" />
+    <result column="STORE_ID" property="storeId" jdbcType="VARCHAR" />
+    <result column="AGENT_ID" property="agentId" jdbcType="VARCHAR" />
+    <result column="RANGE_XYS" property="rangeXys" jdbcType="VARCHAR" />
+    <result column="ASSESS_SALE_PRICE" property="assessSalePrice" jdbcType="DECIMAL" />
+    <result column="ASSESS_RENT_PRICE" property="assessRentPrice" jdbcType="DECIMAL" />
+    <result column="ASSESS_TIME" property="assessTime" jdbcType="DATE" />
+    <result column="MAX_SALE_PRICE" property="maxSalePrice" jdbcType="DECIMAL" />
+    <result column="MIN_SALE_PRICE" property="minSalePrice" jdbcType="DECIMAL" />
+    <result column="MAX_RENT_PRICE" property="maxRentPrice" jdbcType="DECIMAL" />
+    <result column="MIN_RENT_PRICE" property="minRentPrice" jdbcType="DECIMAL" />
+
+    <result column="ASSESS_SALE_TOTALPRICE" property="assessSaleTotalPrice" jdbcType="DECIMAL" />
+
+    <result column="ASPECT_NAME" property="aspectName" jdbcType="VARCHAR" />
+    <result column="FLOORPLAN_NAME" property="floorplanName" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ORDER_ID, HOUSE_ID, BUILDING_ID, COMMUNITY_ID, UNIT_ID, STREET_ID, CITY_ID, USER_ID, 
+    BUILDYEAR, DOOR_NUM, ISFIRST, TOTALFLOOR, CURRENTFLOOR, ASPECT, BUILDINGSQUARE, LIVINGSQUARE, 
+    PROPERTY, DECORATELEVEL, FLOORPLANTYPE, ROOMCOUNT, LOUNGECOUNT, BATHROOMCOUNT, KITCHENCOUNT, 
+    BALCONYCOUNT, SQMPRICE, TOTALPRICE, TIMEOFLISTING, DATASOURCE, CONTACTPERSON, AGENCYCOMPANY, 
+    TELEPHONE, LONGITUDE, LATITUDE, REMARK, FLOORTYPE, IFLIFT, ARCHITECTUREPERIOD, DONEPERIOD, 
+    ABHOR_FACTOR, HOUSE_PROPERTY, CASE_SOURCE, PLANARSTRUCTURE, FLOORS_OCCUPPIED, FLOOR_START, 
+    COMMUNITYTYPE, BUILDINGTYPE, SUPPORTINGSERVICE, GOOD_FACTOR, CREATED_DT, STATUS, 
+    DEAL_PERSON, UPDATE_DATE, UPDATE_NUM, HOUSE_NAME, BUILDING_NAME, COMMUNITY_NAME, 
+    UNIT_NAME, STREET_NAME, PRECINCTID, PRECINCTNAME, DISTRICTID, DISTRICTNAME, CITY_NAME, 
+    USER_NAME, ADDRESS, IFAGENCY, STORE, PARKING_NUM, TOTALHOUSEHOLDCOUNT, COMMUNITYDESCRIPTION, 
+    BUILDINGAREA, LIVINGYEAR, UPFLOOR, GARDENAREA, UNDERAREA, GARAGENUM, OCCUPANCY, SCHOOL, 
+    TITLE, PMFEE, GREENINGRATE, PLOTRATIO, STR_ORDER, HOUSEPICTURE, ISREAL, SOURCEURL, 
+    RESERVE1, RESERVE2, RESERVE3, RESERVE4, RESERVE5, RESERVE6, IS_SALE, IS_RENT, IS_DEAL, 
+    RENT_TOTALPRICE, RENT_SQMPRICE, ROOM_TYPE_IMG, DEAL_TIME, LEASEHOLD_WAY, STORE_ID, 
+    AGENT_ID, RANGE_XYS, ASSESS_SALE_PRICE, ASSESS_RENT_PRICE, ASSESS_TIME,MAX_SALE_PRICE,MIN_SALE_PRICE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.web.model.HouseInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    BUILDINGSQUARE * ASSESS_SALE_PRICE AS ASSESS_SALE_TOTALPRICE,
+    (
+    SELECT
+    NAME
+    FROM
+    PUB_DICT_VALUE
+    WHERE
+    TO_CHAR (DICT_VALUE_ID) = ASPECT
+    ) as ASPECT_NAME,
+    (
+    SELECT
+    NAME
+    FROM
+    PUB_DICT_VALUE
+    WHERE
+    TO_CHAR (DICT_VALUE_ID) = FLOORPLANTYPE
+    ) as FLOORPLAN_NAME,
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_HOUSE_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.HouseInfoExample" >
+    delete from T_HOUSEKEEPER_HOUSE_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.HouseInfo" >
+    insert into T_HOUSEKEEPER_HOUSE_INFO (ORDER_ID, HOUSE_ID, BUILDING_ID, 
+      COMMUNITY_ID, UNIT_ID, STREET_ID, 
+      CITY_ID, USER_ID, BUILDYEAR, 
+      DOOR_NUM, ISFIRST, TOTALFLOOR, 
+      CURRENTFLOOR, ASPECT, BUILDINGSQUARE, 
+      LIVINGSQUARE, PROPERTY, DECORATELEVEL, 
+      FLOORPLANTYPE, ROOMCOUNT, LOUNGECOUNT, 
+      BATHROOMCOUNT, KITCHENCOUNT, BALCONYCOUNT, 
+      SQMPRICE, TOTALPRICE, TIMEOFLISTING, 
+      DATASOURCE, CONTACTPERSON, AGENCYCOMPANY, 
+      TELEPHONE, LONGITUDE, LATITUDE, 
+      REMARK, FLOORTYPE, IFLIFT, 
+      ARCHITECTUREPERIOD, DONEPERIOD, ABHOR_FACTOR, 
+      HOUSE_PROPERTY, CASE_SOURCE, PLANARSTRUCTURE, 
+      FLOORS_OCCUPPIED, FLOOR_START, COMMUNITYTYPE, 
+      BUILDINGTYPE, SUPPORTINGSERVICE, GOOD_FACTOR, 
+      CREATED_DT, STATUS, DEAL_PERSON, 
+      UPDATE_DATE, UPDATE_NUM, HOUSE_NAME, 
+      BUILDING_NAME, COMMUNITY_NAME, UNIT_NAME, 
+      STREET_NAME, PRECINCTID, PRECINCTNAME, 
+      DISTRICTID, DISTRICTNAME, CITY_NAME, 
+      USER_NAME, ADDRESS, IFAGENCY, 
+      STORE, PARKING_NUM, TOTALHOUSEHOLDCOUNT, 
+      COMMUNITYDESCRIPTION, BUILDINGAREA, LIVINGYEAR, 
+      UPFLOOR, GARDENAREA, UNDERAREA, 
+      GARAGENUM, OCCUPANCY, SCHOOL, 
+      TITLE, PMFEE, GREENINGRATE, 
+      PLOTRATIO, STR_ORDER, HOUSEPICTURE, 
+      ISREAL, SOURCEURL, RESERVE1, 
+      RESERVE2, RESERVE3, RESERVE4, 
+      RESERVE5, RESERVE6, IS_SALE, 
+      IS_RENT, IS_DEAL, RENT_TOTALPRICE, 
+      RENT_SQMPRICE, ROOM_TYPE_IMG, DEAL_TIME, 
+      LEASEHOLD_WAY, STORE_ID, AGENT_ID, 
+      RANGE_XYS, ASSESS_SALE_PRICE, ASSESS_RENT_PRICE, 
+      ASSESS_TIME)
+    values (#{orderId,jdbcType=DECIMAL}, #{houseId,jdbcType=DECIMAL}, #{buildingId,jdbcType=DECIMAL}, 
+      #{communityId,jdbcType=DECIMAL}, #{unitId,jdbcType=DECIMAL}, #{streetId,jdbcType=DECIMAL}, 
+      #{cityId,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, #{buildyear,jdbcType=VARCHAR}, 
+      #{doorNum,jdbcType=VARCHAR}, #{isfirst,jdbcType=DECIMAL}, #{totalfloor,jdbcType=DECIMAL}, 
+      #{currentfloor,jdbcType=DECIMAL}, #{aspect,jdbcType=VARCHAR}, #{buildingsquare,jdbcType=DECIMAL}, 
+      #{livingsquare,jdbcType=DECIMAL}, #{property,jdbcType=VARCHAR}, #{decoratelevel,jdbcType=VARCHAR}, 
+      #{floorplantype,jdbcType=VARCHAR}, #{roomcount,jdbcType=DECIMAL}, #{loungecount,jdbcType=DECIMAL}, 
+      #{bathroomcount,jdbcType=DECIMAL}, #{kitchencount,jdbcType=DECIMAL}, #{balconycount,jdbcType=DECIMAL}, 
+      #{sqmprice,jdbcType=DECIMAL}, #{totalprice,jdbcType=DECIMAL}, #{timeoflisting,jdbcType=DATE}, 
+      #{datasource,jdbcType=VARCHAR}, #{contactperson,jdbcType=VARCHAR}, #{agencycompany,jdbcType=VARCHAR}, 
+      #{telephone,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, 
+      #{remark,jdbcType=VARCHAR}, #{floortype,jdbcType=VARCHAR}, #{iflift,jdbcType=VARCHAR}, 
+      #{architectureperiod,jdbcType=VARCHAR}, #{doneperiod,jdbcType=VARCHAR}, #{abhorFactor,jdbcType=VARCHAR}, 
+      #{houseProperty,jdbcType=VARCHAR}, #{caseSource,jdbcType=VARCHAR}, #{planarstructure,jdbcType=VARCHAR}, 
+      #{floorsOccuppied,jdbcType=DECIMAL}, #{floorStart,jdbcType=DECIMAL}, #{communitytype,jdbcType=VARCHAR}, 
+      #{buildingtype,jdbcType=VARCHAR}, #{supportingservice,jdbcType=VARCHAR}, #{goodFactor,jdbcType=VARCHAR}, 
+      #{createdDt,jdbcType=DATE}, #{status,jdbcType=VARCHAR}, #{dealPerson,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=DATE}, #{updateNum,jdbcType=DECIMAL}, #{houseName,jdbcType=VARCHAR}, 
+      #{buildingName,jdbcType=VARCHAR}, #{communityName,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
+      #{streetName,jdbcType=VARCHAR}, #{precinctid,jdbcType=DECIMAL}, #{precinctname,jdbcType=VARCHAR}, 
+      #{districtid,jdbcType=DECIMAL}, #{districtname,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{ifagency,jdbcType=VARCHAR}, 
+      #{store,jdbcType=VARCHAR}, #{parkingNum,jdbcType=DECIMAL}, #{totalhouseholdcount,jdbcType=DECIMAL}, 
+      #{communitydescription,jdbcType=VARCHAR}, #{buildingarea,jdbcType=DECIMAL}, #{livingyear,jdbcType=DECIMAL}, 
+      #{upfloor,jdbcType=DECIMAL}, #{gardenarea,jdbcType=DECIMAL}, #{underarea,jdbcType=DECIMAL}, 
+      #{garagenum,jdbcType=DECIMAL}, #{occupancy,jdbcType=DECIMAL}, #{school,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{pmfee,jdbcType=DECIMAL}, #{greeningrate,jdbcType=DECIMAL}, 
+      #{plotratio,jdbcType=DECIMAL}, #{strOrder,jdbcType=VARCHAR}, #{housepicture,jdbcType=VARCHAR}, 
+      #{isreal,jdbcType=VARCHAR}, #{sourceurl,jdbcType=VARCHAR}, #{reserve1,jdbcType=VARCHAR}, 
+      #{reserve2,jdbcType=VARCHAR}, #{reserve3,jdbcType=VARCHAR}, #{reserve4,jdbcType=VARCHAR}, 
+      #{reserve5,jdbcType=VARCHAR}, #{reserve6,jdbcType=VARCHAR}, #{isSale,jdbcType=DECIMAL}, 
+      #{isRent,jdbcType=DECIMAL}, #{isDeal,jdbcType=DECIMAL}, #{rentTotalprice,jdbcType=DECIMAL}, 
+      #{rentSqmprice,jdbcType=DECIMAL}, #{roomTypeImg,jdbcType=VARCHAR}, #{dealTime,jdbcType=DATE}, 
+      #{leaseholdWay,jdbcType=VARCHAR}, #{storeId,jdbcType=VARCHAR}, #{agentId,jdbcType=VARCHAR}, 
+      #{rangeXys,jdbcType=VARCHAR}, #{assessSalePrice,jdbcType=DECIMAL}, #{assessRentPrice,jdbcType=DECIMAL}, 
+      #{assessTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.HouseInfo" keyProperty="HOUSE_ID">
+    <selectKey keyProperty='HOUSE_ID' resultType='long' order='BEFORE'  >
+      select LAST_INSERT_ID();
+    </selectKey>
+    insert into T_HOUSEKEEPER_HOUSE_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="houseId != null" >
+        HOUSE_ID,
+      </if>
+      <if test="buildingId != null" >
+        BUILDING_ID,
+      </if>
+      <if test="communityId != null" >
+        COMMUNITY_ID,
+      </if>
+      <if test="unitId != null" >
+        UNIT_ID,
+      </if>
+      <if test="streetId != null" >
+        STREET_ID,
+      </if>
+      <if test="cityId != null" >
+        CITY_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="buildyear != null" >
+        BUILDYEAR,
+      </if>
+      <if test="doorNum != null" >
+        DOOR_NUM,
+      </if>
+      <if test="isfirst != null" >
+        ISFIRST,
+      </if>
+      <if test="totalfloor != null" >
+        TOTALFLOOR,
+      </if>
+      <if test="currentfloor != null" >
+        CURRENTFLOOR,
+      </if>
+      <if test="aspect != null" >
+        ASPECT,
+      </if>
+      <if test="buildingsquare != null" >
+        BUILDINGSQUARE,
+      </if>
+      <if test="livingsquare != null" >
+        LIVINGSQUARE,
+      </if>
+      <if test="property != null" >
+        PROPERTY,
+      </if>
+      <if test="decoratelevel != null" >
+        DECORATELEVEL,
+      </if>
+      <if test="floorplantype != null" >
+        FLOORPLANTYPE,
+      </if>
+      <if test="roomcount != null" >
+        ROOMCOUNT,
+      </if>
+      <if test="loungecount != null" >
+        LOUNGECOUNT,
+      </if>
+      <if test="bathroomcount != null" >
+        BATHROOMCOUNT,
+      </if>
+      <if test="kitchencount != null" >
+        KITCHENCOUNT,
+      </if>
+      <if test="balconycount != null" >
+        BALCONYCOUNT,
+      </if>
+      <if test="sqmprice != null" >
+        SQMPRICE,
+      </if>
+      <if test="totalprice != null" >
+        TOTALPRICE,
+      </if>
+      <if test="timeoflisting != null" >
+        TIMEOFLISTING,
+      </if>
+      <if test="datasource != null" >
+        DATASOURCE,
+      </if>
+      <if test="contactperson != null" >
+        CONTACTPERSON,
+      </if>
+      <if test="agencycompany != null" >
+        AGENCYCOMPANY,
+      </if>
+      <if test="telephone != null" >
+        TELEPHONE,
+      </if>
+      <if test="longitude != null" >
+        LONGITUDE,
+      </if>
+      <if test="latitude != null" >
+        LATITUDE,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="floortype != null" >
+        FLOORTYPE,
+      </if>
+      <if test="iflift != null" >
+        IFLIFT,
+      </if>
+      <if test="architectureperiod != null" >
+        ARCHITECTUREPERIOD,
+      </if>
+      <if test="doneperiod != null" >
+        DONEPERIOD,
+      </if>
+      <if test="abhorFactor != null" >
+        ABHOR_FACTOR,
+      </if>
+      <if test="houseProperty != null" >
+        HOUSE_PROPERTY,
+      </if>
+      <if test="caseSource != null" >
+        CASE_SOURCE,
+      </if>
+      <if test="planarstructure != null" >
+        PLANARSTRUCTURE,
+      </if>
+      <if test="floorsOccuppied != null" >
+        FLOORS_OCCUPPIED,
+      </if>
+      <if test="floorStart != null" >
+        FLOOR_START,
+      </if>
+      <if test="communitytype != null" >
+        COMMUNITYTYPE,
+      </if>
+      <if test="buildingtype != null" >
+        BUILDINGTYPE,
+      </if>
+      <if test="supportingservice != null" >
+        SUPPORTINGSERVICE,
+      </if>
+      <if test="goodFactor != null" >
+        GOOD_FACTOR,
+      </if>
+      <if test="createdDt != null" >
+        CREATED_DT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="dealPerson != null" >
+        DEAL_PERSON,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+      <if test="updateNum != null" >
+        UPDATE_NUM,
+      </if>
+      <if test="houseName != null" >
+        HOUSE_NAME,
+      </if>
+      <if test="buildingName != null" >
+        BUILDING_NAME,
+      </if>
+      <if test="communityName != null" >
+        COMMUNITY_NAME,
+      </if>
+      <if test="unitName != null" >
+        UNIT_NAME,
+      </if>
+      <if test="streetName != null" >
+        STREET_NAME,
+      </if>
+      <if test="precinctid != null" >
+        PRECINCTID,
+      </if>
+      <if test="precinctname != null" >
+        PRECINCTNAME,
+      </if>
+      <if test="districtid != null" >
+        DISTRICTID,
+      </if>
+      <if test="districtname != null" >
+        DISTRICTNAME,
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="ifagency != null" >
+        IFAGENCY,
+      </if>
+      <if test="store != null" >
+        STORE,
+      </if>
+      <if test="parkingNum != null" >
+        PARKING_NUM,
+      </if>
+      <if test="totalhouseholdcount != null" >
+        TOTALHOUSEHOLDCOUNT,
+      </if>
+      <if test="communitydescription != null" >
+        COMMUNITYDESCRIPTION,
+      </if>
+      <if test="buildingarea != null" >
+        BUILDINGAREA,
+      </if>
+      <if test="livingyear != null" >
+        LIVINGYEAR,
+      </if>
+      <if test="upfloor != null" >
+        UPFLOOR,
+      </if>
+      <if test="gardenarea != null" >
+        GARDENAREA,
+      </if>
+      <if test="underarea != null" >
+        UNDERAREA,
+      </if>
+      <if test="garagenum != null" >
+        GARAGENUM,
+      </if>
+      <if test="occupancy != null" >
+        OCCUPANCY,
+      </if>
+      <if test="school != null" >
+        SCHOOL,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="pmfee != null" >
+        PMFEE,
+      </if>
+      <if test="greeningrate != null" >
+        GREENINGRATE,
+      </if>
+      <if test="plotratio != null" >
+        PLOTRATIO,
+      </if>
+      <if test="strOrder != null" >
+        STR_ORDER,
+      </if>
+      <if test="housepicture != null" >
+        HOUSEPICTURE,
+      </if>
+      <if test="isreal != null" >
+        ISREAL,
+      </if>
+      <if test="sourceurl != null" >
+        SOURCEURL,
+      </if>
+      <if test="reserve1 != null" >
+        RESERVE1,
+      </if>
+      <if test="reserve2 != null" >
+        RESERVE2,
+      </if>
+      <if test="reserve3 != null" >
+        RESERVE3,
+      </if>
+      <if test="reserve4 != null" >
+        RESERVE4,
+      </if>
+      <if test="reserve5 != null" >
+        RESERVE5,
+      </if>
+      <if test="reserve6 != null" >
+        RESERVE6,
+      </if>
+      <if test="isSale != null" >
+        IS_SALE,
+      </if>
+      <if test="isRent != null" >
+        IS_RENT,
+      </if>
+      <if test="isDeal != null" >
+        IS_DEAL,
+      </if>
+      <if test="rentTotalprice != null" >
+        RENT_TOTALPRICE,
+      </if>
+      <if test="rentSqmprice != null" >
+        RENT_SQMPRICE,
+      </if>
+      <if test="roomTypeImg != null" >
+        ROOM_TYPE_IMG,
+      </if>
+      <if test="dealTime != null" >
+        DEAL_TIME,
+      </if>
+      <if test="leaseholdWay != null" >
+        LEASEHOLD_WAY,
+      </if>
+      <if test="storeId != null" >
+        STORE_ID,
+      </if>
+      <if test="agentId != null" >
+        AGENT_ID,
+      </if>
+      <if test="rangeXys != null" >
+        RANGE_XYS,
+      </if>
+      <if test="assessSalePrice != null" >
+        ASSESS_SALE_PRICE,
+      </if>
+      <if test="assessRentPrice != null" >
+        ASSESS_RENT_PRICE,
+      </if>
+      <if test="assessTime != null" >
+        ASSESS_TIME,
+      </if>
+      <if test="maxSalePrice != null" >
+        MAX_SALE_PRICE,
+      </if>
+      <if test="minSalePrice != null" >
+        MIN_SALE_PRICE,
+      </if>
+      <if test="maxRentPrice != null" >
+        MAX_RENT_PRICE,
+      </if>
+      <if test="minRentPrice != null" >
+        MIN_RENT_PRICE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        #{orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="houseId != null" >
+        #{houseId,jdbcType=DECIMAL},
+      </if>
+      <if test="buildingId != null" >
+        #{buildingId,jdbcType=DECIMAL},
+      </if>
+      <if test="communityId != null" >
+        #{communityId,jdbcType=DECIMAL},
+      </if>
+      <if test="unitId != null" >
+        #{unitId,jdbcType=DECIMAL},
+      </if>
+      <if test="streetId != null" >
+        #{streetId,jdbcType=DECIMAL},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="buildyear != null" >
+        #{buildyear,jdbcType=VARCHAR},
+      </if>
+      <if test="doorNum != null" >
+        #{doorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="isfirst != null" >
+        #{isfirst,jdbcType=DECIMAL},
+      </if>
+      <if test="totalfloor != null" >
+        #{totalfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="currentfloor != null" >
+        #{currentfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="aspect != null" >
+        #{aspect,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingsquare != null" >
+        #{buildingsquare,jdbcType=DECIMAL},
+      </if>
+      <if test="livingsquare != null" >
+        #{livingsquare,jdbcType=DECIMAL},
+      </if>
+      <if test="property != null" >
+        #{property,jdbcType=VARCHAR},
+      </if>
+      <if test="decoratelevel != null" >
+        #{decoratelevel,jdbcType=VARCHAR},
+      </if>
+      <if test="floorplantype != null" >
+        #{floorplantype,jdbcType=VARCHAR},
+      </if>
+      <if test="roomcount != null" >
+        #{roomcount,jdbcType=DECIMAL},
+      </if>
+      <if test="loungecount != null" >
+        #{loungecount,jdbcType=DECIMAL},
+      </if>
+      <if test="bathroomcount != null" >
+        #{bathroomcount,jdbcType=DECIMAL},
+      </if>
+      <if test="kitchencount != null" >
+        #{kitchencount,jdbcType=DECIMAL},
+      </if>
+      <if test="balconycount != null" >
+        #{balconycount,jdbcType=DECIMAL},
+      </if>
+      <if test="sqmprice != null" >
+        #{sqmprice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalprice != null" >
+        #{totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="timeoflisting != null" >
+        #{timeoflisting,jdbcType=DATE},
+      </if>
+      <if test="datasource != null" >
+        #{datasource,jdbcType=VARCHAR},
+      </if>
+      <if test="contactperson != null" >
+        #{contactperson,jdbcType=VARCHAR},
+      </if>
+      <if test="agencycompany != null" >
+        #{agencycompany,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="floortype != null" >
+        #{floortype,jdbcType=VARCHAR},
+      </if>
+      <if test="iflift != null" >
+        #{iflift,jdbcType=VARCHAR},
+      </if>
+      <if test="architectureperiod != null" >
+        #{architectureperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="doneperiod != null" >
+        #{doneperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="abhorFactor != null" >
+        #{abhorFactor,jdbcType=VARCHAR},
+      </if>
+      <if test="houseProperty != null" >
+        #{houseProperty,jdbcType=VARCHAR},
+      </if>
+      <if test="caseSource != null" >
+        #{caseSource,jdbcType=VARCHAR},
+      </if>
+      <if test="planarstructure != null" >
+        #{planarstructure,jdbcType=VARCHAR},
+      </if>
+      <if test="floorsOccuppied != null" >
+        #{floorsOccuppied,jdbcType=DECIMAL},
+      </if>
+      <if test="floorStart != null" >
+        #{floorStart,jdbcType=DECIMAL},
+      </if>
+      <if test="communitytype != null" >
+        #{communitytype,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingtype != null" >
+        #{buildingtype,jdbcType=VARCHAR},
+      </if>
+      <if test="supportingservice != null" >
+        #{supportingservice,jdbcType=VARCHAR},
+      </if>
+      <if test="goodFactor != null" >
+        #{goodFactor,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDt != null" >
+        #{createdDt,jdbcType=DATE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealPerson != null" >
+        #{dealPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="updateNum != null" >
+        #{updateNum,jdbcType=DECIMAL},
+      </if>
+      <if test="houseName != null" >
+        #{houseName,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingName != null" >
+        #{buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="communityName != null" >
+        #{communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null" >
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="streetName != null" >
+        #{streetName,jdbcType=VARCHAR},
+      </if>
+      <if test="precinctid != null" >
+        #{precinctid,jdbcType=DECIMAL},
+      </if>
+      <if test="precinctname != null" >
+        #{precinctname,jdbcType=VARCHAR},
+      </if>
+      <if test="districtid != null" >
+        #{districtid,jdbcType=DECIMAL},
+      </if>
+      <if test="districtname != null" >
+        #{districtname,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="ifagency != null" >
+        #{ifagency,jdbcType=VARCHAR},
+      </if>
+      <if test="store != null" >
+        #{store,jdbcType=VARCHAR},
+      </if>
+      <if test="parkingNum != null" >
+        #{parkingNum,jdbcType=DECIMAL},
+      </if>
+      <if test="totalhouseholdcount != null" >
+        #{totalhouseholdcount,jdbcType=DECIMAL},
+      </if>
+      <if test="communitydescription != null" >
+        #{communitydescription,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingarea != null" >
+        #{buildingarea,jdbcType=DECIMAL},
+      </if>
+      <if test="livingyear != null" >
+        #{livingyear,jdbcType=DECIMAL},
+      </if>
+      <if test="upfloor != null" >
+        #{upfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="gardenarea != null" >
+        #{gardenarea,jdbcType=DECIMAL},
+      </if>
+      <if test="underarea != null" >
+        #{underarea,jdbcType=DECIMAL},
+      </if>
+      <if test="garagenum != null" >
+        #{garagenum,jdbcType=DECIMAL},
+      </if>
+      <if test="occupancy != null" >
+        #{occupancy,jdbcType=DECIMAL},
+      </if>
+      <if test="school != null" >
+        #{school,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="pmfee != null" >
+        #{pmfee,jdbcType=DECIMAL},
+      </if>
+      <if test="greeningrate != null" >
+        #{greeningrate,jdbcType=DECIMAL},
+      </if>
+      <if test="plotratio != null" >
+        #{plotratio,jdbcType=DECIMAL},
+      </if>
+      <if test="strOrder != null" >
+        #{strOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="housepicture != null" >
+        #{housepicture,jdbcType=VARCHAR},
+      </if>
+      <if test="isreal != null" >
+        #{isreal,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceurl != null" >
+        #{sourceurl,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve1 != null" >
+        #{reserve1,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve2 != null" >
+        #{reserve2,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve3 != null" >
+        #{reserve3,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve4 != null" >
+        #{reserve4,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve5 != null" >
+        #{reserve5,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve6 != null" >
+        #{reserve6,jdbcType=VARCHAR},
+      </if>
+      <if test="isSale != null" >
+        #{isSale,jdbcType=DECIMAL},
+      </if>
+      <if test="isRent != null" >
+        #{isRent,jdbcType=DECIMAL},
+      </if>
+      <if test="isDeal != null" >
+        #{isDeal,jdbcType=DECIMAL},
+      </if>
+      <if test="rentTotalprice != null" >
+        #{rentTotalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="rentSqmprice != null" >
+        #{rentSqmprice,jdbcType=DECIMAL},
+      </if>
+      <if test="roomTypeImg != null" >
+        #{roomTypeImg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealTime != null" >
+        #{dealTime,jdbcType=DATE},
+      </if>
+      <if test="leaseholdWay != null" >
+        #{leaseholdWay,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null" >
+        #{storeId,jdbcType=VARCHAR},
+      </if>
+      <if test="agentId != null" >
+        #{agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="rangeXys != null" >
+        #{rangeXys,jdbcType=VARCHAR},
+      </if>
+      <if test="assessSalePrice != null" >
+        #{assessSalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="assessRentPrice != null" >
+        #{assessRentPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="assessTime != null" >
+        #{assessTime,jdbcType=DATE},
+      </if>
+      <if test="maxSalePrice != null" >
+        #{maxSalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="minSalePrice != null" >
+        #{minSalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="maxRentPrice != null" >
+        #{maxRentPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="minRentPrice != null" >
+        #{minRentPrice,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.HouseInfoExample" resultType="java.lang.Long" >
+    select count(*) from T_HOUSEKEEPER_HOUSE_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_HOUSEKEEPER_HOUSE_INFO
+    <set >
+      <if test="record.orderId != null" >
+        ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.houseId != null" >
+        HOUSE_ID = #{record.houseId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.buildingId != null" >
+        BUILDING_ID = #{record.buildingId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.communityId != null" >
+        COMMUNITY_ID = #{record.communityId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.unitId != null" >
+        UNIT_ID = #{record.unitId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.streetId != null" >
+        STREET_ID = #{record.streetId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cityId != null" >
+        CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildyear != null" >
+        BUILDYEAR = #{record.buildyear,jdbcType=VARCHAR},
+      </if>
+      <if test="record.doorNum != null" >
+        DOOR_NUM = #{record.doorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isfirst != null" >
+        ISFIRST = #{record.isfirst,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalfloor != null" >
+        TOTALFLOOR = #{record.totalfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="record.currentfloor != null" >
+        CURRENTFLOOR = #{record.currentfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="record.aspect != null" >
+        ASPECT = #{record.aspect,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildingsquare != null" >
+        BUILDINGSQUARE = #{record.buildingsquare,jdbcType=DECIMAL},
+      </if>
+      <if test="record.livingsquare != null" >
+        LIVINGSQUARE = #{record.livingsquare,jdbcType=DECIMAL},
+      </if>
+      <if test="record.property != null" >
+        PROPERTY = #{record.property,jdbcType=VARCHAR},
+      </if>
+      <if test="record.decoratelevel != null" >
+        DECORATELEVEL = #{record.decoratelevel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.floorplantype != null" >
+        FLOORPLANTYPE = #{record.floorplantype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roomcount != null" >
+        ROOMCOUNT = #{record.roomcount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.loungecount != null" >
+        LOUNGECOUNT = #{record.loungecount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bathroomcount != null" >
+        BATHROOMCOUNT = #{record.bathroomcount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.kitchencount != null" >
+        KITCHENCOUNT = #{record.kitchencount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.balconycount != null" >
+        BALCONYCOUNT = #{record.balconycount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sqmprice != null" >
+        SQMPRICE = #{record.sqmprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalprice != null" >
+        TOTALPRICE = #{record.totalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.timeoflisting != null" >
+        TIMEOFLISTING = #{record.timeoflisting,jdbcType=DATE},
+      </if>
+      <if test="record.datasource != null" >
+        DATASOURCE = #{record.datasource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contactperson != null" >
+        CONTACTPERSON = #{record.contactperson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agencycompany != null" >
+        AGENCYCOMPANY = #{record.agencycompany,jdbcType=VARCHAR},
+      </if>
+      <if test="record.telephone != null" >
+        TELEPHONE = #{record.telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.longitude != null" >
+        LONGITUDE = #{record.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.latitude != null" >
+        LATITUDE = #{record.latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="record.remark != null" >
+        REMARK = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.floortype != null" >
+        FLOORTYPE = #{record.floortype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.iflift != null" >
+        IFLIFT = #{record.iflift,jdbcType=VARCHAR},
+      </if>
+      <if test="record.architectureperiod != null" >
+        ARCHITECTUREPERIOD = #{record.architectureperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.doneperiod != null" >
+        DONEPERIOD = #{record.doneperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.abhorFactor != null" >
+        ABHOR_FACTOR = #{record.abhorFactor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.houseProperty != null" >
+        HOUSE_PROPERTY = #{record.houseProperty,jdbcType=VARCHAR},
+      </if>
+      <if test="record.caseSource != null" >
+        CASE_SOURCE = #{record.caseSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.planarstructure != null" >
+        PLANARSTRUCTURE = #{record.planarstructure,jdbcType=VARCHAR},
+      </if>
+      <if test="record.floorsOccuppied != null" >
+        FLOORS_OCCUPPIED = #{record.floorsOccuppied,jdbcType=DECIMAL},
+      </if>
+      <if test="record.floorStart != null" >
+        FLOOR_START = #{record.floorStart,jdbcType=DECIMAL},
+      </if>
+      <if test="record.communitytype != null" >
+        COMMUNITYTYPE = #{record.communitytype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildingtype != null" >
+        BUILDINGTYPE = #{record.buildingtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.supportingservice != null" >
+        SUPPORTINGSERVICE = #{record.supportingservice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodFactor != null" >
+        GOOD_FACTOR = #{record.goodFactor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createdDt != null" >
+        CREATED_DT = #{record.createdDt,jdbcType=DATE},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealPerson != null" >
+        DEAL_PERSON = #{record.dealPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null" >
+        UPDATE_DATE = #{record.updateDate,jdbcType=DATE},
+      </if>
+      <if test="record.updateNum != null" >
+        UPDATE_NUM = #{record.updateNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.houseName != null" >
+        HOUSE_NAME = #{record.houseName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildingName != null" >
+        BUILDING_NAME = #{record.buildingName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.communityName != null" >
+        COMMUNITY_NAME = #{record.communityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.unitName != null" >
+        UNIT_NAME = #{record.unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.streetName != null" >
+        STREET_NAME = #{record.streetName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.precinctid != null" >
+        PRECINCTID = #{record.precinctid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.precinctname != null" >
+        PRECINCTNAME = #{record.precinctname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.districtid != null" >
+        DISTRICTID = #{record.districtid,jdbcType=DECIMAL},
+      </if>
+      <if test="record.districtname != null" >
+        DISTRICTNAME = #{record.districtname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cityName != null" >
+        CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null" >
+        USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null" >
+        ADDRESS = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ifagency != null" >
+        IFAGENCY = #{record.ifagency,jdbcType=VARCHAR},
+      </if>
+      <if test="record.store != null" >
+        STORE = #{record.store,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parkingNum != null" >
+        PARKING_NUM = #{record.parkingNum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalhouseholdcount != null" >
+        TOTALHOUSEHOLDCOUNT = #{record.totalhouseholdcount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.communitydescription != null" >
+        COMMUNITYDESCRIPTION = #{record.communitydescription,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buildingarea != null" >
+        BUILDINGAREA = #{record.buildingarea,jdbcType=DECIMAL},
+      </if>
+      <if test="record.livingyear != null" >
+        LIVINGYEAR = #{record.livingyear,jdbcType=DECIMAL},
+      </if>
+      <if test="record.upfloor != null" >
+        UPFLOOR = #{record.upfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="record.gardenarea != null" >
+        GARDENAREA = #{record.gardenarea,jdbcType=DECIMAL},
+      </if>
+      <if test="record.underarea != null" >
+        UNDERAREA = #{record.underarea,jdbcType=DECIMAL},
+      </if>
+      <if test="record.garagenum != null" >
+        GARAGENUM = #{record.garagenum,jdbcType=DECIMAL},
+      </if>
+      <if test="record.occupancy != null" >
+        OCCUPANCY = #{record.occupancy,jdbcType=DECIMAL},
+      </if>
+      <if test="record.school != null" >
+        SCHOOL = #{record.school,jdbcType=VARCHAR},
+      </if>
+      <if test="record.title != null" >
+        TITLE = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmfee != null" >
+        PMFEE = #{record.pmfee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.greeningrate != null" >
+        GREENINGRATE = #{record.greeningrate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.plotratio != null" >
+        PLOTRATIO = #{record.plotratio,jdbcType=DECIMAL},
+      </if>
+      <if test="record.strOrder != null" >
+        STR_ORDER = #{record.strOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.housepicture != null" >
+        HOUSEPICTURE = #{record.housepicture,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isreal != null" >
+        ISREAL = #{record.isreal,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sourceurl != null" >
+        SOURCEURL = #{record.sourceurl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve1 != null" >
+        RESERVE1 = #{record.reserve1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve2 != null" >
+        RESERVE2 = #{record.reserve2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve3 != null" >
+        RESERVE3 = #{record.reserve3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve4 != null" >
+        RESERVE4 = #{record.reserve4,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve5 != null" >
+        RESERVE5 = #{record.reserve5,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve6 != null" >
+        RESERVE6 = #{record.reserve6,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isSale != null" >
+        IS_SALE = #{record.isSale,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isRent != null" >
+        IS_RENT = #{record.isRent,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isDeal != null" >
+        IS_DEAL = #{record.isDeal,jdbcType=DECIMAL},
+      </if>
+      <if test="record.rentTotalprice != null" >
+        RENT_TOTALPRICE = #{record.rentTotalprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.rentSqmprice != null" >
+        RENT_SQMPRICE = #{record.rentSqmprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.roomTypeImg != null" >
+        ROOM_TYPE_IMG = #{record.roomTypeImg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealTime != null" >
+        DEAL_TIME = #{record.dealTime,jdbcType=DATE},
+      </if>
+      <if test="record.leaseholdWay != null" >
+        LEASEHOLD_WAY = #{record.leaseholdWay,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storeId != null" >
+        STORE_ID = #{record.storeId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.agentId != null" >
+        AGENT_ID = #{record.agentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rangeXys != null" >
+        RANGE_XYS = #{record.rangeXys,jdbcType=VARCHAR},
+      </if>
+      <if test="record.assessSalePrice != null" >
+        ASSESS_SALE_PRICE = #{record.assessSalePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.assessRentPrice != null" >
+        ASSESS_RENT_PRICE = #{record.assessRentPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.assessTime != null" >
+        ASSESS_TIME = #{record.assessTime,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_HOUSEKEEPER_HOUSE_INFO
+    set ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      HOUSE_ID = #{record.houseId,jdbcType=DECIMAL},
+      BUILDING_ID = #{record.buildingId,jdbcType=DECIMAL},
+      COMMUNITY_ID = #{record.communityId,jdbcType=DECIMAL},
+      UNIT_ID = #{record.unitId,jdbcType=DECIMAL},
+      STREET_ID = #{record.streetId,jdbcType=DECIMAL},
+      CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      BUILDYEAR = #{record.buildyear,jdbcType=VARCHAR},
+      DOOR_NUM = #{record.doorNum,jdbcType=VARCHAR},
+      ISFIRST = #{record.isfirst,jdbcType=DECIMAL},
+      TOTALFLOOR = #{record.totalfloor,jdbcType=DECIMAL},
+      CURRENTFLOOR = #{record.currentfloor,jdbcType=DECIMAL},
+      ASPECT = #{record.aspect,jdbcType=VARCHAR},
+      BUILDINGSQUARE = #{record.buildingsquare,jdbcType=DECIMAL},
+      LIVINGSQUARE = #{record.livingsquare,jdbcType=DECIMAL},
+      PROPERTY = #{record.property,jdbcType=VARCHAR},
+      DECORATELEVEL = #{record.decoratelevel,jdbcType=VARCHAR},
+      FLOORPLANTYPE = #{record.floorplantype,jdbcType=VARCHAR},
+      ROOMCOUNT = #{record.roomcount,jdbcType=DECIMAL},
+      LOUNGECOUNT = #{record.loungecount,jdbcType=DECIMAL},
+      BATHROOMCOUNT = #{record.bathroomcount,jdbcType=DECIMAL},
+      KITCHENCOUNT = #{record.kitchencount,jdbcType=DECIMAL},
+      BALCONYCOUNT = #{record.balconycount,jdbcType=DECIMAL},
+      SQMPRICE = #{record.sqmprice,jdbcType=DECIMAL},
+      TOTALPRICE = #{record.totalprice,jdbcType=DECIMAL},
+      TIMEOFLISTING = #{record.timeoflisting,jdbcType=DATE},
+      DATASOURCE = #{record.datasource,jdbcType=VARCHAR},
+      CONTACTPERSON = #{record.contactperson,jdbcType=VARCHAR},
+      AGENCYCOMPANY = #{record.agencycompany,jdbcType=VARCHAR},
+      TELEPHONE = #{record.telephone,jdbcType=VARCHAR},
+      LONGITUDE = #{record.longitude,jdbcType=DECIMAL},
+      LATITUDE = #{record.latitude,jdbcType=DECIMAL},
+      REMARK = #{record.remark,jdbcType=VARCHAR},
+      FLOORTYPE = #{record.floortype,jdbcType=VARCHAR},
+      IFLIFT = #{record.iflift,jdbcType=VARCHAR},
+      ARCHITECTUREPERIOD = #{record.architectureperiod,jdbcType=VARCHAR},
+      DONEPERIOD = #{record.doneperiod,jdbcType=VARCHAR},
+      ABHOR_FACTOR = #{record.abhorFactor,jdbcType=VARCHAR},
+      HOUSE_PROPERTY = #{record.houseProperty,jdbcType=VARCHAR},
+      CASE_SOURCE = #{record.caseSource,jdbcType=VARCHAR},
+      PLANARSTRUCTURE = #{record.planarstructure,jdbcType=VARCHAR},
+      FLOORS_OCCUPPIED = #{record.floorsOccuppied,jdbcType=DECIMAL},
+      FLOOR_START = #{record.floorStart,jdbcType=DECIMAL},
+      COMMUNITYTYPE = #{record.communitytype,jdbcType=VARCHAR},
+      BUILDINGTYPE = #{record.buildingtype,jdbcType=VARCHAR},
+      SUPPORTINGSERVICE = #{record.supportingservice,jdbcType=VARCHAR},
+      GOOD_FACTOR = #{record.goodFactor,jdbcType=VARCHAR},
+      CREATED_DT = #{record.createdDt,jdbcType=DATE},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      DEAL_PERSON = #{record.dealPerson,jdbcType=VARCHAR},
+      UPDATE_DATE = #{record.updateDate,jdbcType=DATE},
+      UPDATE_NUM = #{record.updateNum,jdbcType=DECIMAL},
+      HOUSE_NAME = #{record.houseName,jdbcType=VARCHAR},
+      BUILDING_NAME = #{record.buildingName,jdbcType=VARCHAR},
+      COMMUNITY_NAME = #{record.communityName,jdbcType=VARCHAR},
+      UNIT_NAME = #{record.unitName,jdbcType=VARCHAR},
+      STREET_NAME = #{record.streetName,jdbcType=VARCHAR},
+      PRECINCTID = #{record.precinctid,jdbcType=DECIMAL},
+      PRECINCTNAME = #{record.precinctname,jdbcType=VARCHAR},
+      DISTRICTID = #{record.districtid,jdbcType=DECIMAL},
+      DISTRICTNAME = #{record.districtname,jdbcType=VARCHAR},
+      CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      USER_NAME = #{record.userName,jdbcType=VARCHAR},
+      ADDRESS = #{record.address,jdbcType=VARCHAR},
+      IFAGENCY = #{record.ifagency,jdbcType=VARCHAR},
+      STORE = #{record.store,jdbcType=VARCHAR},
+      PARKING_NUM = #{record.parkingNum,jdbcType=DECIMAL},
+      TOTALHOUSEHOLDCOUNT = #{record.totalhouseholdcount,jdbcType=DECIMAL},
+      COMMUNITYDESCRIPTION = #{record.communitydescription,jdbcType=VARCHAR},
+      BUILDINGAREA = #{record.buildingarea,jdbcType=DECIMAL},
+      LIVINGYEAR = #{record.livingyear,jdbcType=DECIMAL},
+      UPFLOOR = #{record.upfloor,jdbcType=DECIMAL},
+      GARDENAREA = #{record.gardenarea,jdbcType=DECIMAL},
+      UNDERAREA = #{record.underarea,jdbcType=DECIMAL},
+      GARAGENUM = #{record.garagenum,jdbcType=DECIMAL},
+      OCCUPANCY = #{record.occupancy,jdbcType=DECIMAL},
+      SCHOOL = #{record.school,jdbcType=VARCHAR},
+      TITLE = #{record.title,jdbcType=VARCHAR},
+      PMFEE = #{record.pmfee,jdbcType=DECIMAL},
+      GREENINGRATE = #{record.greeningrate,jdbcType=DECIMAL},
+      PLOTRATIO = #{record.plotratio,jdbcType=DECIMAL},
+      STR_ORDER = #{record.strOrder,jdbcType=VARCHAR},
+      HOUSEPICTURE = #{record.housepicture,jdbcType=VARCHAR},
+      ISREAL = #{record.isreal,jdbcType=VARCHAR},
+      SOURCEURL = #{record.sourceurl,jdbcType=VARCHAR},
+      RESERVE1 = #{record.reserve1,jdbcType=VARCHAR},
+      RESERVE2 = #{record.reserve2,jdbcType=VARCHAR},
+      RESERVE3 = #{record.reserve3,jdbcType=VARCHAR},
+      RESERVE4 = #{record.reserve4,jdbcType=VARCHAR},
+      RESERVE5 = #{record.reserve5,jdbcType=VARCHAR},
+      RESERVE6 = #{record.reserve6,jdbcType=VARCHAR},
+      IS_SALE = #{record.isSale,jdbcType=DECIMAL},
+      IS_RENT = #{record.isRent,jdbcType=DECIMAL},
+      IS_DEAL = #{record.isDeal,jdbcType=DECIMAL},
+      RENT_TOTALPRICE = #{record.rentTotalprice,jdbcType=DECIMAL},
+      RENT_SQMPRICE = #{record.rentSqmprice,jdbcType=DECIMAL},
+      ROOM_TYPE_IMG = #{record.roomTypeImg,jdbcType=VARCHAR},
+      DEAL_TIME = #{record.dealTime,jdbcType=DATE},
+      LEASEHOLD_WAY = #{record.leaseholdWay,jdbcType=VARCHAR},
+      STORE_ID = #{record.storeId,jdbcType=VARCHAR},
+      AGENT_ID = #{record.agentId,jdbcType=VARCHAR},
+      RANGE_XYS = #{record.rangeXys,jdbcType=VARCHAR},
+      ASSESS_SALE_PRICE = #{record.assessSalePrice,jdbcType=DECIMAL},
+      ASSESS_RENT_PRICE = #{record.assessRentPrice,jdbcType=DECIMAL},
+      ASSESS_TIME = #{record.assessTime,jdbcType=DATE}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <select id="selectHouseInfoByHouseId" parameterType="Integer" resultMap="BaseResultMap">
+  	select *
+  	from T_HOUSEKEEPER_HOUSE_INFO
+  	where
+  	STATUS = 1 AND
+  	HOUSE_ID = #{houseId}
+  </select>
+
+  <select id="getHouseTop"  resultType="java.util.Map" parameterType="com.cindata.housekeeper.core.entity.Parameter">
+    select * from (
+
+    <if test="type == 1">
+      SELECT
+      c.PROVINCE_NAME as name,
+      COUNT (c.PROVINCE_NAME) as count
+      FROM
+      t_housekeeper_house_info t,"APPLY".CITY_INFO c
+      WHERE
+      1=1
+      <if test="groupId != null and groupId != ''">
+        and t.reserve1 = #{groupId,jdbcType=VARCHAR}
+      </if>
+      and t.CITY_ID=c.CITY_ID
+      AND t.status = 1
+      GROUP BY
+      c.PROVINCE_NAME
+      ORDER BY count desc
+    </if>
+
+    <if test="type==2">
+      SELECT
+      c.CITY_NAME as name,
+      COUNT (c.CITY_NAME) as count
+      FROM
+      t_housekeeper_house_info t,"APPLY".CITY_INFO c
+      WHERE
+      1=1
+      <if test="groupId != null and groupId != ''">
+        and t.reserve1 = #{groupId,jdbcType=VARCHAR}
+      </if>
+      and t.CITY_ID=c.CITY_ID
+      AND t.status = 1
+      GROUP BY
+      c.CITY_NAME
+      ORDER BY count desc
+    </if>
+    )
+    <if test="topNum != null and topNum != ''">
+    where
+    ROWNUM &lt; #{topNum}
+    </if>
+  </select>
+
+  <select id="getHousePriceTop"  resultType="java.util.Map" parameterType="string" >
+
+    select t.* from (
+    SELECT
+    T .USER_ID,
+    nvl( ROUND( SUM (
+    T .ASSESS_SALE_PRICE * T .BUILDINGSQUARE
+    ) / 10000 ,0),0)
+   as price
+    FROM
+    t_housekeeper_house_info T
+    WHERE
+    T .STATUS = 1
+    <if test="groupId != null and groupId != ''">
+      and T .reserve1 = #{groupId}
+    </if>
+    GROUP BY
+    T .USER_ID
+    ) t
+    ORDER BY
+    t.price desc
+
+  </select>
+  <select id="getHouseList"  resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.core.entity.Parameter" >
+    select *
+    from
+    (
+    select p.*, rownum rn
+    from
+    (
+      SELECT
+      T .USER_ID,
+      T .ADDRESS,
+      T .COMMUNITY_NAME,
+      T .DOOR_NUM,
+      T .BUILDINGSQUARE,
+      T .ASSESS_SALE_PRICE,
+      T.BUILDING_ID,
+      T.UNIT_ID,
+      T .BUILDINGSQUARE * T .ASSESS_SALE_PRICE AS ASSESS_SALE_TOTALPRICE,
+      T .CREATED_DT
+      FROM
+      T_HOUSEKEEPER_HOUSE_INFO T
+      WHERE
+      T .STATUS = 1
+      <if test="groupId != null and groupId != ''">
+        AND
+        T .RESERVE1 = #{groupId}
+      </if>
+      <if test="cityId != null and cityId != ''">
+        AND
+        T .CITY_ID = #{cityId}
+      </if>
+      <if test="provinceId != null and provinceId != ''">
+        AND
+        T .RESERVE2 = #{provinceId}
+      </if>
+      <if test="districtId != null and districtId != ''">
+        AND
+        T .DISTRICTID = #{districtId}
+      </if>
+    <if test="userId != null and userId != ''">
+      and T.USER_ID like '%' || #{userId} || '%'
+    </if>
+    <if test="startDate != null and startDate != ''">
+      and  T .CREATED_DT &gt;= #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and  T .CREATED_DT &lt;= #{endDate,jdbcType=DATE}
+    </if>
+      ORDER BY t.CREATED_DT DESC
+    )p
+    where rownum &lt;= #{end_no}
+    )
+    where rn &gt;= #{start_no}
+
+  </select>
+
+  <select id="getHouseListCount" parameterType="com.cindata.housekeeper.core.entity.Parameter" resultType="java.util.Map">
+
+   SELECT
+	COUNT (*) as  houseCount,
+    nvl(
+    SUM (
+    T .BUILDINGSQUARE * T .ASSESS_SALE_PRICE
+    ),0
+    )
+	as housePrice,
+    nvl(
+	MAX (
+		(
+			SELECT
+				COUNT (*)
+			FROM
+				(
+					SELECT
+						COUNT (T .USER_ID)
+					FROM
+						T_HOUSEKEEPER_HOUSE_INFO T
+					WHERE
+    T .STATUS = 1
+    <if test="groupId != null and groupId != ''">
+      AND
+      T .RESERVE1 = #{groupId}
+    </if>
+    <if test="cityId != null and cityId != ''">
+      AND
+      T .CITY_ID = #{cityId}
+    </if>
+    <if test="provinceId != null and provinceId != ''">
+      AND
+      T .RESERVE2 = #{provinceId}
+    </if>
+    <if test="districtId != null and districtId != ''">
+      AND
+      T .DISTRICTID = #{districtId}
+    </if>
+    <if test="userId != null and userId != ''">
+      AND
+      T .USER_ID = #{userId}
+    </if>
+    <if test="startDate != null and startDate != ''">
+      and  T .CREATED_DT &gt;= #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and  T .CREATED_DT &lt;= #{endDate,jdbcType=DATE}
+    </if>
+					GROUP BY
+						T .USER_ID
+				)
+		)
+	),0
+    ) as userCount
+FROM
+	T_HOUSEKEEPER_HOUSE_INFO T
+WHERE
+    T .STATUS = 1
+    <if test="groupId != null and groupId != ''">
+      AND
+      T .RESERVE1 = #{groupId}
+    </if>
+    <if test="cityId != null and cityId != ''">
+      AND
+      T .CITY_ID = #{cityId}
+    </if>
+    <if test="provinceId != null and provinceId != ''">
+      AND
+      T .RESERVE2 = #{provinceId}
+    </if>
+    <if test="districtId != null and districtId != ''">
+      AND
+      T .DISTRICTID = #{districtId}
+    </if>
+    <if test="userId != null and userId != ''">
+      AND
+      T .USER_ID = #{userId}
+    </if>
+    <if test="startDate != null and startDate != ''">
+      and  T .CREATED_DT &gt;= #{startDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      and  T .CREATED_DT &lt;= #{endDate,jdbcType=DATE}
+    </if>
+  </select>
+  <select id="houseCountAndPrice"  parameterType="com.cindata.housekeeper.core.entity.Parameter" resultType="java.util.Map" >
+    select sum(t.ASSESS_SALE_PRICE * t.BUILDINGSQUARE) as price,count(*) as count
+      from T_HOUSEKEEPER_HOUSE_INFO t
+    WHERE
+    T .STATUS = 1
+      <if test="groupId != null and groupId != ''">
+        AND
+        T .reserve1 = #{groupId}
+      </if>
+      <if test="startDate != null and startDate != ''">
+        and  T .CREATED_DT &gt;= #{startDate,jdbcType=DATE}
+      </if>
+      <if test="endDate != null and endDate != ''">
+        and  T .CREATED_DT &lt;= #{endDate,jdbcType=DATE}
+      </if>
+     </select>
+
+  <select id="userAvgHouse"  parameterType="com.cindata.housekeeper.core.entity.Parameter" resultType="java.util.Map" >
+    SELECT
+    SUM (
+    T .ASSESS_SALE_PRICE * T .BUILDINGSQUARE
+    ),
+    COUNT (*),
+    MAX ((
+    SELECT
+    COUNT (DISTINCT(A .USER_ID))
+    FROM
+    T_HOUSEKEEPER_HOUSE_INFO A
+    where 1=1
+    <if test="groupId != null and groupId != ''">
+      AND
+      T .reserve1 = #{groupId}
+    </if>
+    )) as userName
+    FROM
+    T_HOUSEKEEPER_HOUSE_INFO T
+    WHERE
+    T .STATUS = 1
+    <if test="groupId != null and groupId != ''">
+      AND
+      T .reserve1 = #{groupId}
+    </if>
+
+  </select>
+   <select id="houseAvmDayLimit"  parameterType="com.cindata.housekeeper.core.entity.Parameter" resultType="java.lang.Integer" >
+   select count(*) from T_HOUSEKEEPER_HOUSE_INFO t WHERE ASSESS_TIME = #{assessTime} and USER_ID = #{userId}
+
+  </select>
+    <select id="houseAvmMonthLimit"  parameterType="com.cindata.housekeeper.core.entity.Parameter" resultType="java.lang.Integer" >
+   select count(*) from T_HOUSEKEEPER_HOUSE_INFO t WHERE ASSESS_TIME &lt;= #{endDate,jdbcType=DATE} and ASSESS_TIME &gt;= #{startDate,jdbcType=DATE} and USER_ID = #{userId}
+
+  </select>
+  
+   <select id="getHouseTopPx"  parameterType="string" resultMap="BaseResultMap" >
+  	select t.*,rownum from (
+    SELECT
+    T .USER_ID,
+    nvl( ROUND( SUM (
+    T .ASSESS_SALE_PRICE * T .BUILDINGSQUARE
+    ) / 10000 ,0),0)
+   as price
+    FROM
+    t_housekeeper_house_info T
+    WHERE
+    T .STATUS = 1
+    GROUP BY
+    T .USER_ID
+    ORDER BY
+    price desc
+    ) t
+    ORDER BY
+    t.price desc
+  </select>
+</mapper>

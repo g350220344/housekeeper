@@ -1,0 +1,22 @@
+/* nearby-page */
+.nearby_page {
+    position: relative;
+}
+.notice {
+    height: 0.72rem;
+    line-height: 0.72rem;
+    padding: 0 0.24rem;
+    padding-top: 0.1rem;
+    background-color: #fffdf2;
+    color: #e08d59;
+    font-size: 0.28rem;
+}
+.nearby_wrapper {
+    width: 100%;
+    position: absolute;
+    overflow: hidden;
+}
+.nearby_content {
+    padding-bottom: 0.1rem;
+    padding-top: 0.24rem;
+}

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cindata.housekeeper.wx.dao.WxPaymentLogMapper">
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.wx.model.WxPaymentLog">
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ORDER_ID" jdbcType="DECIMAL" property="orderId" />
+    <result column="GOODS_ID" jdbcType="DECIMAL" property="goodsId" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="PUT_DATA" jdbcType="VARCHAR" property="putData" />
+    <result column="GET_DATA" jdbcType="VARCHAR" property="getData" />
+    <result column="CREATE_TIME" jdbcType="DATE" property="createTime" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="COL1" jdbcType="VARCHAR" property="col1" />
+    <result column="COL2" jdbcType="VARCHAR" property="col2" />
+    <result column="COL3" jdbcType="VARCHAR" property="col3" />
+    <result column="COL4" jdbcType="VARCHAR" property="col4" />
+    <result column="COL5" jdbcType="VARCHAR" property="col5" />
+    <result column="COL6" jdbcType="VARCHAR" property="col6" />
+    <result column="RETCODE" jdbcType="VARCHAR" property="retcode" />
+    <result column="RETMSG" jdbcType="VARCHAR" property="retmsg" />
+    <result column="PAY_METHOD" jdbcType="VARCHAR" property="payMethod" />
+    <result column="CHANNEL" jdbcType="VARCHAR" property="channel" />
+    <result column="API_NAME" jdbcType="VARCHAR" property="apiName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    USER_ID, ORDER_ID, GOODS_ID, STATUS, PUT_DATA, GET_DATA, CREATE_TIME, IP, COL1, COL2, 
+    COL3, COL4, COL5, COL6, RETCODE, RETMSG, PAY_METHOD, CHANNEL, API_NAME
+  </sql>
+  <select id="selectByExample" parameterType="com.cindata.housekeeper.wx.model.WxPaymentLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from WX_HOUSEKEEPER_PAYMENT_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.wx.model.WxPaymentLogExample">
+    delete from WX_HOUSEKEEPER_PAYMENT_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.wx.model.WxPaymentLog">
+    insert into WX_HOUSEKEEPER_PAYMENT_LOG (USER_ID, ORDER_ID, GOODS_ID, 
+      STATUS, PUT_DATA, GET_DATA, 
+      CREATE_TIME, IP, COL1, 
+      COL2, COL3, COL4, COL5, 
+      COL6, RETCODE, RETMSG, 
+      PAY_METHOD, CHANNEL, API_NAME
+      )
+    values (#{userId,jdbcType=VARCHAR}, #{orderId,jdbcType=DECIMAL}, #{goodsId,jdbcType=DECIMAL}, 
+      #{status,jdbcType=DECIMAL}, #{putData,jdbcType=VARCHAR}, #{getData,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=DATE}, #{ip,jdbcType=VARCHAR}, #{col1,jdbcType=VARCHAR}, 
+      #{col2,jdbcType=VARCHAR}, #{col3,jdbcType=VARCHAR}, #{col4,jdbcType=VARCHAR}, #{col5,jdbcType=VARCHAR}, 
+      #{col6,jdbcType=VARCHAR}, #{retcode,jdbcType=VARCHAR}, #{retmsg,jdbcType=VARCHAR}, 
+      #{payMethod,jdbcType=VARCHAR}, #{channel,jdbcType=VARCHAR}, #{apiName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.wx.model.WxPaymentLog">
+    insert into WX_HOUSEKEEPER_PAYMENT_LOG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="orderId != null">
+        ORDER_ID,
+      </if>
+      <if test="goodsId != null">
+        GOODS_ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="putData != null">
+        PUT_DATA,
+      </if>
+      <if test="getData != null">
+        GET_DATA,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+      <if test="col1 != null">
+        COL1,
+      </if>
+      <if test="col2 != null">
+        COL2,
+      </if>
+      <if test="col3 != null">
+        COL3,
+      </if>
+      <if test="col4 != null">
+        COL4,
+      </if>
+      <if test="col5 != null">
+        COL5,
+      </if>
+      <if test="col6 != null">
+        COL6,
+      </if>
+      <if test="retcode != null">
+        RETCODE,
+      </if>
+      <if test="retmsg != null">
+        RETMSG,
+      </if>
+      <if test="payMethod != null">
+        PAY_METHOD,
+      </if>
+      <if test="channel != null">
+        CHANNEL,
+      </if>
+      <if test="apiName != null">
+        API_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="putData != null">
+        #{putData,jdbcType=VARCHAR},
+      </if>
+      <if test="getData != null">
+        #{getData,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="col1 != null">
+        #{col1,jdbcType=VARCHAR},
+      </if>
+      <if test="col2 != null">
+        #{col2,jdbcType=VARCHAR},
+      </if>
+      <if test="col3 != null">
+        #{col3,jdbcType=VARCHAR},
+      </if>
+      <if test="col4 != null">
+        #{col4,jdbcType=VARCHAR},
+      </if>
+      <if test="col5 != null">
+        #{col5,jdbcType=VARCHAR},
+      </if>
+      <if test="col6 != null">
+        #{col6,jdbcType=VARCHAR},
+      </if>
+      <if test="retcode != null">
+        #{retcode,jdbcType=VARCHAR},
+      </if>
+      <if test="retmsg != null">
+        #{retmsg,jdbcType=VARCHAR},
+      </if>
+      <if test="payMethod != null">
+        #{payMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="apiName != null">
+        #{apiName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.wx.model.WxPaymentLogExample" resultType="java.lang.Long">
+    select count(*) from WX_HOUSEKEEPER_PAYMENT_LOG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update WX_HOUSEKEEPER_PAYMENT_LOG
+    <set>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderId != null">
+        ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodsId != null">
+        GOODS_ID = #{record.goodsId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.putData != null">
+        PUT_DATA = #{record.putData,jdbcType=VARCHAR},
+      </if>
+      <if test="record.getData != null">
+        GET_DATA = #{record.getData,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        CREATE_TIME = #{record.createTime,jdbcType=DATE},
+      </if>
+      <if test="record.ip != null">
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col1 != null">
+        COL1 = #{record.col1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col2 != null">
+        COL2 = #{record.col2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col3 != null">
+        COL3 = #{record.col3,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col4 != null">
+        COL4 = #{record.col4,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col5 != null">
+        COL5 = #{record.col5,jdbcType=VARCHAR},
+      </if>
+      <if test="record.col6 != null">
+        COL6 = #{record.col6,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retcode != null">
+        RETCODE = #{record.retcode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.retmsg != null">
+        RETMSG = #{record.retmsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.payMethod != null">
+        PAY_METHOD = #{record.payMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.channel != null">
+        CHANNEL = #{record.channel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.apiName != null">
+        API_NAME = #{record.apiName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update WX_HOUSEKEEPER_PAYMENT_LOG
+    set USER_ID = #{record.userId,jdbcType=VARCHAR},
+      ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      GOODS_ID = #{record.goodsId,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      PUT_DATA = #{record.putData,jdbcType=VARCHAR},
+      GET_DATA = #{record.getData,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=DATE},
+      IP = #{record.ip,jdbcType=VARCHAR},
+      COL1 = #{record.col1,jdbcType=VARCHAR},
+      COL2 = #{record.col2,jdbcType=VARCHAR},
+      COL3 = #{record.col3,jdbcType=VARCHAR},
+      COL4 = #{record.col4,jdbcType=VARCHAR},
+      COL5 = #{record.col5,jdbcType=VARCHAR},
+      COL6 = #{record.col6,jdbcType=VARCHAR},
+      RETCODE = #{record.retcode,jdbcType=VARCHAR},
+      RETMSG = #{record.retmsg,jdbcType=VARCHAR},
+      PAY_METHOD = #{record.payMethod,jdbcType=VARCHAR},
+      CHANNEL = #{record.channel,jdbcType=VARCHAR},
+      API_NAME = #{record.apiName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

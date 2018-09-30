@@ -1,0 +1,265 @@
+var top_ten_city_list = [];
+var top_ten_province_list = [];
+var userTopTenList = [];
+$(function() {
+    load();
+    loadCityTopTen(1);
+    loadUserTopTen();
+    listener();
+})
+
+function initTable(obj) {
+    var html_str = "";
+    for(var i in obj) {
+        var item = obj[i];
+        html_str += '<tr>' +
+            '<td>' + (i * 1 + 1) + '</td>' + 
+            '<td>' + item.USER_ID + '</td>' + 
+            '<td>' + item.PRICE + '</td>' +            
+            // '<td class="text-navy">' + item.PRICE + '</td>' +
+        '</tr>';
+    }
+    $('#user_top_ten tbody').html(html_str);
+}
+
+function initInfo(data) {
+    $('#yes_increase').html(data.userCountYesterday)
+    $('#user_count').html(data.userCount); //总用户
+    $('#yes_login').html(data.userLoginYesterday);
+    $('#all_login').html(data.userLoginCount); //总登录
+
+    $('#houes_yes_increase').html(data.houseAddYesterday);
+
+    var house_yes_value_increase = formatValue(data.addAccessHouseYesterday);
+    $('#house_yes_value_increase').html(house_yes_value_increase.val);
+    $('#house_yes_value_increase_unit').html(house_yes_value_increase.unit);
+    
+    $('#house_total_count').html(data.houseCount);
+    var house_total_value = formatValue(data.AccessHouseTotal);
+    $('#house_total_value').html(house_total_value.val);
+    $('#house_total_value_unit').html(house_total_value.unit);
+    
+    var house_per_count = formatValue(data.userAvgHouse);
+    $('#house_per_count').html(house_per_count.val);
+    $('#house_per_count_unit').html(house_per_count.unit);
+    
+    var house_per_value = formatValue(data.userAvgHouseTotal);
+    $('#house_per_value').html(house_per_value.val);
+    $('#house_per_value_unit').html(house_per_value.unit);
+}
+
+
+
+function initChart(obj) {
+    $('#morris-bar-chart').html('');
+    Morris.Bar({ 
+        element: "morris-bar-chart", 
+        data: obj, 
+        xkey: "NAME", 
+        ykeys: ["COUNT"], 
+        labels: ["A系列"], 
+        width: 20,
+        hideHover: "auto", 
+        resize: !0, 
+        barColors: ["#2d8cf0", "#cacaca"] 
+    });
+}
+
+$('#morris-bar-chart').html('');
+function Drawing(chartData){
+    console.log('chartdata', chartData);
+    // var data = JSON.parse("["+priceData+"]");
+    // var showBar = timeData.length > 13 ? true : false;
+    var data = chartData.map(function(item) {
+        return {
+            name: item.NAME,
+            y: item.COUNT
+        }
+    });
+    var x_arr = chartData.map(function(item) {
+        return item.NAME
+    })
+    //曲线图
+    var chart = Highcharts.chart('morris-bar-chart', {
+        chart: {
+            type: 'column'
+        },
+        colors: ['#2d8cf0'],
+        title: {
+            text: ''
+        },
+        yAxis: {
+            lineWidth: 1,
+            title: {
+                // text: '(元/月)'
+                text: ''
+            }
+        },
+
+        credits: {
+            enabled:false
+        },
+        legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        xAxis: {
+            categories:x_arr
+            // scrollbar: {
+            //     enabled: showBar
+            // },
+            // min: 0,
+            // max: 12,
+            // tickLength: 0
+        },
+        // plotOptions: {
+        //     bar: {
+        //         dataLabels: {
+        //             enabled: showBar
+        //         }
+        //     },
+        //     line: {
+        //         connectNulls:true,//该设置会连接空值点
+        //         // gapSize:1,//缺失点小于gapSize则连接
+        //         /*dataLabels: {
+        //             enabled: true
+        //         },
+        //         enableMouseTracking: false*/
+        //     }
+        // },
+       /* plotOptions: {
+            series: {
+                /!* label: {
+                     connectorAllowed: false
+                 },
+                 pointStart: 2010*!/
+                data:["2017-09-01","2017-08-01"]
+            }
+        },*/
+        series: [{
+            name: '房产数量',
+            data: data
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+    });
+
+}
+
+function load() {
+    // loading.show();
+    var urlData = "";
+    link_public.method(server_url + '/rest/sys/house/houseAndUserData', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                initInfo(data);
+            }
+            console.log('data', json.data);
+        } else {
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+    });
+}
+
+function loadCityTopTen(index) {
+    if(index == 1 && top_ten_province_list.length > 0) {
+        Drawing(top_ten_province_list);
+        return;
+    }else if(index == 2 && top_ten_city_list.length > 0) {
+        Drawing(top_ten_city_list);
+        return;
+    }
+    var urlData = "type=" + index + '&topNum=' + 10;
+    link_public.method(server_url + '/rest/sys/house/getHouseTop', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                // initDistrictList(data);
+                if(index == 1) {
+                    top_ten_province_list = data;
+                }else {
+                    top_ten_city_list = data;
+                }
+                // initChart(data);
+                Drawing(data);
+            }
+            console.log('houseTopTen', json.data);
+        } else {
+            
+        }
+    });
+}
+
+function loadUserTopTen() {
+    // getHouseTop
+    var urlData = 'topNum=' + 10;
+    link_public.method(server_url + '/rest/sys/house/getHousePriceTop', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                initTable(data);
+            }
+            console.log('userTopTen', json.data);
+        } else {
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+    });
+}
+
+function listener() {
+    $('#top-btn-p').on('click', function(e) {
+        $('.btn-group button').removeClass('btn-white');
+        $(this).addClass('btn-success');
+        $('#top-btn-c').removeClass('btn-success').addClass('btn-white');
+        loadCityTopTen(1);
+    });
+    $('#top-btn-c').on('click', function(e) {
+        $('.btn-group button').removeClass('btn-white');
+        $(this).addClass('btn-success');
+        $('#top-btn-p').removeClass('btn-success').addClass('btn-white');
+        loadCityTopTen(2);
+    });
+    $('#ibox_user_data').on('click', function(e) {
+        window.parent.handleJump('link_user_manage');
+    });
+    $('#user_top_ten').on('click', function(e) {
+        window.parent.handleJump('link_user_manage');
+    });
+    
+    $('#ibox_house_data').on('click', function(e) {
+        window.parent.handleJump('link_house_data');
+    });
+    $('#house_top_ten').on('click', function(e) {
+        window.parent.handleJump('link_house_data');
+    });
+    
+}

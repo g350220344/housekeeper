@@ -1,0 +1,375 @@
+
+//小区ID
+var communityId;
+//城市码
+var cityId;
+var lng, lat;
+$(function () {
+	addHistoryBackListener('../houseproperty/my.html?url=../sell/index.html');
+	//房屋信息
+	selectHouseInfoByHouseId();
+
+	$('.tii p').click(function () {
+		var vv = $(this).index();
+		$('.tii p').removeClass('cor');
+		$(this).addClass('cor');
+		$('.tcc').hide();
+		$('.tcc').eq(vv).show();
+	});
+
+	$('.tii1 p').click(function () {
+		var vv = $(this).index();
+		$('.tii1 p').removeClass('cor');
+		$(this).addClass('cor');
+		$('.tcc1').hide();
+		$('.tcc1').eq(vv).show();
+	});
+
+	$('#add-house').on('click', function() {
+		showToast(0, '敬请期待');
+		// localStorage.setItem('valuation_origin', window.location.href);
+		// window.location.href = '../valuation/index.html';
+	})
+});
+
+
+//房屋信息
+function selectHouseInfoByHouseId() {
+	//loading.show();
+	showPartLoading('deal_loading');
+	showPartLoading('onseal_loading');
+	showPartLoading('deal_loading_nearby');
+	showPartLoading('onseal_loading_nearby');
+	var houseId = queryUrl("houseId");//"1000002";
+
+	var params = "houseId=" + houseId;
+	link_public.method(server_url + '/rest/house/selectHouseInfoByHouseId', params, "post", false, function (result) {
+		console.log(result);
+		if (result.success) {
+			//城市名称
+			var cityName = typeof (result.data.cityName) == "undefined" ? "" : result.data.cityName;
+			//地址
+			var address = typeof (result.data.address) == "undefined" ? "" : result.data.address;
+			//行政区名
+			var districtname = typeof (result.data.districtname) == "undefined" ? "" : result.data.districtname;
+			//小区名称
+			var communityName = typeof (result.data.communityName) == "undefined" ? "" : result.data.communityName;
+			//住宅类型
+			var communitytype = typeof (result.data.communitytype) == "undefined" ? "" : result.data.communitytype;
+			//门牌号
+			var doorNum = typeof (result.data.doorNum) == "undefined" ? "" : result.data.doorNum;
+			//建筑面积
+			var buildingsquare = typeof (result.data.buildingsquare) == "undefined" ? "" : result.data.buildingsquare;
+			//最大价格
+			var maxSaleTotalPrice = typeof (result.data.maxSaleTotalPrice) == "undefined" ? "" : result.data.maxSaleTotalPrice;
+			//最小价格
+			var minSaleTotalPrice = typeof (result.data.minSaleTotalPrice) == "undefined" ? "" : result.data.minSaleTotalPrice;
+			//小区ID
+			communityId = typeof (result.data.communityId) == "undefined" ? "" : result.data.communityId;
+			//城市码
+			cityId = typeof (result.data.cityId) == "undefined" ? "" : result.data.cityId;
+			lng = typeof (result.data.longitude) == "undefined" ? "" : result.data.longitude;
+			lat = typeof (result.data.latitude) == "undefined" ? "" : result.data.latitude;
+			//建筑面积
+			var square = typeof (result.data.buildingsquare) == "undefined" ? "" : result.data.buildingsquare;
+			var html = "";
+			if(minSaleTotalPrice != 0 && maxSaleTotalPrice != 0) {
+				html = "<h1 class='f25'>" + minSaleTotalPrice + "~" + maxSaleTotalPrice + "</h1>";	
+			}else {
+				html = "<h1 class='f25'>暂无估价</h1>";				
+			}
+			html += "<p class='f11 col'>建议挂牌价（万元）</p>";
+			html += "<div class='lease_bar'>";
+			html += "<h1 class='f14'>" + communityName + "<span class='f10'>" + communitytype + "</span></h1>";
+			html += "<p class='f11 col'>" + cityName + " " + districtname + " " + address + "</p>";
+			html += "<p class='f11 col'>" + (result.data.buildingId || '--') +"栋 - "+(result.data.unitId || '--') +"单元 - "+(result.data.doorNum || '--') +"室 | "+(result.data.buildingsquare || '--') + "m²</p>";
+			// html += "<p class='f11 col'>" + cityName + " " + districtname + " " + address + " " + doorNum + " " + buildingsquare + "m²" + "</p>";
+			html += "</div>";
+			$("#information").html(html);
+			//成交小区名称
+			$("#communityName").html(communityName);
+			//挂牌
+			$("#gcommunityName").html(communityName);
+			setTimeout(function() {
+				//当前小区
+				listing(communityId, cityId, square);
+				//附近小区
+				nearbyDistrict(lng, lat, square);
+				//成交房源当前小区
+				getSameDealListing(communityId, cityId);
+				//成交房源附近小区
+				getSameDealListingNearbyCommunity(lng, lat, square);
+				// setTimeout(function() {
+				// 	//成交房源当前小区
+				// 	getSameDealListing(communityId, cityId);
+				// 	//成交房源附近小区
+				// 	getSameDealListingNearbyCommunity(lng, lat, square);
+				// }, 300)
+			},0)
+			
+		}else {
+			showToast(3, result.message);
+		}
+		// loading.hide();
+	});
+}
+
+
+
+//挂牌房源当前小区
+function listing(communityId, cityId, square) {
+	//loading.show();
+	var params = "communityId=" + communityId + "&cityId=" + cityId + "&square=" + square;
+	link_public.method(server_url + '/rest/community/getSameSaleListing', params, "post", false, function (result) {
+		if (result.success) {
+			// 遍历列表
+			var html = "";
+			if(result.data.length > 0) {
+				for (var i in result.data) {
+					var data = result.data[i];
+					var buildingsquare = typeof (data.buildingsquare) == "undefined" ? "" : data.buildingsquare;
+					var sqmprice = typeof (data.sqmprice) == "undefined" ? "" : data.sqmprice;
+					if (buildingsquare != "" && sqmprice != "") {
+						total = buildingsquare * sqmprice / 10000;
+						total = total.toFixed(1);
+					} else {
+						total = "--";
+					}
+					// html += "<li>";
+					// html += "<div class='tcc_left f18'>" + total + "<span class='f11'>万</span></div>";
+					// html += "<div class='tcc_center'>";
+					// html += "<p class='f12' style='text-align: center;'>" + data.sqmprice + "元/m²" + "</p>";
+					// html += "<p class='f12' style='text-align: center;'>" + data.buildingsquare + "m²/" + data.aspectName + "</p>";
+					// html += "</div>";
+					// html += "<div class='tcc_right'>";
+					// html += "<p class='f11 col'>签约日期</p>";
+					// html += "<p class='f12'>" + data.assessTime + "</p>";
+					// html += "</div>";
+					// html += "</li>";
+
+					//改版
+					html += '<li>' +
+						'<div class="tcc_center">' +
+						'<p class="f10"><span class="f_big">' + (data.communityName || '--') + '</span></p>' +
+						'<p class="f10 col">' + buildingsquare + '平 | ' + (data.aspectName || '--') + ' | ' + sqmprice + '元/m²</p>' +
+						'</div>' +
+						'<div class="tcc_right">' +
+						'<p class="f10"><span class="f14 f_red">' + total + '</span><span class="f10 f_555">万元</span></p>' +
+						'<p class="f10 col">' + data.assessTime + '</p>' +
+						'</div>' +
+					'</li>'
+				}
+				// 添加当前小区列表
+				$("#listing").html(html);
+			}else {
+				$("#listing").html('<li class="empty-words">暂无数据</li>')
+			}
+			
+		}else {
+			$("#listing").html('<li class="empty-words">暂无数据</li>')			
+			// showToast(3, result.message);
+		}
+		hidePartLoading('onseal_loading');
+		// setTimeout(function() {
+		// 	loading.hide();
+		// }, 500);
+	});
+	//
+}
+
+
+//挂牌房源附近小区
+function nearbyDistrict(lng, lat, square) {
+	//loading.show();
+	var range = "500";
+
+	var params = "lat=" + lat + "&lng=" + lng + "&range=" + range + "&square=" + square;
+	link_public.method(server_url + "/rest/community/getSameSaleListingNearbyCommunity", params, "post", false, function (result) {
+		if (result.success) {
+			// 遍历列表
+			var html = "";
+			if (result != undefined && result != null && result.success == true && result.data != undefined && result.data != null) {
+				
+				if(result.data.length > 0) {
+					for (var i = 0; i < result.data.length; i++) {
+						var data = result.data[i];
+						var buildingsquare = typeof (data.buildingsquare) == "undefined" ? "" : data.buildingsquare;
+						var sqmprice = typeof (data.sqmprice) == "undefined" ? "" : data.sqmprice;
+						var num = buildingsquare * sqmprice;
+						num = num / 10000;
+						var total = num.toFixed(1);
+						// html += "<li>";
+						// html += "<div style='width: 11.5rem;' class='tcc_center'>";
+						// //    html+="<div class='tcc_left f18'>"+total+"<span class='f11'>万</span></div>";
+						// html += "<p class='f12'>" + data.communityName + "</p>";
+						// html += "<p class='f12'>" + total + "万元" + "</p>";
+						// html += "</div>";
+						// html += "<div class='tcc_center'>";
+						// html += "<p class='f12' style='text-align: center;'>" + data.sqmprice + "元/m²" + "</p>";
+						// html += "<p class='f12' style='text-align: center;'>" + data.buildingsquare + "m²/" + data.aspectName + "</p>";
+						// html += "</div>";
+						// html += "<div class='tcc_right'>";
+						// html += "<p class='f11 col'>签约日期</p>";
+						// html += "<p class='f12'>" + data.assessTime + "</p>";
+						// html += "</div>";
+						// html += "</li>";
+
+						//改版
+						html += '<li>' +
+							'<div class="tcc_center">' +
+							'<p class="f10"><span class="f_big">' + (data.communityName || '--') + '</span></p>' +
+							'<p class="f10 col">' + buildingsquare + '平 | ' + (data.aspectName || '--') + ' | ' + sqmprice + '元/m²</p>' +
+							'</div>' +
+							'<div class="tcc_right">' +
+							'<p class="f10"><span class="f14 f_red">' + total + '</span><span class="f_555 f10">万元</span></p>' +
+							'<p class="f10 col">' + data.assessTime + '</p>' +
+							'</div>' +
+						'</li>';
+					}
+					$("#nearbyDistrict").html(html);
+				}else {
+					$("#nearbyDistrict").html('<li class="empty-words">暂无数据</li>')					
+				}
+			}
+		} else {
+			$("#nearbyDistrict").html('<li class="empty-words">暂无数据</li>')								
+			// showToast(3, result.message);
+		}
+		hidePartLoading('onseal_loading_nearby');
+		// setTimeout(function() {
+		// 	loading.hide();
+		// }, 500);
+	});
+
+
+}
+
+//房屋成交源案列当前小区
+function getSameDealListing(communityId, cityId) {
+	//loading.show();
+	
+	var params = "communityId=" + communityId + "&cityId=" + cityId;
+	link_public.method(server_url + '/rest/community/getSameDealListing', params, "post", false, function (result) {
+		if (result.success) {
+			var success = result.success;
+			var html = "";
+			if (result != undefined && success == true && result.data != undefined) {
+				// 遍历列表
+				
+				if(result.data.length > 0) {
+					for (var i in result.data) {
+						var data = result.data[i];
+						var buildingsquare = typeof (data.buildingarea) == "undefined" ? "--" : data.buildingarea;
+						var sqmprice = typeof (data.sqmprice) == "undefined" ? "--" : data.sqmprice;
+						var totalprice = typeof (data.totalprice) == "undefined" ? 0 : data.totalprice / 10000;
+						var totalprice = totalprice.toFixed(1);
+						var assessTime = data.contractdate.substring(0, 10);
+						// html += "<li>";
+						// html += "<div class='tcc_left f18'>" + totalprice + "<span class='f11'>万</span></div>";
+						// html += "<div class='tcc_center'>";
+						// html += "<p class='f12' style='text-align: center;'>" + sqmprice + "元/m²</p>";
+						// html += "<p class='f12' style='text-align: center;'>" + buildingsquare + "m²</p>";
+						// html += "</div>";
+						// html += "<div class='tcc_right'>";
+						// html += "<p class='f11 col'>签约日期</p>";
+						// html += "<p class='f12'>" + data.contractdate.substring(0, 10) + "</p>";
+						// html += "</div>";
+						// html += "</li>";
+						//改版
+						html += '<li>' +
+							'<div class="tcc_center">' +
+							'<p class="f10"><span class="f_big">' + (data.communityName || '--') + '</span></p>' +
+							'<p class="f10 col">' + buildingsquare + '平 | ' + sqmprice + '元/m²</p>' +
+							'</div>' +
+							'<div class="tcc_right">' +
+							'<p class="f10"><span class="f14 f_red">' + totalprice + '</span><span class="f_555 f10">万元</span></p>' +
+							'<p class="f10 col">' + data.contractdate.substring(0, 10) + '</p>' +
+							'</div>' +
+						'</li>';
+					}
+					// 添加当前小区列表
+					$("#alist1").html(html);
+				}else {
+					$("#alist1").html('<li class="empty-words">暂无数据</li>')										
+				}
+			}
+		} else {
+			$("#alist1").html('<li class="empty-words">暂无数据</li>')													
+			// showToast(3, result.message);
+		}
+		hidePartLoading('deal_loading');
+		// loading.hide();
+	});
+
+}
+
+
+//房屋成交源案列附近小区
+function getSameDealListingNearbyCommunity(lng, lat, square) {
+	//loading.show();
+	var range = "500";
+
+	var params = "lat=" + lat + "&lng=" + lng + "&range=" + range + "&square=" + square;
+	link_public.method(server_url + '/rest/community/getSameDealListingNearbyCommunity', params, "post", false, function (result) {
+		if (result.success) {
+			// 遍历列表
+			var success = result.success;
+			var html = "";
+			if (result != undefined && success == true && result.data != undefined) {
+				if(result.data.length > 0) {
+					for (var i = 0; i < result.data.length; i++) {
+						var data = result.data[i];
+	
+						var buildingsquare = typeof (data.buildingarea) == "undefined" ? "" : data.buildingarea;
+						// alert(JSON.stringify(data));
+						var price = typeof (data.sqmprice) == "undefined" ? "" : data.sqmprice;
+	
+						var totalprice = typeof (data.totalprice) == "undefined" ? 0 : data.totalprice / 10000;
+						var totalprice = totalprice.toFixed(1);
+						var assessTime = data.contractdate.substring(0, 10);
+						// html += "<li>";
+						// html += "<div style='width: 11.5rem;' class='tcc_center'>";
+						// //    html+="<div class='tcc_left f18'>"+total+"<span class='f11'>万</span></div>";
+						// html += "<p class='f12'>" + data.communityName + "</p>";
+						// html += "<p class='f12'>" + totalprice + "万元" + "</p>";
+						// html += "</div>";
+						// //  html+="<div class='tcc_left f18'>"+totalprice+"<span class='f11'>万</span></div>";
+						// html += "<div class='tcc_center'>";
+						// html += "<p class='f12' style='text-align: center;'>" + price + "元/m²" + "</p>";
+						// html += "<p class='f12' style='text-align: center;'>" + buildingsquare + "m²</p>";
+						// html += "</div>";
+						// html += "<div class='tcc_right'>";
+						// html += "<p class='f11 col'>签约日期</p>";
+						// html += "<p class='f12'>" + data.contractdate.substring(0, 10) + "</p>";
+						// html += "</div>";
+						// html += "</li>";
+						//改版
+						html += '<li>' +
+							'<div class="tcc_center">' +
+							'<p class="f10"><span class="f_big">' + (data.communityName || '--') + '</span></p>' +
+							'<p class="f10 col">' + buildingsquare + '平 | ' + data.sqmprice + '元/m²</p>' +
+							'</div>' +
+							'<div class="tcc_right">' +
+							'<p class="f10"><span class="f14 f_red">' + totalprice + '</span><span class="f_555 f10">万元</span></p>' +
+							'<p class="f10 col">' + data.contractdate.substring(0, 10) + '</p>' +
+							'</div>' +
+						'</li>';
+					}
+					$("#alist2").html(html);
+				}else {
+					$("#alist2").html('<li class="empty-words">暂无数据</li>')															
+				}
+			}else {
+				$("#alist2").html('<li class="empty-words">暂无数据</li>')														
+			}
+		} else {
+			// showToast(3, result.message);
+			$("#alist2").html('<li class="empty-words">暂无数据</li>')										
+		}
+		// setTimeout(function() {
+		// 	loading.hide();
+		// }, 500);
+		hidePartLoading('deal_loading_nearby');
+	});
+}
+

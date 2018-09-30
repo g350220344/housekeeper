@@ -1,0 +1,336 @@
+/**语音查询页 */
+var renData = null;
+var btnElem; //录音按钮
+var posStart = 0;//初始化起点坐标  
+var posEnd = 0;//初始化终点坐标  
+var posMove = 0;//初始化滑动坐标  
+var localId = ''; //语音ID
+var recordTimer;
+var btnText;
+var isPageHide = false;
+$(function () {
+    addHistoryBackListener('./map_city.html');  
+    
+    window.addEventListener('pageshow', function () {
+        if (isPageHide) {
+            resetShow();
+            // window.location.reload();
+        }
+    });
+    window.addEventListener('pagehide', function () {
+        isPageHide = true;
+    });  
+
+    $('.b_input_box').on('click', function(e) {
+        if(!renData) {
+            showToast(3, '请先选择城市！');
+            return;
+        }
+        window.location.href = './map_sel.html?cityId=' + renData.cityId + '&cityName=' + renData.cityName + '&pin=' + (renData.pin || '');
+    });
+    getConfig();
+    pageInit();
+})
+
+/**weixin */
+//get wx config
+function getConfig() {
+    // var url = encodeURIComponent(location.href.split('#')[0])
+    // alert(location.href.split('#')[0]);
+    var url = location.href.split('#')[0];
+    $.ajax({
+        url: server_url + '/rest/wx/getWxConfig',
+        type: 'post',
+        dataType: 'jsonp',
+        data: {
+            url: url
+        },
+        timeout: 20000,
+        error: function (json) {
+            console.log(json);
+        },
+        success: function (json) {
+            console.log('json', json);
+            var data = json.data;
+            if (data) {
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: data.appId, // 必填，公众号的唯一标识
+                    timestamp: data.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: data.noncestr, // 必填，生成签名的随机串
+                    signature: data.signature,// 必填，签名
+                    jsApiList: ['checkJsApi', 'startRecord', 'stopRecord', 'playVoice', 'translateVoice', 'uploadVoice'] // 必填，需要使用的JS接口列表
+                });
+                wx.ready(function () {
+                    console.log('success');
+                    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                });
+                wx.error(function (res) {
+                    console.log('err:  ', res);
+                    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                });
+                wx.checkJsApi({
+                    jsApiList: ['chooseImage'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                    success: function (res) {
+                        console.log(res);
+                        // 以键值对的形式返回，可用的api值true，不可用为false
+                        // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                    }
+                });
+            }
+
+        }
+    })
+}
+function resetShow() {
+    var html = '<div class="b_content_tit">您可以这样说</div>' + 
+    '<div class="b_content_eg">“上海康城32栋2单元502室72平米”</div>' +
+    '<div class="b_content_eg">“中远两湾城”</div>' +
+    '<div class="b_content_eg">“中潭路99弄5号301室103平米”</div>';
+    $('#b_content_box').html(html);
+}
+
+function chaifen(info) {
+    info = info || '.';
+    loading.show('跳转中...');
+    // alert(host + server_url);
+    var urlData = "cityName="+renData.cityName + '&info=' + info.substr(0, info.length - 1);
+    link_public.method(server_url+'/rest/common/splitHousseInfo',urlData,"post",true,function (json) {
+        if(json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var query = '';
+            if(!!data && typeof data.communityName != 'undefined'){
+                console.log(JSON.stringify(data));
+                
+                var i = 0;
+                for(var key in data) {
+                    if(i == 0) {
+                        query += '?' + key + '=' + data[key];
+                    }else {
+                        query += '&' + key + '=' + data[key];
+                    }
+                    i++;
+                }
+                query += '&key=' + info.substr(0, info.length - 1);
+                console.log(query);
+                
+            }else {
+                var query = '?key=' + info.substr(0, info.length - 1) + '&communityName=' + info.substr(0, info.length - 1);
+                // showToast(3, '暂无匹配结果!');
+                // window.location.href = './map_sel.html' + query;
+            }
+            // resetShow();
+            query += '&cityId=' + renData.cityId + '&cityName=' + renData.cityName + '&pin=' + (renData.pin || '');
+            window.location.href = './map_sel.html' + query;
+        }else {
+            showToast(3, json.message);
+        }
+        loading.hide();
+    });
+}
+function init() {
+    //注册录音按钮
+    btnElem = document.getElementById("r_start");//获取ID 
+    btnText = $('#b_audio_text');
+    initEvent();  
+    $('.b_city span').html(renData.cityName.length > 4 ? renData.cityName.substr(0,4) : renData.cityName);
+    $('.b_city').on('click', function(e) {
+        e.stopPropagation();
+        changeCity();
+    })
+}
+
+function changeCity(){
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    setTimeout(function() {
+        addSearchListenter();
+        $('.search_input input').val('');
+    }, 0)
+    // var url = "/index.html"
+    // $(window).attr('location','public/searchCity.html?url='+url);
+}
+
+function addSearchListenter() {
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('.search_input input').on('input propertychange', function() {
+        var vm = this;
+        if(!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+        
+    })
+    
+    //根据拼音查找
+    $(".citynav li").click(function(e){
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function() {
+        $('.search-box').hide();
+    })
+
+    $('.search_del').on('click', function(e) {
+        e.stopPropagation();
+        var cookie = eval("("+$.cookie("cityInfo")+")");
+        if(!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+        
+        doSearch(cityId, areaName, cookie.pin);
+    });
+
+
+    addHotListener(doSearch); //热门搜索
+}
+
+function doSearch(cityId, cityName, pin) {
+    if(!cityId || !cityName) {
+        $('.search-box').hide();
+        return;
+    }
+    
+    $('.search-box').hide();
+    localStorage.setItem('audio_city', JSON.stringify({
+        cityId: cityId,
+        cityName: cityName,
+        pin: pin
+    }));
+    localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify({
+        cityId: cityId,
+        cityName: cityName
+    }))));     
+    renData = {
+        cityId: cityId,
+        cityName: cityName,
+        pin: pin
+    }
+    $('.b_city span').html(renData.cityName.length > 4 ? renData.cityName.substr(0,4) : renData.cityName);  
+}
+
+//定位
+function pageInit() {
+    var _city = localStorage.getItem('audio_city');
+    
+    if(!!_city) {
+        render(JSON.parse(_city));
+    }else {
+        getLocation(render);
+    }   
+}
+function render(_city) {
+    renData = _city;
+    console.log('audio_search', renData);
+    init();
+}
+function startR() {
+    wx.startRecord();
+}
+function stopR() {
+    wx.stopRecord();
+}
+function initEvent() {  
+    btnElem.addEventListener("touchstart", function(event) {  
+        event.preventDefault();//阻止浏览器默认行为  
+        // e.preventDefault();
+        $(".pulse").show();
+        $(".pulse1").show();
+        // $(btnElem).css('background', 'pink');
+        posStart = 0;  
+        posStart = event.touches[0].pageY;//获取起点坐标  
+        btnElem.value = '松开 结束';  
+        btnText.html('上滑取消')
+        wx.startRecord();
+        console.log("start");  
+        console.log(posStart+'---------开始坐标');  
+    });  
+    btnElem.addEventListener("touchmove", function(event) {  
+        
+        event.preventDefault();//阻止浏览器默认行为  
+        posMove = 0;  
+        posMove = event.targetTouches[0].pageY;//获取滑动实时坐标  
+        if(posStart - posMove < 30){  
+            btnElem.value = '松开 结束';  
+            // btnText.html('松开 结束')
+        }else{  
+            btnElem.value = '松开手指，取消发送';  
+            
+        }  
+        /*console.log(posStart+'---------');  
+        console.log(posMove+'+++++++++');*/  
+    });  
+    btnElem.addEventListener("touchend", function(event) {  
+        event.preventDefault();  
+        // $(btnElem).css('background', '#333');
+        $(".pulse").hide();
+        $(".pulse1").hide();
+        posEnd = 0;  
+        posEnd = event.changedTouches[0].pageY;//获取终点坐标  
+        btnElem.value = '按住 说话';  
+        console.log("End");  
+        console.log(posEnd+'---------结束坐标');  
+        btnText.html('按住说话')
+        if(posStart - posEnd < 30 ){  
+            console.log("发送成功");  
+            save();  
+        }else{  
+            stopR();
+            console.log("取消发送");  
+            console.log("Cancel");  
+        };  
+    });  
+};  
+
+function save(){  
+    //ajax  
+    // alert(3);
+    wx.stopRecord({
+		success: function (res) {
+			localId = res.localId;
+			console.log('localId', localId);
+			wx.translateVoice({
+				localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+				isShowProgressTips: 1, // 默认为1，显示进度提示
+				success: function (res) {
+                    console.log(res.translateResult); // 语音识别的结果
+                    if(!!res.translateResult) {
+                        var html_str = '<div class="b_content_tit">您说的是</div>' + 
+                        '<div class="b_content_eg">“' + res.translateResult + '”</div>'
+                        $('#b_content_box').html(html_str);
+                        chaifen(res.translateResult);
+                    }else {
+                        showToast(3, '无法识别！');
+                    }
+				}
+			});
+			// wx.uploadVoice({
+			// 	localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+			// 	isShowProgressTips: 1, // 默认为1，显示进度提示
+			// 	success: function (res) {
+			// 		var serverId = res.serverId; // 返回音频的服务器端ID
+			// 		console.log('serverId:  ',serverId);
+			// 	}
+			// });
+		}
+	});
+}  

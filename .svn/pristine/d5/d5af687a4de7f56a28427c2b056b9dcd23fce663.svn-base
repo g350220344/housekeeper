@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>房产列表</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+<body>
+<div class="index_box">
+	<div class="houseproperty">
+		<p class="f11 col">共<span id="houseNum">0</span>套房产，总估值<span id="housePrice">0</span>万元</p><a id="add-house" class="f11">&#43;  添加房产</a>
+	</div>
+	<ul class="houseproperty_ul" id="houseList"></ul>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script type="text/javascript" src="../js/houseproperty/houseList.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+/* cmt_pannel */
+.cmt_pannel_box {
+    width: 6.5rem;
+    height: 1.5rem;
+    border-radius: 0.3rem;
+    background-color: #fff;
+    margin: 0 auto 0.24rem;
+    padding: 0.24rem;
+}
+.cmt_pannel_box {
+    overflow: hidden;
+    clear: both;
+}
+
+.cmt_pannel_img_box {
+    float: left;
+    width: 2rem;
+    height: 1.5rem;
+    overflow: hidden;
+}
+.cmt_pannel_img_box img {
+    width: 100%;
+}
+.cmt_pannel_ctn {
+    width: 4.2rem;
+    height: 1.5rem;
+    float: left;
+    margin-left: 0.23rem;
+}
+.cmt_pannel_ctn_line_1 {
+    font-size: 0.3rem;
+    color: #111;
+    margin-bottom: 0.12rem;
+}
+.cmt_pannel_ctn_line_2 {
+    font-size: 0.24rem;
+    color: #888;
+    margin-bottom: 0.15rem;
+}
+.cmt_pannel_ctn_line_3 {
+    font-size: 0.3rem;
+    color: #4894f6;
+    position: relative;
+    line-height: 0.4rem;
+}
+.cmt_pannel_ctn_line_3_unit {
+    font-size: 0.24rem;
+}
+.cmt_pannel_ctn_line_3_right {
+    color: #bbb;
+    font-size: 0.24rem;
+    position: absolute;
+    top: 0;
+    right: 0.1rem;
+}

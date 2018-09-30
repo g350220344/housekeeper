@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.DistrictInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.DistrictInfo" >
+    <result column="DISTRICT_ID" property="districtId" jdbcType="DECIMAL" />
+    <result column="DISTRICT_NAME" property="districtName" jdbcType="VARCHAR" />
+    <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+    <result column="CIYT_NAME" property="ciytName" jdbcType="VARCHAR" />
+    <result column="PROVINCE_ID" property="provinceId" jdbcType="DECIMAL" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="DEAL_PERSON" property="dealPerson" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="DATE" />
+    <result column="CREATED_DT" property="createdDt" jdbcType="DATE" />
+    <result column="DATA_SOURCE" property="dataSource" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="ORDER_ID" property="orderId" jdbcType="DECIMAL" />
+    <result column="STR_ORDER" property="strOrder" jdbcType="VARCHAR" />
+    <result column="DATA_ORG_TYPE" property="dataOrgType" jdbcType="VARCHAR" />
+    <result column="IS_CITY" property="isCity" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    DISTRICT_ID, DISTRICT_NAME, CITY_ID, CIYT_NAME, PROVINCE_ID, PROVINCE_NAME, STATUS, 
+    DEAL_PERSON, UPDATE_DATE, CREATED_DT, DATA_SOURCE, DESCRIPTION, ORDER_ID, STR_ORDER, 
+    DATA_ORG_TYPE, IS_CITY
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.web.model.DistrictInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from apply.district_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.DistrictInfoExample" >
+    delete from apply.district_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.DistrictInfo" >
+    insert into apply.district_info (DISTRICT_ID, DISTRICT_NAME, CITY_ID, 
+      CIYT_NAME, PROVINCE_ID, PROVINCE_NAME, 
+      STATUS, DEAL_PERSON, UPDATE_DATE, 
+      CREATED_DT, DATA_SOURCE, DESCRIPTION, 
+      ORDER_ID, STR_ORDER, DATA_ORG_TYPE, 
+      IS_CITY)
+    values (#{districtId,jdbcType=DECIMAL}, #{districtName,jdbcType=VARCHAR}, #{cityId,jdbcType=DECIMAL}, 
+      #{ciytName,jdbcType=VARCHAR}, #{provinceId,jdbcType=DECIMAL}, #{provinceName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{dealPerson,jdbcType=VARCHAR}, #{updateDate,jdbcType=DATE}, 
+      #{createdDt,jdbcType=DATE}, #{dataSource,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{orderId,jdbcType=DECIMAL}, #{strOrder,jdbcType=VARCHAR}, #{dataOrgType,jdbcType=VARCHAR}, 
+      #{isCity,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.DistrictInfo" >
+    insert into apply.district_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="districtId != null" >
+        DISTRICT_ID,
+      </if>
+      <if test="districtName != null" >
+        DISTRICT_NAME,
+      </if>
+      <if test="cityId != null" >
+        CITY_ID,
+      </if>
+      <if test="ciytName != null" >
+        CIYT_NAME,
+      </if>
+      <if test="provinceId != null" >
+        PROVINCE_ID,
+      </if>
+      <if test="provinceName != null" >
+        PROVINCE_NAME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="dealPerson != null" >
+        DEAL_PERSON,
+      </if>
+      <if test="updateDate != null" >
+        UPDATE_DATE,
+      </if>
+      <if test="createdDt != null" >
+        CREATED_DT,
+      </if>
+      <if test="dataSource != null" >
+        DATA_SOURCE,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="strOrder != null" >
+        STR_ORDER,
+      </if>
+      <if test="dataOrgType != null" >
+        DATA_ORG_TYPE,
+      </if>
+      <if test="isCity != null" >
+        IS_CITY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="districtId != null" >
+        #{districtId,jdbcType=DECIMAL},
+      </if>
+      <if test="districtName != null" >
+        #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="ciytName != null" >
+        #{ciytName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=DECIMAL},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="dealPerson != null" >
+        #{dealPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=DATE},
+      </if>
+      <if test="createdDt != null" >
+        #{createdDt,jdbcType=DATE},
+      </if>
+      <if test="dataSource != null" >
+        #{dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="strOrder != null" >
+        #{strOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="dataOrgType != null" >
+        #{dataOrgType,jdbcType=VARCHAR},
+      </if>
+      <if test="isCity != null" >
+        #{isCity,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.DistrictInfoExample" resultType="java.lang.Integer" >
+    select count(*) from apply.district_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update apply.district_info
+    <set >
+      <if test="record.districtId != null" >
+        DISTRICT_ID = #{record.districtId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.districtName != null" >
+        DISTRICT_NAME = #{record.districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cityId != null" >
+        CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.ciytName != null" >
+        CIYT_NAME = #{record.ciytName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.provinceId != null" >
+        PROVINCE_ID = #{record.provinceId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.provinceName != null" >
+        PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dealPerson != null" >
+        DEAL_PERSON = #{record.dealPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDate != null" >
+        UPDATE_DATE = #{record.updateDate,jdbcType=DATE},
+      </if>
+      <if test="record.createdDt != null" >
+        CREATED_DT = #{record.createdDt,jdbcType=DATE},
+      </if>
+      <if test="record.dataSource != null" >
+        DATA_SOURCE = #{record.dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.description != null" >
+        DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orderId != null" >
+        ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.strOrder != null" >
+        STR_ORDER = #{record.strOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dataOrgType != null" >
+        DATA_ORG_TYPE = #{record.dataOrgType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isCity != null" >
+        IS_CITY = #{record.isCity,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update apply.district_info
+    set DISTRICT_ID = #{record.districtId,jdbcType=DECIMAL},
+      DISTRICT_NAME = #{record.districtName,jdbcType=VARCHAR},
+      CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      CIYT_NAME = #{record.ciytName,jdbcType=VARCHAR},
+      PROVINCE_ID = #{record.provinceId,jdbcType=DECIMAL},
+      PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      DEAL_PERSON = #{record.dealPerson,jdbcType=VARCHAR},
+      UPDATE_DATE = #{record.updateDate,jdbcType=DATE},
+      CREATED_DT = #{record.createdDt,jdbcType=DATE},
+      DATA_SOURCE = #{record.dataSource,jdbcType=VARCHAR},
+      DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      ORDER_ID = #{record.orderId,jdbcType=DECIMAL},
+      STR_ORDER = #{record.strOrder,jdbcType=VARCHAR},
+      DATA_ORG_TYPE = #{record.dataOrgType,jdbcType=VARCHAR},
+      IS_CITY = #{record.isCity,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  
+   <select id="selectDistrictIdAndNameByExample" parameterType="com.cindata.housekeeper.web.model.DistrictInfoExample" resultType="java.util.List" >
+    select district_id,district_name from apply.district_info
+     <if test="cityId != null" >
+      order by ${cityId}
+    </if>
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.CityInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.CityInfo" >
+        <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+        <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+        <result column="PROVINCE_ID" property="provinceId" jdbcType="DECIMAL" />
+        <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+        <result column="CITY_PY" property="cityPy" jdbcType="VARCHAR" />
+        <result column="CITY_SHORT_NAME" property="cityShortName" jdbcType="VARCHAR" />
+
+    </resultMap>
+    <select id="getCityInfoList" resultMap="BaseResultMap"  >
+        SELECT * FROM APPLY.CITY_INFO WHERE DESCRIPTION=1 and STR_ORDER=1 ORDER BY CITY_ID ASC
+    </select>
+    
+    <select id="getCityInfoListBycityName" parameterType="com.cindata.housekeeper.web.model.CityInfo" resultMap="BaseResultMap">
+    	select * 
+    	  from apply.city_info a 
+    	 where a.STR_ORDER=1
+    	 <if test="cityName != null and cityName != ''">
+    	   and a.CITY_NAME like '%' || #{cityName} || '%'
+    	 </if>
+    	 <if test="cityPy != null and cityPy != ''">
+    	   and a.CITY_PY like  #{cityPy} || '%'
+    	 </if>
+          ORDER BY a.CITY_PY asc
+    </select>
+    <select id="getCityInfoListByCityNameAndPinyin" parameterType="com.cindata.housekeeper.web.model.CityInfo" resultMap="BaseResultMap">
+        select *
+        from apply.city_info a
+        where a.STR_ORDER=1
+        <if test="cityName != null and cityName != '' and cityShortPy != null and cityShortPy != '' ">
+        and ((a.CITY_NAME like '%' || #{cityName} || '%'
+        or a.CITY_PY like '%' || #{cityShortPy} || '%')
+        )
+        </if>
+        <if test="cityPy != null and cityPy != ''">
+            and a.CITY_PY like  #{cityPy} || '%'
+        </if>
+        ORDER BY a.CITY_PY asc
+    </select>
+    <select id="getCityInfoListBycityPy" parameterType="String" resultMap="BaseResultMap">
+    	select * from apply.city_info a where a.city_py like 'A%' order by city_sn
+    </select>
+
+    <select id="getCityInfoListHoT" parameterType="String" resultMap="BaseResultMap">
+        select * from apply.city_info a where IS_HOT is not NULL ORDER BY CITY_ID
+    </select>
+
+</mapper>

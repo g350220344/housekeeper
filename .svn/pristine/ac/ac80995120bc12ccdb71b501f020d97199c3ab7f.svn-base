@@ -1,0 +1,457 @@
+var communityId = queryUrl('communityId');
+var cityId = queryUrl('cityId');
+var districtId = queryUrl('districtId');
+var chartData = {};
+var month_arr = [];
+
+var info = null; //小区信息
+$(function() {
+    addHistoryBackListener(localStorage.getItem('back_origin_details'));
+    loadInfo();
+    loadTrend();
+
+});
+
+function listener() {
+    $('.i_map_mask').on('click', function (e) {
+        localStorage.setItem('back_origin_map_e', location.href);
+        localStorage.setItem('ipo_info', JSON.stringify(info));
+        window.location.href = './map_e.html';
+    });
+}
+//加载小区详情
+function loadInfo() {
+    var month = getFormatDate();
+    // loading.show();
+    // showPartLoading('map_loading');
+    var urlData = 'communityId=' + communityId;
+    link_public.method(server_url + '/rest/community/getCommunityMarket', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            var data = json.data;
+            var cityName = null;
+            info = data;
+            console.log('info------------',info);
+            render(data);
+            
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        hidePartLoading('map_loading');
+        hidePartLoading('top_loading');
+        hidePartLoading('detail_loading');
+    });
+}
+
+//加载小区行情
+function loadTrend() {
+    var month = getFormatDate();
+    // loading.show();
+    showPartLoading('chart_loading');
+    var urlData = 'communityId=' + communityId + '&districtId=' + districtId + '&cityId=' + cityId;
+    link_public.method(server_url + '/rest/common/getMarket', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if (data != null) {
+                renderChart(data);
+            }else {
+                $('#chart_box').hide();
+            }
+            // console.log('draw', json.data);
+        } else {
+            $('#chart_box').hide();
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+        hidePartLoading('chart_loading');
+    });
+}
+
+function renderChart(data) {
+    var c = 3;
+    if(!data) {
+        $('#chart_box').hide();
+    }else {
+        for(var i in data) {
+            console.log(i, data[i]);
+            //initData(data[i])
+            if(data[i].length > 0&& data[i] instanceof Array) {
+                chartData[i] = {
+                    name: data[i][0].cityName || data[i][0].communityName || data[i][0].districtName,
+                    list: initData(data[i])
+                }
+                // console.log('.tuli-span', '.tuli-span-' + c)
+                $('.tuli-span-' + c).html('<i></i>' + chartData[i].name);
+            }
+            
+            c--;
+        }
+        console.log('dfjdkfjdfjdo', chartData);
+    }
+    listener();
+    Drawing(chartData,month_arr);
+}
+
+function initData(list) {
+
+    var d = new Date();
+    console.log('-------', d.getMonth())
+    // d.setMonth(d.getMonth() + 1);
+    console.log('-------', d.getMonth())
+    var cur_year = '' + d.getFullYear();
+    var cur_month = d.getMonth() + 1 < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1)
+    var cur = cur_year + '-' + cur_month + '-01';
+    var result = [cur];
+    for (var i = 0; i < 11; i++) {
+        d.setMonth(d.getMonth() - 1);
+        var m = d.getMonth() + 1;
+        m = m < 10 ? "0" + m : m;;
+        result.push(d.getFullYear() + "-" + m + '-01');
+    }
+    var dw = [];
+    for (var i in result) {
+        var m = list.filter(function (item) {
+            return item.dayId == result[i];
+        });
+        dw[i] = null;
+        // console.log('--------', m);
+        if (m.length > 0) {
+            dw[i] = m[0].salesqmprice;
+        }
+    }
+    // console.log('dw:   ', result);
+    if(month_arr.length == 0) {
+        month_arr = result.map(function(item) {
+            var str = item.replace('20', '');
+            console.log('str', str);
+            return str.substring(3, str.length - 3) + '月';
+        });
+        console.log(month_arr);
+    }
+    return dw;
+}
+
+function initMap(obj) {
+    var info = obj;
+    var map = new BMap.Map("allmap");          
+    var point = new BMap.Point(info.communityInfo.longitude, info.communityInfo.latitude);
+    //添加控件
+    // map.addControl(new BMap.NavigationControl());
+    // map.addControl(new BMap.ScaleControl());
+    // map.addControl(new BMap.OverviewMapControl());
+
+    map.centerAndZoom(point, 15);
+    // var marker = new BMap.Marker(point);        // 创建标注    
+    // map.addOverlay(marker);
+	// local = new BMap.LocalSearch(map, {
+	// 	renderOptions:{map: map}
+    // });
+    var cmob = info.communityInfo || {};
+    var myCompOverlay = new ComplexCustomOverlay(map, point, info.communityInfo.communityname, "地址：" + (typeof cmob.detailaddress == 'undefined' ? '－－' : cmob.detailaddress), info);
+    map.addOverlay(myCompOverlay);
+}
+
+function render(info) {
+    var communityInfo = info.communityInfo;
+    // var city = JSON.parse(localStorage.getItem('changeCity'));
+    // if(!city) {
+    //     city = JSON.parse(decodeURIComponent(decodeURIComponent(localStorage.getItem('indexCityData'))));
+    // }
+    $('.pos_lable').text(info.cityName || '--');
+    //小区名称
+    $('#comunity_name').text(communityInfo.communityname);
+    //地址
+    $('#detailaddress').text((communityInfo.detailaddress || '暂无位置'));
+    //本月均价
+    $('#salesqmprice').text(typeof info.salesqmprice == 'undefined' ? '--' : info.salesqmprice + '元/㎡');
+    if(typeof info.salesqmprice == 'undefined') {
+        $('#salesqmprice').css('color', '#bbbec4');
+    }
+    //环比上月
+    var last_month_html = '<p id="saleSqmPriceLinkRelativeRatio" class="f13 up"><img src="../img/ico_s.png" alt="">' + info.saleSqmPriceLinkRelativeRatio + '%</p>';
+    if(typeof info.saleSqmPriceLinkRelativeRatio == 'undefined') {
+        last_month_html = '<p style="color: #bbbec4" class="f13">--</p>';
+    }else if(info.saleSqmPriceLinkRelativeRatio < 0) {
+        last_month_html = '<p id="saleSqmPriceLinkRelativeRatio" class="f13 down"><img src="../img/ico_x.png" alt="">' + (info.saleSqmPriceLinkRelativeRatio + '').replace('-', '') + '%</p>';
+    }else if(info.saleSqmPriceLinkRelativeRatio == 0) {
+        last_month_html = '<p id="saleSqmPriceLinkRelativeRatio" class="f13 up">' + (info.saleSqmPriceLinkRelativeRatio + '').replace('-', '') + '%</p>';
+    }
+    $('#saleSqmPriceLinkRelativeRatio').html(last_month_html);
+    //同比去年
+    // if(info.)
+    var last_year_html = '<p id="saleSqmPriceOnYear_on_YearBasis " class="f13 up"><img src="../img/ico_s.png" alt="">' + info.saleSqmPriceOnYear_on_YearBasis  + '%</p>';
+    if(typeof info.saleSqmPriceOnYear_on_YearBasis  == 'undefined') {
+        last_year_html = '<p style="color: #bbbec4" class="f13">--</p>';
+    }else if(info.saleSqmPriceOnYear_on_YearBasis < 0) {
+        last_year_html = '<p id="saleSqmPriceOnYear_on_YearBasis " class="f13 down"><img src="../img/ico_x.png" alt="">' + (info.saleSqmPriceOnYear_on_YearBasis + '') .replace('-', '') + '%</p>';
+    }else if(info.saleSqmPriceOnYear_on_YearBasis == 0) {
+        last_year_html = '<p id="saleSqmPriceOnYear_on_YearBasis " class="f13 down">' + (info.saleSqmPriceOnYear_on_YearBasis + '') .replace('-', '') + '%</p>';
+    }
+    $('#saleSqmPriceOnYear_on_YearBasis').html(last_year_html);
+    //均价
+    if(!info.cityScale) {
+        $('#cityScale_box').hide();
+    }else {
+        $('#cityScale').text(info.cityScale + '%');
+        $('#cityScale-view').css('width', info.cityScale + '%');
+    }
+    
+    //月增长
+    if(!info.differenceScale) {
+        $('#differenceScale_box').hide();
+    }else {
+        $('#differenceScale').text(info.differenceScale + '%');
+        $('#differenceScale-view').css('width', info.differenceScale + '%');
+    }
+    
+    //详情图
+    var img_arr = info.communityInfo.pictureUrlList ? info.communityInfo.pictureUrlList.split(',') : ['../img/ca2.jpg', '../img/ca2.jpg', '../img/ca2.jpg'];
+    var img_html = '';
+    for(var i = 0; i < 3; i++) {
+        img_html += '<li><a><img src=' + (img_arr[i] || '../img/ca2.jpg') + '></a></li>';
+    }
+    $('.details_ul').html(img_html);
+    //基本信息
+    var base_info_html = '';
+    
+    if(!!communityInfo) {
+        base_info_html += '<li>建筑年代<span>' + (communityInfo.buildyear || '--') + '</span></li>' + 
+        '<li>总户数<span>' + (communityInfo.totalhouseholdcount || '--') + '</span></li>' +
+        '<li>容积率<span>' + (communityInfo.plotratio || '--') + '</span></li>' +
+        '<li>停车位<span>' + (communityInfo.parkingNum || '--') + '</span></li>' +
+        '<li>绿化率<span>' + (communityInfo.greeningrate || '--') + '%</span></li>' +
+        '<li>物业费<span>' + (typeof communityInfo.pmfee == 'undefined' ? '--' : communityInfo.pmfee + '元/㎡/月') + '</span></li>' +
+        // '<li>主力面积<span>' + '--' + '</span></li>' +
+        '<li class="one_row_li">开发商<span>' + (communityInfo.developername || '--') + '</span></li>' +
+        '<li class="one_row_li">物业公司<span>' + (communityInfo.companyname || '--') + '</span></li>';
+    }else {
+        base_info_html = '<li class="empty-words">暂无数据</li>'
+    }
+    $('#baseInfo').html(base_info_html);
+
+    //无坐标情况处理
+    if(typeof communityInfo.latitude == 'undefined' || typeof communityInfo.longitude == 'undefined') {
+        $('#address-arrow').hide();
+        $('#address_map').hide();
+    }else {
+        initMap(info);
+        $('.ipo_entry').on('click', function(e) {
+            localStorage.setItem('back_origin_map_e', location.href);
+            localStorage.setItem('ipo_info', JSON.stringify(info));
+            window.location.href = './map_e.html';
+        });
+    }
+    $('#top_block_pre').hide();
+    $('#top_block').show();
+}
+
+function Drawing(chartData,timeData){
+    // var data = JSON.parse("["+priceData+"]");
+    var showBar = timeData.length > 12 ? true : false;
+    var series = [];
+    for(var key in chartData) {
+        if(typeof chartData[key] != 'undefined') {
+            series.push({
+                marker: {
+                    symbol: 'circle',
+                    radius: 2.5
+                },
+                name: chartData[key].name,
+                data: chartData[key].list.reverse()
+            })
+        } 
+    }
+    if(series.length == 0) {
+        $('#chart_box_inner').html('<div class="empty-words">暂无数据</div>');
+        return;
+    }
+    console.log('series:  ', series);
+    //曲线图
+    var chart = Highcharts.chart('container', {
+        // chart: {
+        //     type: 'spline'
+        // },
+        colors: ['#ffba27', '#94c3ee', '#388cff'],
+        title: {
+            text: ''
+        },
+        yAxis: {
+            lineWidth: 1,
+            title: {
+                // text: '(元/月)'
+                text: ''
+            }
+        },
+
+        credits: {
+            enabled:false
+        },
+        legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        xAxis: {
+            categories:timeData.reverse(),
+            scrollbar: {
+                enabled: showBar
+            },
+            min: 0,
+            max: 11,
+            tickLength: 0
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: showBar
+                }
+            },
+            line: {
+                connectNulls:true,//该设置会连接空值点
+                // gapSize:1,//缺失点小于gapSize则连接
+                /*dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false*/
+            }
+        },
+       /* plotOptions: {
+            series: {
+                /!* label: {
+                     connectorAllowed: false
+                 },
+                 pointStart: 2010*!/
+                data:["2017-09-01","2017-08-01"]
+            }
+        },*/
+        // series: [
+        //     {
+        //         marker: {
+        //             symbol: 'circle',
+        //             radius: 2.5
+        //         },
+        //         name: chartData['communityMarketList'].name,
+        //         data: chartData['communityMarketList'].list
+        //     },
+        //     {
+        //         marker: {
+        //             symbol: 'circle',
+        //             radius: 2.5
+        //         },
+        //         name: chartData['districtMarketList'].name,
+        //         data: chartData['districtMarketList'].list
+        //     },
+        //     {
+        //         marker: {
+        //             symbol: 'circle',
+        //             radius: 2.5
+        //         },
+        //         name: chartData['cityMarketList'].name,
+        //         data: chartData['cityMarketList'].list
+        //     }
+            
+            
+        // ],
+        series: series,
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+    });
+
+}
+
+// 复杂的自定义覆盖物
+function ComplexCustomOverlay(map, point, text, price, cm_obj) {
+    this._point = point;
+    this._text = text;
+    this._price = price;
+    // this._overText = mouseoverText;
+    this._cm_obj = cm_obj;
+    // this.communityInfo = cm_obj || {};
+    
+    console.log('_cm_obj', this._cm_obj);
+}
+ComplexCustomOverlay.prototype = new BMap.Overlay();
+ComplexCustomOverlay.prototype.initialize = function (map) {
+    this._map = map;
+    var div = this._div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.style.backgroundColor = "#fff";
+    // div.style.border = "1px solid #BC3B3A";
+    div.style.color = "#495060";
+    div.style.borderRadius = '0.5rem';
+    // div.style.height = "3.6rem";
+    div.style.padding = "0.7rem 1rem";
+    div.style.lineHeight = "1.8rem";
+    div.style.whiteSpace = "nowrap";
+    div.style.MozUserSelect = "none";
+    div.style.fontSize = "1.4rem"
+    div.style.boxShadow = "0.5rem 1rem 0.5rem #888888"
+    var span = this._span = document.createElement("span");
+    span.style.fontWeight = "bold";
+    var p = this._p = document.createElement("p");
+    p.style.color = "#ed3f14";
+    p.style.fontSize = "1.2rem"
+    div.style.textAlign = "center";
+    
+    div.appendChild(span);
+    div.appendChild(p);
+    span.appendChild(document.createTextNode(this._text));
+    p.appendChild(document.createTextNode(this._price));
+    var that = this;
+
+    var arrow = this._arrow = document.createElement("div");
+    arrow.style.background = "url(../img/triangle.png) no-repeat";
+    arrow.style.position = "absolute";
+    arrow.style.width = "3.1rem";
+    arrow.style.height = "3rem";
+    arrow.style.top = "3.6rem";
+    arrow.style.left = "2.4rem";
+    arrow.style.overflow = "hidden";
+    arrow.style.backgroundSize = "contain";
+    div.appendChild(arrow);
+
+
+    //标注点击事件
+    // div.addEventListener('touchstart', function() {
+    //     console.log(that._cm_obj.communityId, that._cm_obj.districtId, that._cm_obj.cityId);
+    //     var query = '?communityId=' + that._cm_obj.communityId + '&cityId=' + that._cm_obj.cityId + '&districtId=' + that._cm_obj.districtId;
+    //     $(window).attr('location', 'details.html' + query);
+    // });
+
+    map.getPanes().labelPane.appendChild(div);
+
+    return div;
+}
+ComplexCustomOverlay.prototype.draw = function () {
+    // var map = this._map;
+    // var pixel = map.pointToOverlayPixel(this._point);
+    // this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+    // this._div.style.top = pixel.y - 30 + "px";
+    var map = this._map;
+    var pixel = map.pointToOverlayPixel(this._point);
+    var w = this._div.offsetWidth/2;
+    var h = this._div.offsetHeight/2;
+    console.log('div.w: ' + w + '  div.h:  ' + h);
+    this._div.style.left = pixel.x - w + 30 + "px";
+    this._div.style.top = pixel.y - h - 12 + "px";
+    console.log(this._div.style.left, this._div.style.top)
+}

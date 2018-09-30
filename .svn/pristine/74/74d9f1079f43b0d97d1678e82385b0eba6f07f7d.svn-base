@@ -1,0 +1,57 @@
+/* marks page */
+.marks_page {
+    position: relative;
+}
+.marks_wrapper {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+}
+.marks_content {
+    padding-top: 0.27rem;
+    padding-bottom: 0.27rem;
+}
+.marks_list_item {
+    width: 7.02rem;
+    height: 1.56rem;
+    border-radius: 0.3rem;
+    background: #fff;
+    margin: auto;
+}
+.marks_list_item:not(:first-child) {
+    margin: 0.27rem auto 0;
+}
+.marks_list_item_row {
+    overflow: hidden;
+    clear: both;
+    padding-left: 0.26rem;
+    padding-right: 0.37rem;
+}
+.marks_list_item_row:first-child {
+    padding-top: 0.34rem;
+    line-height: 0.28rme;
+}
+.marks_list_item_title {
+    font-size: 0.3rem;
+    color: #111;
+}
+.marks_list_item_row_label {
+    width: 85%;
+    float: left;
+    color: #bbb;
+    font-size: 0.24rem;
+}
+.marks_list_item_row_val {
+    width: 15%;
+    float: left;
+    text-align: right;
+    vertical-align: middle;
+    color: #bbb;
+    font-size: 0.24rem;
+}
+.marks_list_item_row_val img {
+    display: inline-block;
+    width: 0.12rem;
+    height: 0.21rem;
+    vertical-align: middle;
+}

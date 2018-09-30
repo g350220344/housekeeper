@@ -1,0 +1,732 @@
+package com.cindata.housekeeper.core.common.tools;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+/**
+ * string 常用工具
+ * @author yss
+ *
+ */
+public class StringUtil {
+	
+	public static boolean isNull(Object o) {
+		boolean returnStr = true;
+		if(o != null && o.toString().trim().length() > 0){
+			returnStr = false;
+		}
+		return returnStr;
+	}
+	
+	public static String trimSb(boolean start, StringBuilder sb, boolean end,
+			String def) {
+		String ret = def;
+		if (sb != null && sb.length() > 0) {
+			if (start) {
+				sb.deleteCharAt(0);
+			}
+			if (end && sb.length() > 0) {
+				sb.deleteCharAt(sb.length() - 1);
+			}
+			if(sb.length() > 0){
+				ret = sb.toString();
+			}
+		}
+		return ret;
+	}
+	
+	public static String getNumNot0(String res, String ... nums){
+		String ret = res;
+		if(nums != null && nums.length > 0){
+			for (String string : nums) {
+				if(ret == null || "0".equals(ret)){
+					ret = string;
+				}else{
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+	
+//	public static void main(String[] args) {
+////    	Timestamp ts = new Timestamp(System.currentTimeMillis());
+////    	Timestamp a = getDateAgo(ts, -1000, 0, 0);
+////    	System.out.println(a);
+//		String s = getNumNot0("0", "0", "0", "0", "21378", "21378", "21378", "21378");
+//		System.out.println(s);
+//	}
+	
+	public static String isNotNull(String s) {
+		String returnStr;
+		try {
+			Integer a = Integer.valueOf(s);
+			returnStr = a.toString();//千分符;
+			
+		} catch (Exception e) {
+			if (s == null || s.equals("")) {
+				returnStr = "--";
+			} else {
+				returnStr = s;
+			}
+			
+		}
+
+		return returnStr;
+	}
+
+	
+	public static final String EMPTY = "";
+
+	/**
+	 * 如果参数o不为空则转化为字符串并去掉两侧空格后返回，否则返回参数def。
+	 * @param o		带转化的对象
+	 * @param def	默认值
+	 * @return
+	 */
+	public static String toString(Object o, String def){
+		return o == null ? def : o.toString().trim();
+	}
+	
+	public static String toIntString(Object o, String def){
+		return o == null ? def : parseInt(o.toString().trim(), 0) + "";
+	}
+	
+	public static String toString(Object o, String def,String addText){
+		return o == null ? def : o.toString().trim()+addText;
+	}
+	/**
+	 * 如果参数o不为空则转化为字符串并去掉两侧空格后返回，否则返回空字符串。
+	 * @param o		带转化的对象
+	 * @param def	默认值
+	 * @return
+	 */
+	public static String toString(Object o){
+		return o == null ? "" : o.toString().trim();
+	}
+	
+	public static String stringToDate(String source, String format){
+		String ret = null;
+		try {
+			ret = dateFormat(Date.valueOf(source), format, null);
+		} catch (Exception e) {
+			ret = source;
+		}
+		return ret;
+	}
+	
+	public static BigDecimal parseBigDecimal(Object o, BigDecimal def){
+		BigDecimal i = null;
+		try {
+			i = new BigDecimal(o.toString());
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	
+	public static Boolean parseBoolean(Object o, Boolean def){
+		Boolean i = null;
+		if("true".equals(o)){
+			i = true;
+		}else if("false".equals(o)){
+			i = false;
+		}else{
+			i = def;
+		}
+		return i;
+	}
+	public static Date parseDate(Object o, Date def){
+		Date i = null;
+		try {
+			i = Date.valueOf(o.toString());
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	public static Integer parseInt(Object o, Integer def){
+		Integer i = null;
+		try {
+			BigDecimal bd = new BigDecimal(o.toString());
+			i = bd.intValue();
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	
+	public static Short parseShort(Object o, Short def){
+		Short i = null;
+		try {
+			BigDecimal bd = new BigDecimal(o.toString());
+			i = bd.shortValue();
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	
+	public static Long parseLong(Object o, Long def){
+		Long i = null;
+		try {
+			i = Long.valueOf(o.toString());
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	
+	public static Double parseDouble(Object o, Double def){
+		Double i = null;
+		try {
+			i = Double.valueOf(o.toString());
+		} catch (Exception e) {
+			i = def;
+		}
+		return i;
+	}
+	
+	public static boolean isNotNullOrEmpty(String str){
+		if(str == null){
+			return false;
+		}
+		if(str.trim().isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isNotNullOrEmpty(Object str){
+		if(str == null){
+			return false;
+		}
+		if(str.toString().trim().isEmpty()){
+			return false;
+		}
+		return true;
+	}
+	
+	public static Date getDate(Object source){
+		Date ret = null;
+		if(source != null){
+			try {
+				ret = Date.valueOf(source.toString());
+			} catch (Exception e) {
+				ret = null;
+			}
+		}
+		return ret;
+	}
+	
+	public static Date getDate(Object source, Date def){
+		Date ret = def;
+		if(source != null){
+			try {
+				ret = Date.valueOf(source.toString());
+			} catch (Exception e) {
+				ret = def;
+			}
+		}
+		return ret;
+	}
+	
+	public static Timestamp getTimestamp(Object source){
+		Timestamp ret = null;
+		if(source != null){
+			try {
+				ret = Timestamp.valueOf(source.toString());
+			} catch (Exception e) {
+				ret = null;
+			}
+		}
+		return ret;
+	}
+	
+	public static Timestamp getTimestamp(Object source, Timestamp def){
+		Timestamp ret = def;
+		if(source != null){
+			try {
+				ret = Timestamp.valueOf(source.toString());
+			} catch (Exception e) {
+				ret = def;
+			}
+		}
+		return ret;
+	}
+	
+	public static String dateFormat(java.util.Date source, String format, String def){
+		SimpleDateFormat f = new SimpleDateFormat(format);
+		String ret = null;
+		try {
+			
+			ret = f.format(source);
+		} catch (Exception e) {
+			ret = def;
+		}
+		return ret;
+	}
+	
+	public static String dateFormat(long time, String format, String def){
+		Timestamp ts = new Timestamp(time);
+		SimpleDateFormat f = new SimpleDateFormat(format);
+		String ret = null;
+		try {
+			
+			ret = f.format(ts);
+		} catch (Exception e) {
+			ret = def;
+		}
+		return ret;
+	}
+	
+	/**
+	 * 格式化时间格式的字符串
+	 * @param source 元数据
+	 * @param format 格式
+	 * @param def    默认值
+	 * @param type   元数据类型，1:Timestamp 2:Date
+	 * @return
+	 */
+	public static String dateFormat(Object source, String format, String def, int type){
+		SimpleDateFormat f = new SimpleDateFormat(format);
+		String ret = null;
+		try {
+			java.util.Date d = null;
+			if(1 == type){
+				d = Timestamp.valueOf(source.toString());
+			}else{
+				d = Date.valueOf(source.toString());
+			}
+			ret = f.format(d);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			ret = def;
+		}
+		return ret;
+	}
+	
+    public static String getPingYin(String src) {  
+    	  
+        char[] t1 = null;  
+        t1 = src.toCharArray();  
+        String[] t2 = new String[t1.length];  
+        HanyuPinyinOutputFormat t3 = new HanyuPinyinOutputFormat();  
+          
+        t3.setCaseType(HanyuPinyinCaseType.LOWERCASE);  
+        t3.setToneType(HanyuPinyinToneType.WITHOUT_TONE);  
+        t3.setVCharType(HanyuPinyinVCharType.WITH_V);  
+        String t4 = "";  
+        int t0 = t1.length;  
+        try {  
+            for (int i = 0; i < t0; i++) {  
+                // 判断是否为汉字字符  
+                if (java.lang.Character.toString(t1[i]).matches(  
+                        "[\\u4E00-\\u9FA5]+")) {  
+                    t2 = PinyinHelper.toHanyuPinyinStringArray(t1[i], t3);  
+                    t4 += t2[0];  
+                } else  
+                    t4 += java.lang.Character.toString(t1[i]);  
+            }  
+            // System.out.println(t4);  
+            return t4;  
+        } catch (BadHanyuPinyinOutputFormatCombination e1) {  
+            e1.printStackTrace();  
+        }  
+        return t4;  
+    }
+    
+    /**
+     * 获取上个月，格式yyyy-MM
+     * @return
+     */
+    public static String getLastMM(){
+    	//取得系统当前时间
+    	Calendar cal = Calendar.getInstance();
+    	//取得系统当前时间所在月第一天时间对象
+    	cal.set(Calendar.DAY_OF_MONTH, 1);
+    	//日期减一,取得上月最后一天时间对象
+    	cal.add(Calendar.DAY_OF_MONTH, -1);
+    	
+    	return dateFormat(cal.getTime(), "yyyy-MM", "");
+    }
+    
+    /**
+     * 获取上个月，格式yyyy-MM
+     * @return
+     */
+    public static String getLastMM(Timestamp ts, String format, int ageMM){
+    	if(ts == null){
+    		return null;
+    	}
+    	if(format == null || format.trim().length() == 0){
+    		format = "yyyy-MM-dd HH:mm:ss";
+    	}
+    	//取得系统当前时间
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(ts);
+    	int i = 1 ;
+    	while(i <= ageMM){
+        	//取得系统当前时间所在月第一天时间对象
+        	cal.set(Calendar.DAY_OF_MONTH, 1);
+        	//日期减一,取得上月最后一天时间对象
+        	cal.add(Calendar.DAY_OF_MONTH, -1);
+    		i ++;
+    	}
+    	cal.set(Calendar.DAY_OF_MONTH, 1);
+    	cal.set(Calendar.HOUR_OF_DAY, 0);
+    	cal.set(Calendar.SECOND, 0);
+    	cal.set(Calendar.MINUTE, 0);
+    	return dateFormat(cal.getTime(), format, "");
+    }
+
+	public static String getLastMMapp(long time, String format, int num) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(time);
+
+		// 取得系统当前时间所在月第一天时间对象
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		// 日期减一,取得上月最后一天时间对象
+		// cal.add(Calendar.DAY_OF_MONTH, -1);
+
+		// cal.set(Calendar.MONTH, (cal.get(Calendar.MONTH) - num));
+		cal.add(Calendar.MONTH, (0 - num));
+
+		return dateFormat(cal.getTime(), format, "");
+	}
+    
+    /**
+     * 获取上个月，格式yyyy-MM
+     * @return
+     */
+    public static Timestamp getDateAgo(Timestamp ts, int agoYear, int agoMM, int agoDay){
+    	if(ts == null){
+    		return null;
+    	}
+    	//取得系统当前时间
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(ts);
+    	cal.add(Calendar.DAY_OF_YEAR, 0 - agoDay);
+    	cal.add(Calendar.MONTH, 0 - agoMM);
+    	cal.add(Calendar.YEAR, 0 - agoYear);
+    	return new Timestamp(cal.getTimeInMillis());
+    }
+//    public static void main(String[] args) {
+//    	Timestamp ts = new Timestamp(System.currentTimeMillis());
+//    	System.out.println(ts.toString());
+//    	Timestamp ts2 =getDateAgo(ts, 0, -1, 0);
+//    	System.out.println(ts2);
+//    	String a = StringUtil.dateFormat(ts2, "yyyy-MM", null);
+//    	System.out.println(a);
+//    	a += "-07";
+//    	Timestamp nm7 = Timestamp.valueOf(a + " 00:00:00");
+//    	System.out.println(nm7);
+//    	double l = nm7.getTime() - ts.getTime();
+//    	System.out.println((l/1000/60/60/24) + "");
+//    	
+//	}
+//    public static void main(String[] args) {
+//    	Timestamp ts = Timestamp.valueOf("2016-01-01 11:22:33");
+//		System.out.println(getLastMM());
+//		System.out.println(getLastMM(null, "yyyy-MM-dd HH:mm:ss", 0));
+//	}
+    
+    public static String doubleToInt(Double source, String def){
+    	return source == null ? def : source.intValue() + "";
+    }
+    public static String doubleToInt(Double source){
+    	return source == null ? "0" : source.intValue() + "";
+    }
+    
+    public static String encode(String source, String enc, String def){
+    	String ret = null;
+    	try {
+    		ret = URLEncoder.encode(source, enc);
+		} catch (Exception e) {
+			ret = def;
+			e.printStackTrace();
+		}
+    	return ret;
+    }
+    
+    public static String decode(String source, String enc, String def){
+    	String ret = null;
+    	try {
+    		ret = URLDecoder.decode(source, enc);
+		} catch (UnsupportedEncodingException e) {
+			ret = def;
+			e.printStackTrace();
+		}
+    	return ret;
+    }
+    
+    public static String listToString(List list, String def){
+    	String ret = "";
+    	if(list == null || list.isEmpty()){
+    		ret = def;
+    	}else{
+    		for (Object o : list) {
+				ret += StringUtil.toString(o) + ",";
+			}
+    		if(ret != null && ret.length() > 0){
+    			ret = ret.substring(0, ret.length() - 1);
+    		}
+    	}
+    	return ret;
+    }
+    
+    public static Long parseLongWithZhcn(Object o){
+		Long ret = null;
+		if(StringUtil.isNotNullOrEmpty(o)){
+			String ss = o.toString();
+			int ssLen = ss.length();
+			int i = 0;
+			while(i < ssLen){
+				String temp = ss.substring(0, ssLen - i);
+				try {
+					BigDecimal bd = new BigDecimal(temp);
+					ret = bd.longValue();
+				} catch (Exception e) {
+					ret = null;
+				}
+				if(ret != null){
+					break;
+				}
+				i++;
+			}
+		}
+		return ret;
+	}
+    
+    
+    /**
+	 * @param    
+     * @Describe 某月第一天
+	 */
+	public static String getFirsDay(String d){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+		Calendar cal_1=Calendar.getInstance();//获取当前日期 
+		try {
+			cal_1.setTime(sdf.parse(d));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cal_1.set(Calendar.DAY_OF_MONTH, 1);// 设置为1号,当前日期既为本月第一天
+		String s_date =  StringUtil.dateFormat(cal_1.getTime(), "yyyy-MM-dd", "");
+		return s_date;
+	}
+	/**
+	 * @param    
+     * @Describe 某月最后一天
+	 */
+	public static String getEndDay(String d){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+		// 获取前月的最后一天
+		Calendar cale = Calendar.getInstance();
+		try {
+			cale.setTime(sdf.parse(d));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cale.add(Calendar.MONTH, 1);
+		cale.set(Calendar.DAY_OF_MONTH, 0);
+		String e_date = StringUtil.dateFormat(cale.getTime(), "yyyy-MM-dd", "");
+		return e_date;
+	}
+	public static void main(String[] args) {
+		System.out.println(dateFormat("2018-01-01","yyyy年MM月","",2));
+		System.out.println(StringUtil.getFirsDay("2012-02-02"));
+		System.out.println(StringUtil.getEndDay("2012-02"));
+	}
+
+	/**
+	 * @param
+	 * @Describe 传入时间前 n 天
+	 */
+	public static String getDayDate(java.util.Date date ,Integer n){
+		if(date == null){
+			return null;
+		}
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_MONTH, n);
+		String e_date = StringUtil.dateFormat(calendar.getTime(), "yyyy-MM-dd", "");
+		return e_date;
+	}
+	/**
+	 * @param    
+     * @Describe 当前时间前 n 天
+	 */
+	public static String getDay(Integer n){
+		java.util.Date date = new java.util.Date();
+		Calendar calendar = Calendar.getInstance();    
+		calendar.setTime(date);    
+		calendar.add(Calendar.DAY_OF_MONTH, n);
+		String e_date = StringUtil.dateFormat(calendar.getTime(), "yyyy-MM-dd", "");
+		return e_date;
+	}
+	
+	/**
+	 * @param    
+     * @Describe 当前时间前 n 月份
+	 */
+	public static String getMonth(Integer n){
+		java.util.Date date = new java.util.Date();
+		Calendar calendar = Calendar.getInstance();    
+		calendar.setTime(date);    
+		calendar.add(Calendar.MONTH, n);
+		String e_date = StringUtil.dateFormat(calendar.getTime(), "yyyy-MM-dd", "");
+		return e_date;
+	}
+	/**
+     * @param
+     * @Describe 传入时间前 n 月份
+     */
+    public static String getMonth(Date date ,Integer n){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, n);
+        String e_date = StringUtil.dateFormat(calendar.getTime(), "yyyy-MM-dd", "");
+        return e_date;
+    }
+	public static java.util.Date formatStringDate(String sDate,String sdFormat){
+		SimpleDateFormat sdf = new SimpleDateFormat(sdFormat); 
+		java.util.Date timeDate = null; 
+		try { 
+			timeDate = sdf.parse(sDate); 
+		} catch (Exception e) { 
+		}
+	    return timeDate;
+	}
+	public static String formatDateString(java.util.Date sDate,String sdFormat){
+		SimpleDateFormat sdf = new SimpleDateFormat(sdFormat); 
+		String timeDate = null; 
+		try { 
+			timeDate = sdf.format(sDate);
+		} catch (Exception e) { 
+			e.printStackTrace(); 
+		}
+	    return timeDate;
+	}
+	/**
+	 * @Describe 按曲线图格式处理数据
+	 * @Author  gaoy
+	 * @Time  2018/08/14 10:46:13
+	 * @param
+	 **/
+	public static List dateFormat(List<?> list,int month,String priceName){
+
+
+		String[] dateArray = new String[month];//日期数组
+		String[] dataArray = new String[month];//数据数组
+		for(int i =0;i<month;i++){
+			dateArray[i]=StringUtil.dateFormat( StringUtil.getMonth(i-month +1),"MM月",null,2);
+			dataArray[i]=null;
+		}
+		for(int i=0;i<list.size();i++){
+			try {
+				Method met = list.get(i).getClass().getMethod("getDayId");
+				java.util.Date dayId = (java.util.Date)met.invoke(list.get(i));
+				met = list.get(i).getClass().getMethod(priceName);
+				String price = null;
+				if(met.invoke(list.get(i))!=null){
+					price = ((BigDecimal)met.invoke(list.get(i))).toString();
+				}
+
+
+				String date = StringUtil.dateFormat( dayId,"MM月",null);
+				for(int j=0;j<dateArray.length;j++){
+					if(dateArray[j].equals(date)){
+						dataArray[j] = price;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		List ruslt = new ArrayList();
+		ruslt.add(dateArray);
+		ruslt.add(dataArray);
+		return ruslt;
+	}
+    /**
+     * @description:两个日期之间相差几个月
+     * @author: liuyanming
+     * @create: 2018/8/14 8:59
+     **/
+    public static int getTwoMonthsDifference(java.util.Date date1, java.util.Date date2) {
+        Calendar a = Calendar.getInstance();
+        Calendar b = Calendar.getInstance();
+        a.setTime(date1);
+        b.setTime(date2);
+        int result = a.get(Calendar.MONTH) - b.get(Calendar.MONTH);
+        int month = (a.get(Calendar.YEAR) - b.get(Calendar.YEAR)) * 12;
+        return Math.abs(month + result);
+    }
+	/**
+	 * @description:两个日期之间相差几个月
+	 * @author: liuyanming
+	 * @create: 2018/8/14 8:59
+	 **/
+	public static int getTwoMonthsDifferenceNotAbs(java.util.Date date1, java.util.Date date2) {
+		Calendar a = Calendar.getInstance();
+		Calendar b = Calendar.getInstance();
+		a.setTime(date1);
+		b.setTime(date2);
+		int result = a.get(Calendar.MONTH) - b.get(Calendar.MONTH);
+		int month = (a.get(Calendar.YEAR) - b.get(Calendar.YEAR)) * 12;
+		return month + result;
+	}
+    /**
+     * @description:
+     * @author: takZhang
+     * @create: 
+     **/
+    public static int getTwoMonthsDifferenceNoAbs(java.util.Date date1, java.util.Date date2) {
+        Calendar a = Calendar.getInstance();
+        Calendar b = Calendar.getInstance();
+        a.setTime(date1);
+        b.setTime(date2);
+        int result = a.get(Calendar.MONTH) - b.get(Calendar.MONTH);
+        int month = (a.get(Calendar.YEAR) - b.get(Calendar.YEAR)) * 12;
+       
+        
+        if((month + result) == 0){
+        	 int date = a.get(Calendar.DATE) - b.get(Calendar.DATE);
+        	 return date;
+        }
+        return month + result;
+    }
+    
+    /**
+     * @param
+     * @Describe 传入时间前/后几个月,n为正数代表后几个月,n为负数代表前几个月
+     */
+    public static java.util.Date getMonthRetDate(java.util.Date date , Integer n){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, n);
+        return calendar.getTime();
+    }
+}

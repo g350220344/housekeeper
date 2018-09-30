@@ -1,0 +1,11 @@
+/* add_house page */
+
+.dp-header .dp-item.dp-right {
+    color: #388cff!important;
+}
+.add_house_page .vux-label, .add_house_page .weui-label {
+    text-align-last: left;
+}
+.add_house_page .vux-datetime p {
+    text-align-last: left;
+}

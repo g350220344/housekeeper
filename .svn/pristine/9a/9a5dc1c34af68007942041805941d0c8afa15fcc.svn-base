@@ -1,0 +1,374 @@
+var navTimer = null;
+var houseId = decodeURIComponent(queryUrl('houseId'));
+var houseInfo = null;
+var rentTrend = []; //租金趋势数据
+var curList = []; //当前小区成交房源
+var nearbyList = []; //附近小区
+var purposeTypes = ['一室', '二室', '三室', '四室'];
+
+var rent_map = ['一居室', '二居室', '三居室', '四居室'];
+var rent_type = ['oneRoom', 'twoRoom', 'threeRoom', 'fourRoom'];
+$(function () {
+    init();
+})
+
+function init() {
+    addHistoryBackListener('../houseproperty/my.html?url=../lease/index.html');
+    addListener();
+    getHouseInfo(houseId);
+    loadAll();
+    // getCommunityRent('一室');
+}
+
+//获取房屋信息
+function getHouseInfo(house_id) {
+    // loading.show();
+    var urlData = "houseId="+house_id;
+    link_public.method(server_url+'/rest/house/selectHouseInfoByHouseId',urlData,"post",true,function (json) {
+        if(json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if(data != null){
+
+                var communityId = data.communityId;
+                cityName = data.cityName;
+                houseInfo = data;
+                loadCurrent(data); //获取当前小区其它房源;
+                // loadNearBy(data); //获取附近房源;
+                // $("#suggestPrice").html(data.minSaleTotalPrice +"~"+data.maxSaleTotalPrice);
+                $("#communityName").html(data.communityName+"<span class=\"f10\">"+data.communitytype +"</span>");
+                $("#address").html(data.cityName  +" "+(data.address || '') );
+                if(!!data.maxRentPrice && !!data.minRentPrice) {
+                    $("#suggestPrice").html(data.minRentPrice +"~"+data.maxRentPrice);   
+                }else {
+                    $('#suggestPrice').html('暂无估价');
+                }
+                // $('#suggestPrice').html('暂无估价'); //租金估价
+                $("#info").html((data.buildingId || '--') +"栋 - "+(data.unitId || '--') +"单元 - "+(data.doorNum || '--') +"室 | "+(data.buildingsquare || '--') +"㎡");
+                $("#assessSalePrice").html("评估单价："+(data.assessSalePrice || '--')+"元/㎡");
+                $("#assessTime").html("评估日期："+(data.assessTime || '--'));
+
+                //出租房源参考nav中当前小区名称
+                $('#gcommunityName').html(data.communityName)
+            }
+        }else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+
+        // setTimeout(function() {
+        //     loading.hide();
+        // }, 500);
+    });
+}
+
+//获取租金价格走势
+function getCommunityRent(purpose) {
+    $('.chart-unit').show();
+    $('#container').css('height', '20rem');
+    var index = purposeTypes.indexOf(purpose);
+    console.log('rentTrend', rentTrend, index, typeof rentTrend[index]);
+    if(typeof rentTrend[index] != 'undefined') {
+        
+        Drawing(rentTrend[index].rentArr, rentTrend[index].dateArr);
+        return;
+    }
+    loading.show();
+    var communityId = decodeURIComponent(queryUrl("communityId"));
+    var params = "communityId=" + communityId + "&purpose=" + purpose;
+    link_public.method(server_url + '/rest/community/getCommunityRent', params, "post", true, function (json) {
+        if (json.success) {
+            
+            console.log(json.data);
+            console.log(json.data.map(function(item) {
+                return item.date;
+            }))
+            // var originData = json.data.filter(function(item) {
+            //     return typeof item.rentsqmprice != 'undefined';
+            // })
+            var dateArr = json.data.map(function(item) {
+                
+                return item.date;
+            });
+            var rentArr = json.data.map(function(item) {
+                var cur = item;
+                if(typeof item.rentsqmprice == 'undefined') {
+                    cur.rentsqmprice = null
+                }
+                return cur.rentsqmprice;
+            });
+
+            console.log('rentarr', rentArr);
+            rentTrend[index] = {
+                rentArr: rentArr.reverse(),
+                dateArr: dateArr.reverse()
+            }
+            Drawing(rentArr, dateArr);
+        } else {
+            $('.chart-unit').hide();
+            $('#container').css('height', 'auto');
+            $('#container').html('<div class="empty-words">暂无数据</div>');
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        setTimeout(function () {
+            loading.hide();
+        }, 300);
+    });
+}
+
+function initNav(params) {
+    var str = '';
+    for(var i in params) {
+        if(i == 0) {
+            str += '<li class="rent-nav-active" data-type=' + i + '>' + params[i].name + '</li>';
+        }else {
+            str += '<li data-type=' + i + '>' + params[i].name + '</li>';
+        }
+    }
+    console.log(str);
+    $('.rent-nav').html(str);
+}
+
+//一次性获取租金走势
+function loadAll(_index) {
+    $('.chart-unit').show();
+    $('#container').css('height', '20rem');
+    if(rentTrend.length > 0) {
+        Drawing(rentTrend[_index].rentArr, rentTrend[_index].dateArr);
+        return;
+    }
+    var communityId = decodeURIComponent(queryUrl("communityId"));
+    var params = "communityId=" + communityId;
+    link_public.method(server_url + '/rest/community/getCommunityRent', params, "post", true, function (json) {
+        if (json.success) {
+            for(var i = 0; i < 4; i++) {
+                if(json.data[rent_type[i]].length > 0) {
+                    console.log('rent_type: ', rent_type[i]);
+                    rentTrend.push({
+                        name: rent_map[i],
+                        dateArr: json.data[rent_type[i]].map(function(item) {
+                
+                            return item.date;
+                        }).reverse(),
+                        rentArr: json.data[rent_type[i]].map(function(item) {
+                            var cur = item;
+                            if(typeof item.rentsqmprice == 'undefined') {
+                                cur.rentsqmprice = null
+                            }
+                            return cur.rentsqmprice;
+                        }).reverse()
+                    });
+                    console.warn(rentTrend);
+                }
+            }
+            initNav(rentTrend);
+            Drawing(rentTrend[0].rentArr, rentTrend[0].dateArr);
+        } else {
+            $('.chart-unit').hide();
+            $('#container').css('height', 'auto');
+            $('#container').html('<div class="empty-words">暂无数据</div>');
+        }
+        hidePartLoading('rents_loading');
+    });
+}
+function loadCurrent(obj) {
+    // loading.show();
+    showPartLoading('lease_loading');
+    var urlData = 'cityId=' + obj.cityId + '&communityId=' + obj.communityId + '&square=' + obj.buildingsquare;
+    link_public.method(server_url + '/rest/community/getSameRentListing', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if (data != null) {
+                curList = data;
+                renderList(data, $('#list_cur'));
+            }
+            console.log('current', json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        hidePartLoading('lease_loading');
+    });
+    
+}
+
+function loadNearBy(obj) {
+    // loading.show();
+    showPartLoading('lease_loading_nearby');
+    var urlData = 'lat=' + obj.latitude + '&lng=' + obj.longitude + '&square=' + obj.buildingsquare + '&range=500';
+    link_public.method(server_url + '/rest/community/getSameRentListingNearbyCommunity', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if (data != null) {
+                nearbyList = data;
+                renderList(data, $('#list_nearby'));
+            }
+            console.log('list_nearby', json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+        hidePartLoading('lease_loading_nearby');
+    });
+}
+
+function renderList(list, el) {
+    var html = '';
+    if(!!list && list.length > 0) {
+        for(var i in list) {
+            var item = list[i];
+
+            html += '<li>' +
+                '<div class="tcc_center">' +
+                    '<p class="f10"><span class="f_big">' + (item.communityName || '--') + '</span></p>' +
+                    '<p class="f10 col">' + (item.floorplantypeCN || '--') + ' | ' + (item.buildingsquare || '') + '㎡ | ' + (item.aspectName || '--') + ' | ' + (item.decoratelevelname || '--') + '</p>' +
+                '</div>' +
+                '<div class="tcc_right">' +
+                    '<p class="f10"><span class="f14 f_red">' + (item.sqmprice || '--') + '</span><span class="f_555 f10">元/月</span></p>' +
+                    '<p class="f10 col">' + item.assessTime + '</p>' +
+                '</div>' +
+            '</li>';
+        }
+    }else {
+        html = '<li class="empty-words">暂无数据</li>';
+    }
+    el.find('ul').html(html);
+}
+
+function Drawing(priceData,timeData){
+    console.log('timedata', timeData)
+    var data = priceData;
+    // data = [null, 8128, 2082, null, 2012, null, null, 80830, 1233, 22222, null, 9088];
+    // timeData = ['02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '01'];
+    //曲线图
+    var chart = Highcharts.chart('container', {
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: ''
+        },
+        yAxis: {
+            // lineWidth: 1,
+            title: {
+                text: ''
+            }
+        },
+        colors: ["#FAAD1C"],
+        credits: {
+            enabled:false
+        },
+        legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        xAxis: {
+            categories:timeData
+        },
+       /* plotOptions: {
+            series: {
+                /!* label: {
+                     connectorAllowed: false
+                 },
+                 pointStart: 2010*!/
+                data:["2017-09-01","2017-08-01"]
+            }
+        },*/
+        plotOptions: {
+            series: { enableMouseTracking: false, shadow: false, animation: false },
+            area: {
+                fillOpacity: 0.3, // 指定所有面积图的透明度
+                connectNulls:true,//该设置会连接空值点
+                // pointStart: timeData[0],
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 1,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            },
+            // line: {
+            //     connectNulls:true,//该设置会连接空值点
+            //     marker: {
+            //         enabled: false,
+            //         symbol: 'circle',
+            //         radius: 1,
+            //         states: {
+            //             hover: {
+            //                 enabled: true
+            //             }
+            //         }
+            //     }
+            //     // gapSize:1,//缺失点小于gapSize则连接
+            //     /*dataLabels: {
+            //         enabled: true
+            //     },
+            //     enableMouseTracking: false*/
+            // }
+        },
+        series: [{
+            name: '月租金',
+            data:data
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+    });
+}
+
+function addListener() {
+    $('.rent-nav').on('click', 'li', function() {
+        var vm = this;
+        $('.rent-nav li').removeClass('rent-nav-active');
+        $(this).addClass('rent-nav-active');
+        clearTimeout(navTimer);
+        navTimer = setTimeout(function() {
+            var type = $(vm).attr('data-type');
+            loadAll(type);
+        },300);
+        // alert($(this).attr('data-type'))
+    })
+    $('.tii p').click(function () {
+        var vv = $(this).index();
+        $('.tii p').removeClass('cor');
+        $(this).addClass('cor');
+        $('.tcc').hide();
+        $('.tcc').eq(vv).show();
+        if(vv == 0 ) {
+            if(curList.length == 0) {
+                loadCurrent(houseInfo);
+            }
+        }else {
+            if(nearbyList.length == 0) {
+                loadNearBy(houseInfo);
+            }
+        }
+    })
+
+}

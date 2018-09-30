@@ -1,0 +1,226 @@
+var houseId = null;
+var communityId = '';
+var houseInfo = null;
+var analyzeData = null;
+var has_market = false;
+$(function () {
+    addListener();
+    addHistoryBackListener('./map_city.html');
+    houseId = decodeURIComponent(queryUrl("houseId"));
+    getAppreciationAnalyze(renderSaleAnalyze);
+    if (houseId != null) {
+        var urlData = "houseId=" + houseId;
+        link_public.method(server_url + '/rest/house/selectHouseInfoByHouseId', urlData, "post", false, function (json) {
+            if (json.success) {
+                var data = json.data;
+                var cityName = null;
+                if (data != null) {
+                    houseInfo = data;
+                    communityId = data.communityId;
+                    
+                    cityName = data.cityName;
+                    var info_str = data.buildingId ? data.buildingId + "栋" : '';
+                    info_str += data.unitId ? " - " + data.unitId + "单元" : '';
+                    info_str += data.doorNum ? ' - ' + data.doorNum + '室' : '';
+                    if(info_str.length > 0) {
+                        info_str += data.buildingsquare ? ' | ' + data.buildingsquare + '㎡' : '';
+                    }else {
+                        info_str += data.buildingsquare ? data.buildingsquare + '㎡' : '';
+                    }
+                    $("#communityName").html(data.communityName + "<span id='plus_house_type_span' class=\"f10\">" + data.communitytype + "</span>" + '<img id="address-arrow" src="../img/plus_icon_7.png" class="a-2" alt="">');
+                    $("#address").html(data.cityName + " " + (data.address || '') + ' ' + info_str);
+                    $('#suggestPrice').html(data.assessSaleTotalPrice || '暂无估价')
+                    $("#assessSalePrice").html("评估单价：" + (data.assessSalePrice || '--') + "元/㎡");
+                    $("#assessTime").html("评估日期：" + (data.assessTime || '--'));
+                    /**预授信 */
+                    $('#yushouxin_val').html(typeof data.assessSaleTotalPrice != 'undefined' ? (data.assessSaleTotalPrice * 0.7).toFixed(0) : '--');
+                    fetchMarket(communityId);
+                }else {
+                    $('#address-arrow').hide();
+                }
+            } else {
+                showToast(3, json.message);
+                $('.index_box').html(emptyContent);
+                $('#address-arrow').hide();
+            }
+            loading.hide();
+        });
+    } else {
+        showToast(3, '出错了！');
+        $('.index_box').html(emptyContent);
+    }
+    clearHouseLocalStorage();
+});
+
+//事件注册
+function addListener() {
+    //静态链接去掉
+    // $('#p_sale_info').on('click', '.to_static', function(e) {
+    //     window.location.href = '../demo/' + $(this).attr('data-tar') + '.html';
+    // });
+    // $('#p_keep_info').on('click', '.to_static', function(e) {
+    //     window.location.href = '../demo/' + $(this).attr('data-tar') + '.html';
+    // });
+    $('#add_house_a').on('click', function() {
+        // localStorage.setItem('valuation_target', '../plus/detail.html');
+        window.location.href = './audio_search.html';
+    });
+    //立即申请的点击事件
+    // $('#goto_loan').on('click', function() {
+    //     window.location.href = '../loan/index.html';
+    // })
+    $('.p_nav li').on('click', function(e) {
+        e.stopPropagation();
+        var val = $(this).attr('data-value');
+        var map = ['', 'p_sale_info', 'p_keep_info'];
+        var render_map = ['', renderSaleAnalyze, renderKeepAnalyze]
+        if($(this).hasClass('p_nav_active')) {
+            return;
+        }
+        $('.p_nav li').removeClass('p_nav_active');
+        $(this).addClass('p_nav_active');
+        $('.p_info_box').hide();
+        $('#' + map[val]).show();
+        setTimeout(function() {
+            getAppreciationAnalyze(render_map[val]);
+        }, 0);
+    })
+
+    $('#communityName').on('click', function(e) {
+        if(!houseInfo) {
+            return;
+        }
+        if(!has_market) {
+            return;
+        }
+        localStorage.setItem('back_origin_details', location.href);
+        var query = '?communityId=' + houseInfo.communityId + '&cityId=' + houseInfo.cityId + '&districtId=' + houseInfo.districtid;
+        $(window).attr('location', '../change/details.html' + query);
+    })
+}
+
+//获取小区近3月均价行情
+function fetchMarket(communityId) {
+    var communityData = "communityId=" + communityId + "&month=" + _config.dataMonth;
+    link_public.method(server_url + '/rest/community/getCommunityMarketByDate', communityData, "post", false, function (json) {
+        if (json.statusCode == 1 && json.data) {
+            has_market = true;
+        } else {
+            has_market = false;
+        }
+        if(!has_market) {
+            $('#address-arrow').hide();
+        }
+
+    })
+}
+
+/**
+ * 删除房产(该页未使用)
+ */
+function deleteHouse() {
+    loading.show();
+    if (houseId != null) {
+        var urlData = "houseId=" + houseId + "&status=0"
+        link_public.method(server_url + '/rest/house/updateHouse', urlData, "post", true, function (json) {
+            if (json.success) {
+                showToast(2, "删除成功");
+                setTimeout(function () {
+                    window.history.go(-1);
+                    // $(window).attr('location','houseList.html');                    
+                }, 500);
+            } else {
+                showToast(3, json.message);
+            }
+            loading.hide();
+        });
+    }
+
+}
+
+/**plus */
+/**
+ * 房产增值分析
+ */
+function getAppreciationAnalyze(cb) {
+    if(analyzeData) {
+        cb && cb(analyzeData);
+        return;
+    }
+    // loading.show();
+
+    if (houseId != null) {
+        var urlData = "houseId=" + houseId;
+        link_public.method(server_url + '/rest/house/houseAppreciationAnalyze', urlData, "post", true, function (json) {
+            if (json.statusCode == 1) {
+                console.log(json.data);
+                analyzeData = json.data;
+                $('#sale_score').text(typeof json.data.saleFen !== 'undefined' ? json.data.saleFen + '分' : '');
+                $('#keep_score').text(typeof json.data.rentFen !== 'undefined' ? json.data.rentFen + '分' : '');
+                cb && cb(json.data);
+            } else {
+                showToast(3, json.message);
+            }
+            // alert(1);
+            hidePartLoading('score_loading');
+            
+            // loading.hide();
+        });
+    }
+}
+
+/**
+ * 渲染出售评估
+ * @param {} data 
+ */
+function renderSaleAnalyze(data) {
+    var el = $('#p_sale_info');
+    var _compare = 1;
+    $('#salefirstYearManagerResult').html(data.salefirstYearManagerResult ? data.salefirstYearManagerResult.substr(0, data.salefirstYearManagerResult.length - 2) : '--');
+    $('#salefiveTotalManageResult').html(data.salefiveTotalManageResult ? data.salefiveTotalManageResult.substr(0, data.salefiveTotalManageResult.length - 2) : '--');
+    if(typeof data.resultCompare != 'undefined') {
+        $(el).find('.compare').html('5年收益' + data.resultCompare + '持有房产' + (data.compareValueResult || '--')); 
+        _compare = data.resultCompare == '高于' ? 1 : 2;
+        if(_compare == 1) {
+            $(el).find('.compare').removeClass('p_qipao_green');
+            $(el).find('.compare').addClass('p_qipao');
+        }else {
+            $(el).find('.compare').removeClass('p_qipao');
+            $(el).find('.compare').addClass('p_qipao_green');
+        }
+    }else {
+        $(el).find('.compare').hide();
+    }
+    $(el).find('.SaleSqmPriceOnYear_on_YearBasis').html(data.SaleSqmPriceOnYear_on_YearBasis ? data.SaleSqmPriceOnYear_on_YearBasis > 0 ? '+' + data.SaleSqmPriceOnYear_on_YearBasis + '%' : data.SaleSqmPriceOnYear_on_YearBasis + '%' : '--');
+    $(el).find('.p_range').html((data.MinSalePrice || '--') + '~' + (data.MaxSalePrice || '--'));
+    $(el).find('.days').html(data.saleAvgDay ? data.saleAvgDay + '天' : '--');
+    $(el).find('.earnings').html(data.financingIncome || '--');
+}
+
+/**
+ * 渲染持有评估
+ * @param {*} data 
+ */
+function renderKeepAnalyze(data) {
+    var el = $('#p_keep_info');
+    var _compare = 1;
+    $('#rentfirstYearManagerResult').html(data.rentfirstYearManagerResult ? data.rentfirstYearManagerResult.substr(0, data.rentfirstYearManagerResult.length - 2) : '--');
+    $('#rentfiveTotalManageResult').html(data.rentfiveTotalManageResult ? data.rentfiveTotalManageResult.substr(0, data.rentfiveTotalManageResult.length - 2) : '--');
+    if(typeof data.resultCompare != 'undefined') {
+        _compare = data.resultCompare == '高于' ? 1 : 2;
+        $(el).find('.compare').html('5年收益' + (_compare == 1 ? '低于' : '高于') + '出售房产' + (data.compareValueResult || '--')); 
+        if(_compare == 2) {
+            $(el).find('.compare').removeClass('p_qipao_green');
+            $(el).find('.compare').addClass('p_qipao');
+        }else {
+            $(el).find('.compare').removeClass('p_qipao');
+            $(el).find('.compare').addClass('p_qipao_green');
+        }
+    }else {
+        $(el).find('.compare').hide();
+    }
+    $(el).find('.SaleSqmPriceOnYear_on_YearBasis').html(data.SaleSqmPriceOnYear_on_YearBasis ? data.SaleSqmPriceOnYear_on_YearBasis > 0 ? '+' + data.SaleSqmPriceOnYear_on_YearBasis + '%' : data.SaleSqmPriceOnYear_on_YearBasis + '%' : '--');    
+    $(el).find('.p_range').html((data.MinRentPrice || '--') + '~' + (data.MaxRentPrice || '--'));
+    $(el).find('.days').html(data.rentAvgDay ? data.rentAvgDay + '天' : '--');
+    $(el).find('.earnings').html(data.rent_year_rant || '--');
+}

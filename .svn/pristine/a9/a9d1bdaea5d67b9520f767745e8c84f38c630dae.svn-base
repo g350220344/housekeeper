@@ -1,0 +1,89 @@
+.card-box {
+    min-height: 100px;
+    background: #fff;
+}
+.card-box ul {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clear: both;
+    height: 100px;
+}
+.card-box ul li {
+    float: left;
+    height: 100%;
+    line-height: 100px;
+    list-style: none;
+}
+.card-box-label {
+    width: 30%;
+    background: lightcoral;
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+}
+.card-box-content {
+    width: 70%;
+    background: #f8f8f9;
+}
+.card-box-inner {
+    /* text-align: center; */
+    padding: 15px 15px 0;
+}
+.card-num-font {
+    font-size: 20px;
+}
+.card-border-green {
+    border-color: #1DC079;
+}
+.card-border-blue {
+    border-color: #2d8cf0;
+}
+.card-border-yellow {
+    border-color: #f0ad4e;
+}
+.card-border-red {
+    border-color: #f15028;
+}
+.nav-logo {
+    color: #fff;
+    text-align: center;
+}
+.roll-right.J_tabRight {
+    right: 80px;
+}
+.roll-right.btn-group {
+    right: 0;
+}
+.table-striped th:last-of-type {
+    width: 30%;
+}
+.table-striped th:first-of-type {
+    width: 10%;
+}
+.table-striped td, .table-striped th {
+    text-align: center;
+}
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: #2d8cf0;
+    border-color: #2d8cf0;
+    outline: none;
+
+}
+.btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus {
+    background-color: #1DC079;
+    border-color: #1DC079;
+    outline: none;
+}
+.ibox-title {
+    cursor: pointer;
+}
+.m-r {
+    margin-right: 0;
+}
+#ibox_user_data {
+    cursor: pointer;
+}
+#ibox_house_data {
+    cursor: pointer;
+}

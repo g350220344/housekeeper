@@ -1,0 +1,63 @@
+
+$(function() {
+    // window.onpageshow = function(event) {
+    //     loadData();
+    // };
+    addHistoryBackListener(localStorage.getItem('back_origin_houseList'));
+    
+    loadData()
+    $("#houseList").on('click', 'li', function() {
+        var houseId = $(this).find("#houseId").val();
+        localStorage.setItem('back_origin_houseAvm', location.href);
+        $(window).attr('location','houseAvmInfo.html?houseId='+houseId);
+    });
+    $('#add-house').on('click', function() {
+        localStorage.setItem('back_origin_houseAvm', location.href);
+        // localStorage.setItem('valuation_origin', window.location.href);
+        localStorage.setItem('valuation_target', '../houseproperty/houseAvmInfo.html')
+        window.location.href = '../valuation/index.html';
+    })
+    clearHouseLocalStorage();
+});
+
+function loadData() {
+    loading.show();    
+    var houseData = "userId="+userId;
+    link_public.method(server_url+'/rest/house/getHouseList',houseData,"post",true,function (json) {
+        //alert(JSON.stringify(json));
+
+        if(json.success) {
+            var data = json.data;
+
+            $("#houseList").empty();
+            var sumPrice = 0;
+            $.each(data,function (i,item) {
+                var info_str = item.buildingId ? item.buildingId + "栋" : '';
+                info_str += item.unitId ? " - " + item.unitId + "单元" : '';
+                info_str += item.doorNum ? ' - ' + item.doorNum + '室' : '';
+                if(info_str.length > 0) {
+                    info_str += item.buildingsquare ? ' | ' + item.buildingsquare + '㎡' : '';
+                }else {
+                    info_str += item.buildingsquare ? item.buildingsquare + '㎡' : '';
+                }
+                var html = "<li>" +
+                    "<div class=\"houseproperty_ul_list\">" +
+                    "<input id='houseId' value='"+item.houseId+"' style='display: none'/>" +
+                    "<h1 class=\"f14\">"+item.communityName+" <span>"+item.communitytype +"</span></h1>" +
+                    "<p class=\"hous_p1 f11 col\">" + info_str + "</p>" +
+                    "<p class=\"hous_p2 f15\">"+item.assessSaleTotalPrice +"<i class=\"f11\">万元</i><span class=\"f11\">（"+(item.assessTime || '--') +"）</span></p>" +
+                    "</div>" +
+                    "<div class=\"houseproperty_ul_img\"><a><img src=\"../img/ico_right.png\" alt=\"\"></a></div>" +
+                    "</li>";
+                sumPrice+= item.assessSaleTotalPrice;
+                $("#houseList").append(html);
+            })
+            $("#houseNum").html(data.length);
+            $("#housePrice").html(sumPrice.toFixed(1));
+        }else {
+            showToast(3, json.message);
+        }
+        loading.hide();
+    });
+}
+

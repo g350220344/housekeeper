@@ -1,0 +1,35 @@
+$(function(){ 
+     myHouseproperty();
+});
+	function myHouseproperty(){
+		var userId ="gaoy";
+		$.ajax({
+        type: "POST", //用POST方式传输
+        dataType: "jsonp", //数据格式:JSON
+        url: 'http://localhost:8080/housekeeper/rest/house/getHouseList', //目标地址
+        data: "userId=" + userId,
+        error: function (XMLHttpRequest, textStatus, errorThrown) { },
+        success: function (result){
+            // 遍历列表
+          	 var html = "";
+      		 for(var i in result.data){
+      		 	var data = result.data[i];
+      		 	//城市名称
+        		var cityName = data.cityName;
+        		//地址
+        		var address = data.address;
+        		//行政区名
+        		var districtname = data.districtname;
+        		//小区名称
+        		var communityName = data.communityName;
+      		 	html+="<li>";
+      		 	html+="<div class='houseproperty_ul_my_list'>";
+      		 	html+="<h1 class='f14'>"+communityName+"</h1>";
+      		 	html+="<p class='hous_p1 f11 col'>"+cityName+""+districtname+""+address+"</p>";
+      		 	html+="<div class='houseproperty_ul_my_listim'><a href='##'><img src='../img/ico_right.png' alt=''></a></div>";
+      		} 
+      		//添加房产列表
+      		$( "#myHouseproperty" ).html(html);
+    	 }
+    });
+		} ; 

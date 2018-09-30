@@ -1,0 +1,187 @@
+/* report_sell page 出售报告 */
+.report_sell_page {
+    padding-bottom: 1.2rem;
+}
+.rsp_block_1 {
+    padding-left: 0.45rem;
+    padding-right: 0.4rem;
+    background-image: linear-gradient(-90deg, 
+		#388cff 0%, 
+		#5fdcff 100%), 
+	linear-gradient(
+		#ffffff, 
+		#ffffff);
+	background-blend-mode: normal, 
+        normal;
+        color: #fff;
+    height: 3.5rem;
+}
+.rsp_block_1_row_1 {
+    /* padding: 0 0.475rem; */
+    font-size: 0.36rem;
+    line-height: 0.34rem;
+    padding-top: 0.49rem;
+    vertical-align: middle;
+}
+.rsp_block_1_row_1 img {
+    width: 0.12rem;
+    height: 0.21rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 0.05rem;
+    margin-left: 0.12rem;
+}
+.rsp_block_1_row_2 {
+    /* padding: 0 0.475rem; */
+    line-height: 0.25rem;
+    padding-top: 0.24rem;
+    font-size: 0.26rem;
+}
+.rsp_block_1_row_3 {
+    padding-top: 0.91rem;
+    padding-bottom: 0.41rem;
+    overflow: hidden;
+    clear: both;
+    position: relative;
+}
+.rsp_block_1_row_3_item {
+    float: left;
+    text-align: center;
+}
+.rsp_block_1_row_3_item_val {
+    font-size: 0.42rem;
+    line-height: 0.41rem;
+    padding-bottom: 0.14rem;
+}
+.rsp_block_1_row_3_item_val img {
+    width: 0.13rem;
+    height: 0.22rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+.rsp_block_1_row_3_item_label {
+    line-height: 0.23rem;
+    font-size: 0.24rem;
+}
+.rsp_block_1_row_3_divider {
+    width: 1px;
+    height: 0.5rem;
+    background: #fff;
+    position: absolute;
+    bottom: 0.51rem;
+}
+.rsp_block_2 {
+    background: #fff;
+    overflow: hidden;
+    clear: both;
+    padding: 0.5rem 0.3rem;
+}
+.rsp_block_2_item {
+    width: 33.3%;
+    float: left;
+    text-align: center;
+}
+.rsp_block_2_item_label {
+    line-height: 0.23rem;
+    color: #555;
+    font-size: 0.24rem;
+}
+.rsp_block_2_item_val {
+    vertical-align: middle;
+    line-height: 0.31rem;
+    padding-top: 0.24rem;
+    font-size: 0.32rem;
+    color: #111;
+}
+.rsp_block_2_item_val img {
+    width: 0.13rem;
+    height: 0.22rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+.rsp_block_3 {
+    background: #fff;
+    padding-bottom: 0.45rem;
+}
+.rsp_block_4 {
+    margin-top: 0.2rem;
+}
+.rsp_block_4_ctn {
+    position: relative;
+}
+.rsp_block_4_chart_box {
+    position: relative;
+    padding: 0 0.1rem;
+}
+.rsp_block_4_chart_unit {
+    position: absolute;
+    font-size: 0.25rem;
+    color: #888;
+    top: 1.38rem;
+    right: 0.63rem;
+    line-height: 0.25rem;
+    z-index: 99;
+}
+.rsp_block {
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.rsp_block_title {
+    line-height: 0.89rem;
+    padding-left: 0.13rem;
+    color: #111;
+    font-size: 0.3rem;
+}
+.rsp_tool_bar {
+    position: absolute;
+    width: 100%;
+    height: 1rem;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
+    text-align: center;
+    overflow: hidden;
+    clear: both;
+    background-color: #fff;
+}
+.rsp_tool_bar_little_item {
+    font-size: 0.24rem;
+    color: #111;
+    width: 1.43rem;
+    height: 100%;
+    float: left;
+}
+.rsp_tool_bar_big_item {
+    line-height: 1rem;
+    font-size: 0.32rem;
+    color: #fff;
+    width: 2.3rem;
+    float: left;
+    height: 100%;
+}
+.rsp_tool_bar_little_item img {
+    height: 0.3rem;
+    width: auto;
+    display: block;
+    margin: auto;
+    padding-top: 0.15rem;
+    padding-bottom: 0.08rem;
+}
+.rsp_tab {
+    line-height: 0.0.26rem;
+    padding-top: 0.54rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.28rem;
+    color: #888;
+}
+.rsp_tab_item {
+    display: inline-block;
+    padding: 0 0.19rem;
+}
+.rsp_tab_item_active {
+    color: #388cff;
+}
+.report_sell_page .cmt_pannel_ctn_line_3_right {
+    right: -0.4rem;
+}

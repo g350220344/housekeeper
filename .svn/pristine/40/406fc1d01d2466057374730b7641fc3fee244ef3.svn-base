@@ -1,0 +1,667 @@
+var districts = {};
+var pre_center;
+var _cur_zoom;
+var reDrawTimer = null;
+var reZoomTimer = null;
+var city;
+var _map;
+var timer = -1;
+var clock = 0;
+var flag = false;
+var jump_timer = -1;
+var defaultCityId = "2301";//城市默认哈尔滨
+function initMap(box, pointObj, c_list) {
+    _map = new BMap.Map(box);
+    var point = new BMap.Point(pointObj.x, pointObj.y);
+    //添加控件
+    var opts = {offset: new BMap.Size(25, 100)};
+    var opto = {offset: new BMap.Size(30, 560)};
+    var top_left_control = new BMap.ScaleControl(opts);// 左上角，添加比例尺
+    _map.addControl(top_left_control);  
+    _map.addControl(new BMap.NavigationControl(opto));
+    // _map.addControl(new BMap.ScaleControl());
+    _map.addControl(new BMap.OverviewMapControl());
+    //定位
+    _map.centerAndZoom(point, 12);
+    pre_center = _map.getCenter();
+    _cur_zoom = _map.getZoom();
+    
+    for (var c in c_list) {
+        
+        var item = c_list[c];
+        var itemInfo = item.districtMarket || {};
+        var point = new BMap.Point(item.lng, item.lat);
+        // console.log('point', point)
+        var myCompOverlay = new QuxianOverlay(_map, point, item.districtName, priceFormat(itemInfo.salesqmprice) + "/㎡", item);
+        _map.addOverlay(myCompOverlay);
+    }
+    // randomTags(QuxianOverlay);
+    // _map.addEventListener("dragstart", function() {
+    //     pre_center = _map.getCenter();
+    // })
+    _map.addEventListener("dragend", function(){  
+        if(reDrawTimer) {
+            clearTimeout(reDrawTimer);
+        }
+        setTimeout(function() {
+            var center = _map.getCenter();    
+            console.log("地图中心点变更为：" + center.lng + ", " + center.lat);    
+            if(_cur_zoom >= 15) {
+                var distance = GetDistance(pre_center.lat, pre_center.lng, center.lat, center.lng);
+                // distance = (map.getDistance(pre_center,center)).toFixed(2);
+                console.log('拖动距离： ', distance);
+                if(distance > 0.6) {
+                    pre_center = _map.getCenter();
+                    console.log('重绘标注！')
+                    _map.clearOverlays();
+                    loadCommunitieAround(pre_center.lng, pre_center.lat);
+                    // randomTags(ComplexCustomOverlay);
+                }
+            }
+        }, 300)
+        
+    });
+    _map.addEventListener("zoomend", function(){    
+        
+        // var center = map.getCenter();    
+        if(reZoomTimer) {
+            clearTimeout(reZoomTimer);
+        }
+        if(reDrawTimer) {
+            clearTimeout(reDrawTimer);
+        }
+        
+        setTimeout(function() {
+            var _zoom = _map.getZoom();
+            pre_center = _map.getCenter();
+            console.log("地图比例为：" + _map.getZoom());   
+            if(_cur_zoom < 15 && _zoom >= 15) {
+                _map.clearOverlays();
+                //加载小区标注
+                // randomTags(ComplexCustomOverlay);
+                var _center = _map.getCenter();
+                loadCommunitieAround(_center.lng, _center.lat)
+            }
+            if(_cur_zoom >= 13 && _zoom < 13) {
+                _map.clearOverlays();
+                //加载城市标注
+                loadCityPoint(QuxianOverlay);
+                
+            }
+            _cur_zoom = _map.getZoom();
+        }, 300);
+    });
+
+    /**随机生成25个标注 */
+    function randomTags(model) {
+        var bounds = _map.getBounds();
+        var sw = bounds.getSouthWest();
+        var ne = bounds.getNorthEast();
+        var lngSpan = Math.abs(sw.lng - ne.lng);
+        var latSpan = Math.abs(ne.lat - sw.lat);
+        var txt = "普陀", mouseoverTxt = txt + " " + parseInt(Math.random() * 1000, 10) + "套";    
+        for (var i = 0; i < 25; i++) {
+            var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+            // addMarker(point);
+            var myCompOverlay = new model(_map, point, "普陀", "6.2万/㎡", mouseoverTxt);
+            _map.addOverlay(myCompOverlay);
+        }
+    }
+    // console.log('districts', JSON.parse(localStorage.getItem('districtContents')));
+}
+
+$(function () {
+    addHistoryBackListener('../index.html');
+    pageInit();
+})
+
+function pageInit() {
+    getLocation(init);
+    // getAddressByIp(function (result){
+    //     //百度定位返回地址
+    //     var cityId = defaultCityId;//如果定位失败或系统中没匹配到城市，按默认城市
+    //     if(result!=null){
+    //         var areaId = result.code;
+    //         //获取系统城市
+    //         var cityDate = "areaId="+areaId;
+    //         link_public.method(server_url+'/rest/city/getCityCode',cityDate,"post",true,function (json) {
+    //             if(json.success) {
+    //                 console.log('json.', json)
+    //                 cityId = json.data.cityId;
+    //                 city = {
+    //                     cityId: json.data.cityId,
+    //                     cityName: json.data.areaName
+    //                 }
+    //                 $.cookie("cityInfo",JSON.stringify(json.data));
+    //                 localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify({
+    //                     cityId: json.data.cityId,
+    //                     cityName: json.data.areaName
+    //                 }))));
+    //                 init();
+    //             }
+    //         });
+    //     }
+        
+    // });
+}
+
+function changeCity(){
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    setTimeout(function() {
+        addSearchListenter();
+        $('.search_input input').val('');
+    }, 0)
+    // var url = "/index.html"
+    // $(window).attr('location','public/searchCity.html?url='+url);
+}
+
+function addSearchListenter() {
+    
+
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('.search_input input').on('input propertychange', function() {
+        var vm = this;
+        if(!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+        
+    })
+    
+    //根据拼音查找
+    $(".citynav li").click(function(e){
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function() {
+        $('.search-box').hide();
+    })
+
+    // $('#fixed-to-cur').on('click', function() {
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     if(!cookie) {
+    //         return;
+    //     }
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    // $('#dqcs').on('click', function(e) {
+    //     e.stopPropagation();
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    $('.search_del').on('click', function(e) {
+        e.stopPropagation();
+        var cookie = eval("("+$.cookie("cityInfo")+")");
+        if(!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+        
+        doSearch(cityId, areaName, cookie.pin);
+    });
+
+
+    addHotListener(doSearch); //热门搜索
+    // $("dl dd").on('click', function(){
+    //     //var item = $(this).index();  //获取索引下标 也从0开始
+    //     var cityName = $(this).text();  //文本内容
+    //     var cityId = $(this).attr("data-id");
+    //     doSearch(cityId,cityName);
+    // });
+}
+
+function getCityMarket(){
+    loading.show();
+    console.log('city', city)
+    $("#o_f_city").html(city.cityName.length > 4 ? city.cityName.substr(0, 4) : city.cityName);
+    //获取城市行情
+    // var month = formatDate(new Date());
+    var cityDate = "cityId="+city.cityId;
+    link_public.method(server_url+'/rest/city/getCityMarket',cityDate,"post",true,function (json) {
+        if(json.success) {
+            var data = json.data;
+            
+            if(!data) {
+                $("#price").html('--');                
+                $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>--</span>")
+                $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>--</span>");
+                loading.hide();
+                return;
+            }
+            $('#label_month').html(data.dayId.substr(6, 1) + '月均价');
+            $("#price").html(data.salesqmprice ? (data.salesqmprice.toFixed(0)) + '元/㎡' : '--');
+            $('#saleSqmPriceOnYear_on_YearBasis').html('<img src="../img/ico_s.png"><span class="increase"></span>')
+            $('#saleSqmPriceLinkRelativeRatio').html('<img src="../img/ico_s.png"><span class="increase"></span>')            
+            var saleSqmPriceLinkRelativeRatio = (data.saleSqmPriceLinkRelativeRatio || '').toString() + '%';
+            var saleSqmPriceOnYear_on_YearBasis = (data.saleSqmPriceOnYear_on_YearBasis || '').toString() + '%';
+            console.log(saleSqmPriceLinkRelativeRatio)
+            if(saleSqmPriceLinkRelativeRatio.indexOf("-")>-1){
+                saleSqmPriceLinkRelativeRatio = saleSqmPriceLinkRelativeRatio.replace("-","");
+                $("#saleSqmPriceLinkRelativeRatio img").attr("src","../img/ico_x.png");
+                $("#saleSqmPriceLinkRelativeRatio span").attr("class","decrease");
+            }
+            
+            if(saleSqmPriceOnYear_on_YearBasis.indexOf("-")>-1){
+                saleSqmPriceOnYear_on_YearBasis = saleSqmPriceOnYear_on_YearBasis.replace("-","");
+                $("#saleSqmPriceOnYear_on_YearBasis img").attr("src","../img/ico_x.png");
+                $("#saleSqmPriceOnYear_on_YearBasis span").attr("class","decrease");
+            }
+            console.log(saleSqmPriceLinkRelativeRatio, saleSqmPriceOnYear_on_YearBasis)
+            $("#saleSqmPriceLinkRelativeRatio span").html((saleSqmPriceLinkRelativeRatio === '%' ? '--' : saleSqmPriceLinkRelativeRatio));
+            $("#saleSqmPriceOnYear_on_YearBasis span").html((saleSqmPriceOnYear_on_YearBasis === '%' ? '--' : saleSqmPriceOnYear_on_YearBasis));
+            if(!data.saleSqmPriceLinkRelativeRatio) {
+                $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>--</span>")  
+            }
+            if(!data.saleSqmPriceOnYear_on_YearBasis) {
+                $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>--</span>")                
+            }
+        }else {
+            showToast(3, json.message);
+            $("#price").html("<span class='f12' style='padding-right: 1rem'>城市均价 </span>" + '--');                
+            
+            $('#saleSqmPriceOnYear_on_YearBasis').html("<span style='color: grey;'>--</span>")
+            
+            $('#saleSqmPriceLinkRelativeRatio').html("<span style='color: grey;'>--</span>")
+        }
+        loading.hide();
+    });
+}
+
+function doSearch(cityId, cityName, pin) {
+    if(!cityId || !cityName) {
+        $('.search-box').hide();
+        return;
+    }
+    // $.cookie("cityInfo",JSON.stringify({
+    //     areaName: cityName,
+    //     cityId: cityId
+    // }));
+    city = {
+        cityId: cityId,
+        cityName: cityName,
+        pin: pin
+    }
+    getCityMarket(cityId, cityName);
+    loadCityPoint();
+    $('.search-box').hide();
+    localStorage.setItem('audio_city', JSON.stringify(city));
+    localStorage.setItem('indexCityData', encodeURI(encodeURI(JSON.stringify({
+        cityId: cityId,
+        cityName: cityName
+    }))));            
+    
+}
+
+function initNav() {
+    districts = JSON.parse(localStorage.getItem('districtContents'));
+    console.log('districtContents: ', districts)
+    var total = 0;
+    for(var d in districts) {
+        total += districts[d].list.length;
+    }
+    if(total == 0) {
+        showToast(3, '暂无匹配结果！');
+    }
+    var html_str = '';
+    if(!!districts) {
+        for(var key in districts) {
+            var item = districts[key];
+            html_str += '<p data-num=' + item.list.length + ' data-district=' + item.districtId + ' data-index=' + key + '>' + item.districtName + '(' + item.list.length + ')' + "</p>";
+        }
+    }
+    $('.map_box_tii').html(html_str);
+    // $('.map_box_tii').find('p').eq(0).addClass('cor');
+    addListener();
+}
+
+function init(_city) {
+    city = _city
+    console.log('_city', city);
+    localStorage.setItem('audio_city', JSON.stringify(city));
+    $('#change_city').on('click', function(e) {
+        changeCity();
+    });
+    $('#btn_record').on('click', function(e) {
+        window.location.href = './audio_search.html';
+    });
+    getCityMarket();
+    loadCityPoint();
+}
+// 区县标注覆盖物
+function QuxianOverlay(map, point, text, price, cm_obj) {
+    this._point = point;
+    this._text = text;
+    this._price = price;
+    // this._overText = mouseoverText;
+    this._cm_obj = cm_obj
+}
+QuxianOverlay.prototype = new BMap.Overlay()
+QuxianOverlay.prototype.initialize = function (map) {
+    this._map = map;
+    var div = this._div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.style.backgroundColor = "#13c98d";
+    // div.style.border = "1px solid #BC3B3A";
+    div.style.color = "#fff";
+    div.style.borderRadius = '0.5rem';
+    div.style.height = "6.9rem";
+    div.style.width = "6.9rem";
+    div.style.borderRadius = "50%";
+    div.style.paddingTop = "1.8rem";
+    // div.style.lineHeight = "1.8rem";
+    div.style.whiteSpace = "nowrap";
+    div.style.MozUserSelect = "none";
+    div.style.fontSize = "1.1rem"
+    div.style.boxShadow = "0px 0px 5px 0px rgba(0, 0, 0, 0.3)"
+    var span = this._span = document.createElement("span");
+    span.style.display = 'block';
+    // span.style.height = "4rem";
+    // span.style.lineHeight = "4rem";
+    // span.style.marginTop = "1rem";
+    span.style.fontWeight = "bold";
+    var p = this._p = document.createElement("p");
+    p.style.color = "#fff";
+    p.style.fontSize = "1.1rem";
+    p.style.paddingTop = "0.5rem";
+    div.style.textAlign = "center";
+    
+    div.appendChild(span);
+    div.appendChild(p);
+    span.appendChild(document.createTextNode(this._text));
+    p.appendChild(document.createTextNode(this._price));
+    var that = this;
+
+    // var arrow = this._arrow = document.createElement("div");
+    // arrow.style.background = "url(../../img/triangle.png) no-repeat";
+    // arrow.style.position = "absolute";
+    // arrow.style.width = "3.1rem";
+    // arrow.style.height = "3rem";
+    // arrow.style.top = "3.6rem";
+    // arrow.style.left = "2.4rem";
+    // arrow.style.overflow = "hidden";
+    // arrow.style.backgroundSize = "contain";
+    // div.appendChild(arrow);
+
+    //标注点击事件
+    div.addEventListener('touchend', function() {
+        console.log(that._cm_obj.lng, that._cm_obj.lat);
+        var point = new BMap.Point(that._cm_obj.lng, that._cm_obj.lat);
+        _map.centerAndZoom(point, 15);
+    });
+
+    map.getPanes().labelPane.appendChild(div);
+
+    return div;
+}
+QuxianOverlay.prototype.draw = function () {
+    var map = this._map;
+    var pixel = map.pointToOverlayPixel(this._point);
+    var w = 10 * this._div.style.width.replace('rem', '')/2;
+    var h = 10 * this._div.style.height.replace('rem', '')/2;
+    // console.log('div.w: ' + this._div.style.width.replace('rem', '') + '  div.h:  ' + this._div.style.height.replace('rem', ''));
+    this._div.style.left = pixel.x - w + "px";
+    this._div.style.top = pixel.y - h + "px";
+    // console.log(this._div.style.left, this._div.style.top)
+}
+
+// 复杂的自定义覆盖物
+function ComplexCustomOverlay(map, point, text, price, cm_obj) {
+    this._point = point;
+    this._text = text;
+    this._price = price;
+    // this._overText = mouseoverText;
+    this._cm_obj = cm_obj
+}
+ComplexCustomOverlay.prototype = new BMap.Overlay();
+ComplexCustomOverlay.prototype.initialize = function (map) {
+    this._map = map;
+    var div = this._div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.style.backgroundColor = "#13c98d";
+    // div.style.border = "1px solid #BC3B3A";
+    div.style.color = "#fff";
+    div.style.borderRadius = '0.5rem';
+    // div.style.height = "3.6rem";
+    div.style.padding = "0.3rem 0.3rem";
+    div.style.lineHeight = "1.8rem";
+    div.style.whiteSpace = "nowrap";
+    div.style.minWidth = '10.9rem';
+    div.style.MozUserSelect = "none";
+    div.style.fontSize = "1.1rem"
+    div.style.boxShadow = "0px 0px 5px 0px rgba(0, 0, 0, 0.3)";
+    $(div).addClass('map_qipao');
+    var span = this._span = document.createElement("span");
+    span.style.fontWeight = "bold";
+    var p = this._p = document.createElement("p");
+    p.style.color = "#fff";
+    p.style.fontSize = "1.1rem"
+    div.style.textAlign = "center";
+    
+    div.appendChild(span);
+    div.appendChild(p);
+    span.appendChild(document.createTextNode(this._text));
+    p.appendChild(document.createTextNode(this._price));
+    var that = this;
+
+    // var arrow = this._arrow = document.createElement("div");
+    // arrow.style.background = "url(../../img/triangle.png) no-repeat";
+    // arrow.style.position = "absolute";
+    // arrow.style.width = "3.1rem";
+    // arrow.style.height = "3rem";
+    // arrow.style.top = "3.6rem";
+    // arrow.style.left = "2.4rem";
+    // arrow.style.overflow = "hidden";
+    // arrow.style.backgroundSize = "contain";
+    // div.appendChild(arrow);
+
+    //标注点击事件
+    div.addEventListener('touchstart', function() {
+        flag = false;
+        if(clock == 0) {
+            startClock();
+        }else if(clock > 0) {
+            clearTimeout(jump_timer);
+            flag = true;
+        }
+    });
+    div.addEventListener('touchmove', function() {
+        flag = true;
+    })
+    div.addEventListener('touchend', function() {
+        if(flag) {
+            return;
+        }
+        if(clock > 5) {
+            flag = true;
+        }
+        jump_timer = setTimeout(function() {
+            clock = 0;
+            clearTimeout(timer);
+            if(flag) {
+                console.log('no-----jump');
+                return;
+            }
+            console.log(that._cm_obj.communityId, that._cm_obj.districtId, that._cm_obj.cityId);
+            localStorage.setItem('back_origin_details', location.href);
+            var query = '?communityId=' + that._cm_obj.communityId + '&cityId=' + that._cm_obj.cityId + '&districtId=' + that._cm_obj.districtId;
+            $(window).attr('location', '../change/details.html' + query);
+        }, 500);
+        // if(flag) {
+        //     console.log('end_clock', clock);
+        //     clearTimeout(timer);
+        //     clock = 0;
+        //     flag = false;
+        //     return;
+        // }
+        // console.log(that._cm_obj.communityId, that._cm_obj.districtId, that._cm_obj.cityId);
+        // localStorage.setItem('back_origin_details', location.href);
+        // var query = '?communityId=' + that._cm_obj.communityId + '&cityId=' + that._cm_obj.cityId + '&districtId=' + that._cm_obj.districtId;
+        // $(window).attr('location', '../change/details.html' + query);
+    });
+
+    map.getPanes().labelPane.appendChild(div);
+
+    return div;
+}
+function startClock() {
+    if(clock > 20) {
+        clock = 0;
+        clearTimeout(timer);
+        return;
+    }
+    timer = setTimeout(function() {
+        clock += 1;
+        console.log('clock', clock);
+        startClock();
+    }, 100);
+}
+ComplexCustomOverlay.prototype.draw = function () {
+    var map = this._map;
+    var pixel = map.pointToOverlayPixel(this._point);
+    var w = this._div.offsetWidth/2;
+    var h = this._div.offsetHeight/2;
+    console.log('div.w: ' + w + '  div.h:  ' + h);
+    this._div.style.left = pixel.x - w + "px";
+    this._div.style.top = pixel.y - h - 12 + "px";
+    console.log(this._div.style.left, this._div.style.top)
+}
+
+
+//清除覆盖物
+function remove_overlay(){
+    map.clearOverlays();         
+}
+
+function addListener() {
+    $('.map_box_tii p').click(function (e) {
+        // remove_overlay();
+        
+        var vv = $(this).index();
+        $('.map_box_tii p').removeClass('cor ');
+        $(this).addClass('cor');
+        // $('.map_box_tcc').hide();
+        // $('.map_box_tcc').eq(vv).show();
+        if(vv == 0) {
+            setMap(vv, 'allmap')
+        }else if(vv == 1) {
+            setMap(vv, 'allmap')
+        }else {
+            setMap(vv, 'allmap')
+        }
+        if($(this).attr('data-num') == 0) {
+            showToast(3, '暂无匹配结果！');
+        }
+        console.log(vv);
+    })
+}
+
+function setMap(index, el) {
+    if(districts[index].list.length > 0) {
+        var item = districts[index].list[0];
+        var point = {
+            x: item.longitude,
+            y: item.latitude
+        }
+        initMap(el, point, districts[index].list);
+    }else {
+        $('#' + el).html('<div class="no_house">该区域暂无匹配房产</div>')
+    }
+    
+}
+
+/**根据坐标点获取附近小区 */
+function loadCommunitieAround(lng, lat) {
+    loading.show();
+    var query = "lng=" + lng + '&lat=' + lat + '&range=' + 500;
+    link_public.method(server_url + '/rest/community/searchNearCommunity', query, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            var data = json.data;
+            if(data && data.length > 0) {
+                
+                for (var c in data) {
+                    var item = data[c];
+                    var point = new BMap.Point(item.longitude, item.latitude);
+                    var myCompOverlay = new ComplexCustomOverlay(_map, point, item.communityname, "售：" + (item.salesqmprice || '--') + "元/㎡", item);
+                    _map.addOverlay(myCompOverlay);
+                }
+                
+            }
+        }else {
+
+        }
+        loading.hide();
+    });
+}
+
+/**根据城市ID获取区县坐标 */
+function loadQuxianPoints() {
+    loading.show();
+    var query = "cityId=" + city.cityId;
+    link_public.method(server_url + '/rest/district/getDistrictMarketByCityId', query, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            var data = json.data;
+            if(data && data.length > 0) {
+                initMap('allmap', city.point, data)
+            }
+        }else {
+
+        }
+        loading.hide();
+    });
+}
+
+function loadCityPoint() {
+    loading.show();
+    var query = "cityId=" + city.cityId;
+    link_public.method(server_url + '/rest/city/getCityInfo', query, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            var data = json.data;
+            if(!!data) {
+                city.point = {
+                    x: data.lng,
+                    y: data.lat
+                }
+                loadQuxianPoints();
+            }
+        }else {
+
+        }
+        loading.hide();
+    });
+}

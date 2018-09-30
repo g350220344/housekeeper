@@ -1,0 +1,133 @@
+package com.cindata.housekeeper.core.common.tools;
+/**  
+ * @description  微信支付配置信息
+ * @author lqs
+ * @2018-03-06 
+ */
+public class PayWxConfigUtil {  
+		//这个就是自己要保管好的私有Key了（切记只能放在自己的后台代码里，不能放在任何可能被看到源代码的客户端程序中）  
+	    // 每次自己Post数据给API的时候都要用这个key来对所有字段进行签名，生成的签名会放在Sign这个字段，API收到Post数据的时候也会用同样的签名算法对Post过来的数据进行签名和验证  
+	    // 收到API的返回的时候也要用这个key来对返回的数据算下签名，跟API的Sign数据进行比较，如果值不一致，有可能数据被第三方给篡改  
+	    private static String key = "NyRz26jRkGdQHKvbw0ROjFs4VU6XHvH1";  
+	  
+	    //微信开放平台分配的appID（开通公众平台之后可以获取到）  
+	    private static String appID = "wxb921c981d390122e";
+	  
+	    //微信支付分配的商户号ID（开通公众号的微信支付功能之后可以获取到）  
+	    private static String mchID = "1509229591";
+	  
+	    //机器IP  
+	    private static String ip = "192.168.1.1"; 
+	    
+	    //以下是几个API的路径：  
+	    //1）被扫支付API  
+	    //public static String PAY_API = "https://api.mch.weixin.qq.com/pay/micropay";  
+	    public static String PAY_API = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+
+	    //2）被扫支付查询API  
+	    public static String PAY_QUERY_API = "https://api.mch.weixin.qq.com/pay/orderquery";  
+	    //3）退款API  
+	    public static String REFUND_API = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+	    //4）退款查询API  
+	    public static String REFUND_QUERY_API = "https://api.mch.weixin.qq.com/pay/refundquery";  
+	    //5）撤销API  
+	    public static String REVERSE_API = "https://api.mch.weixin.qq.com/secapi/pay/reverse";  
+	    //6）下载对账单API  
+	    public static String DOWNLOAD_BILL_API = "https://api.mch.weixin.qq.com/pay/downloadbill";  
+	    //7) 统计上报API  
+	    public static String REPORT_API = "https://api.mch.weixin.qq.com/payitil/report";  
+	      
+	    //回调地址  
+	    //测试环境
+	    //public static String NOTIFY_URL = "http://tt.cindata.cn/housekeeper/rest/wx/weixinNotify";
+	    //生产环境
+	    public static String NOTIFY_URL = "http://housekeeper.cindata.cn/housekeeper/rest/wx/weixinNotify";
+	    
+	    //支付类型。 JSAPI-公众号支付    NATIVE-扫码支付   APP-APP支付
+	    public static String TRADE_TYPE = "NATIVE"; // 
+	    public static String TRADE_TYPE_GZH = "JSAPI";
+	    public static String TRADE_TYPE_APP = "APP";
+	    
+	    //测试环境
+	    //windows系统临时存储图片路径
+	    //public static String WINDOWS_FILE_URL = "d:/temp/";
+	    //linux系统临时存储图片路径  
+	    //public static String LINUX_FILE_URL = "/opt/openapi/temp";
+	    //生产环境
+	    //windows系统临时存储图片路径 
+	    //public static String WINDOWS_FILE_URL = "d:/temp/";
+	    //linux系统临时存储图片路径  
+	    //public static String LINUX_FILE_URL = "/home/gxdapp/apache-tomcat-8.0.47/temp";
+		//微信商户证书
+		//public static String SSL_PATH = "d:/apiclient_cert.p12";
+			//支付接口日志表返回码定义
+	    /**
+	     * 微信支付签名异常
+	     */
+	    public static String WX_RETCODE_ERROR_SIGN = "201";
+	    /**
+	     * 微信支付调用子系统异常
+	     */
+	    public static String WX_RETCODE_ERROR_SUBSYSTEM = "202";
+	    /**
+	     * 微信支付回调异常
+	     */
+	    public static String WX_RETCODE_ERROR_WXCALLBACK = "203";
+	    /**
+	     * 微信支付JDOM异常
+	     */
+	    public static String WX_RETCODE_ERROR_JDOM = "204";
+	    /**
+	     * 微信支付IO异常
+	     */
+	    public static String WX_RETCODE_ERROR_IO = "205";
+	    /**
+	     * 微信支付上传图片异常
+	     */
+	    public static String WX_RETCODE_ERROR_UPLOAD = "211";
+	    /**
+	     * 微信支付生成二维码异常
+	     */
+	    public static String WX_RETCODE_ERROR_QR = "212";
+	  
+//	    public static String HttpsRequestClassName = "com.entplus.wxpay.util.HttpsRequest";  
+	  
+	    public static void setKey(String key) {  
+	    	PayWxConfigUtil.key = key;  
+	    }  
+	  
+	    public static void setAppID(String appID) {  
+	    	PayWxConfigUtil.appID = appID;  
+	    }  
+	  
+	    public static void setMchID(String mchID) {  
+	    	PayWxConfigUtil.mchID = mchID;  
+	    }  
+	  
+	    public static void setIp(String ip) {  
+	    	PayWxConfigUtil.ip = ip;  
+	    }  
+	  
+	    public static String getKey(){  
+	        return key;  
+	    }  
+	      
+	    public static String getAppid(){  
+	        return appID;  
+	    }  
+	      
+	    public static String getMchid(){  
+	        return mchID;  
+	    }  
+	  
+	  
+	  
+	    public static String getIP(){  
+	        return ip;  
+	    }  
+	    
+//	    public static void setHttpsRequestClassName(String name){  
+//	        HttpsRequestClassName = name;  
+//	    }  
+	  
+	}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>房产管家</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<link rel="stylesheet" type="text/css" href="css/swiper.min.css">
+	<style>
+		.search-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+		.index_box_ctn {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+	</style>
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+</head>
+<body>
+
+<div class="search-box">
+	<div class="index_box">
+		<ul class="citynav">
+			<li>热门</li>
+			<li>A</li>
+			<li>B</li>
+			<li>C</li>
+			<li>D</li>
+			<li>E</li>
+			<li>F</li>
+			<li>G</li>
+			<li>H</li>
+			<li>I</li>
+			<li>J</li>
+			<li>K</li>
+			<li>L</li>
+			<li>M</li>
+			<li>N</li>
+			<li>O</li>
+			<li>P</li>
+			<li>Q</li>
+			<li>R</li>
+			<li>S</li>
+			<li>T</li>
+			<li>W</li>
+			<li>X</li>
+			<li>Y</li>
+			<li>Z</li>
+		
+		</ul>
+	
+		<div class="search_box bac">
+			<div class="search_input"><img src="img/search.png" class="ding_w" onclick="cityName()"><input class="text required" type="search" placeholder="搜索城市名称"  name = "cityName" ></div><a class="search_input_button f14">取消</a>
+		</div>
+		<div class="search_del">
+			<div class="search_del_list"><p class="f11 col" id="dqcs"><img src="img/ding.png" alt="" class="ding_w"><span></span></p><a id="fixed-to-cur" class="f11">当前城市</a></div>
+		</div>
+		<dl class="hotcity">
+			<dt>热门城市</dt>
+			<dd data-id="1101">北京</dd>
+			<dd>上海</dd>
+			<dd>广州</dd>
+			<dd>深圳</dd>
+			<dd>杭州</dd>
+			<dd>苏州</dd>
+			<dd>南京</dd>
+			<dd>天津</dd>
+			<dd>石家庄</dd>
+		</dl>
+		<dl class="citylist" id="a">
+			<dt id="py">A</dt>
+			<dd>阿坝</dd>
+			<dd>安泽</dd>
+			<dd>鞍山</dd>
+			<dd>敖汉旗</dd>
+		</dl>
+	
+	</div>
+</div>
+<div class="index_box_ctn">
+	<div class="index_box">
+		<div class="banner">
+			<div class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide"><img src="img/1号.jpg"></div>
+						<!-- <div class="swiper-slide"><img src="img/2号.jpg"></div> -->
+						<!-- <div class="swiper-slide"><img src="img/banner.jpg"></div> -->
+					</div>
+			</div>
+		</div>
+		<div class="nav">
+			<ul>
+				<li>
+					<a id="nav-go-valuation">
+						<p><img src="img/incon_1.png" alt=""></p>
+						<h1 class="f12">估房价</h1>
+					</a>	
+				</li>
+				<li>
+					<a id="nav-go-sell">
+						<p><img src="img/incon_2.png" alt=""></p>
+						<h1 class="f12">出售分析</h1>
+					</a>	
+				</li>
+				<li>
+					<a id="nav-go-lease">
+						<p><img src="img/incon_3.png" alt=""></p>
+						<h1 class="f12">出租分析</h1>
+					</a>	
+				</li>
+				<li id="go-change">
+					<a>
+						<p><img src="img/incon_4.png" alt=""></p>
+						<h1 class="f12">我要换房</h1>
+					</a>	
+				</li>
+				<!-- <li>
+					<a href="loan/index.html">
+						<p><img src="img/incon_5.png" alt=""></p>
+						<h1 class="f12">我要贷款</h1>
+					</a>	
+				</li> -->
+				<!-- <li class="to_static" data-tar="008-01__.html">
+					<a>
+						<p><img src="img/incon_6.png" alt=""></p>
+						<h1 class="f12">城市行情</h1>
+					</a>	
+				</li> -->
+				<li class="to-map-city">
+					<a>
+						<p><img src="img/incon_7.png" alt=""></p>
+						<h1 class="f12">增值分析</h1>
+					</a>
+				</li>
+				<!-- <li class="to-wait">
+					<a>
+						<p><img src="img/incon_8.png" alt=""></p>
+						<h1 class="f12">购房资格</h1>
+					</a>	
+				</li>
+				<li class="to-wait">
+					<a>
+						<p><img src="img/incon_9.png" alt=""></p>
+						<h1 class="f12">政策资讯</h1>
+					</a>	
+				</li>
+				<li class="to_static" data-tar="009-01__.html">
+					<a>
+						<p><img src="img/incon_10.png" alt=""></p>
+						<h1 class="f12">投资助手</h1>
+					</a>	
+				</li> -->
+			</ul>
+		</div>
+
+		<div class="sh_bar">
+			<h1 class="f13" id="cityName" onclick="changeCity()">哈尔滨<img src="img/ico_move.png" alt=""></h1>
+			<div class="sh_bar_1 f26 " id="price">
+				<span class="f12" style="padding-right: 1rem;">城市均价 </span>
+				-- <span class="f12" style="font-size: 1.4rem;">元/m2</span>
+			</div>
+		</div>
+		<ul class="sh_bar_2 f12 h28">
+				<li id="saleSqmPriceLinkRelativeRatio">环比上月<img src="img/ico_s.png"><span class="f11 up">0.00%</span></li>
+				<li id="saleSqmPriceOnYear_on_YearBasis">同比去年<img src="img/ico_s.png"><span class="f11 up" >0.00%</span></li>
+		</ul>
+		<div class="mi_bar" onclick="myhouse()">
+			<h1 class="f13">我的房产<img src="img/ico_right.png"></h1>
+			<div class="mi_bar_1 f26 " id="amvPrice">
+				 <span class="f12">万元</span>
+			</div>
+			<p id="compare_box" class="f11">我的房产总估值  较<span id="preMonth" style="color:#000">10</span>月 <img src="img/ico_s.png"> <span class="up" id="risePercent">0.00%</span></p>
+		</div>
+
+		<div class="the_list">
+			<div class="the_list_bar">
+				<h1 class="f13">估房价</h1>
+				<p class="f12">看看房子值多少钱</p>
+			</div>
+			<a id="go-valuation" class="move-1 f14">立即前往</a>
+		</div>
+	</div>
+</div>
+<div id="b_container"></div>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/lodash.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/swiper.min.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/baiduMap.js"></script>
+<script type="text/javascript" src="js/tools_xie.js"></script>
+
+<script type="text/javascript" src="js/public/searchC.js"></script>
+<script type="text/javascript" src="js/index/index.js"></script>
+<script>
+	// 由于只有一张图片，先注释掉轮播定时器
+	// var mySwiper = new Swiper('.swiper-container',{
+	// 	autoplay : 8000,    //可选选项，自动滑动
+	// 	autoplayDisableOnInteraction : false,    //注意此参数，默认为true
+	// })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+package com.cindata.housekeeper.wx.service.impl;
+
+import com.cindata.housekeeper.core.common.tools.CtrlerUtil;
+import com.cindata.housekeeper.core.common.tools.OpenapiPoster;
+import com.cindata.housekeeper.core.common.tools.StringUtil;
+import com.cindata.housekeeper.core.entity.JSONResult;
+import com.cindata.housekeeper.core.entity.Parameter;
+import com.cindata.housekeeper.web.dao.CommonMapper;
+import com.cindata.housekeeper.web.model.AssessResult;
+import com.cindata.housekeeper.wx.dao.WxHouseAvmLogMapper;
+import com.cindata.housekeeper.wx.dao.WxHouseInfoMapper;
+import com.cindata.housekeeper.wx.dao.WxLoanInfoMapper;
+import com.cindata.housekeeper.wx.dao.WxRentInfoMapper;
+import com.cindata.housekeeper.wx.model.*;
+import com.cindata.housekeeper.wx.service.WxHouseInfoService;
+import com.google.common.reflect.TypeToken;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class WxHouseInfoServiceImpl implements WxHouseInfoService {
+
+	
+	 @Resource
+	    private CommonMapper commonMapper;
+	 @Resource
+	    private WxHouseInfoMapper wxHouseInfoMapper;
+	 @Resource
+	    private WxHouseAvmLogMapper wxHouseAvmLogMapper;
+	 @Resource
+		private WxLoanInfoMapper wxLoanInfoMapper;
+	 @Resource
+		private WxRentInfoMapper rentInfoMapper;
+	@Override
+	public int addHouse(WxHouseInfo houseInfo) {
+		if(houseInfo.getHouseId() != null){//修改
+			WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+			com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = houseInfoExample.createCriteria();
+			cri.andHouseIdEqualTo(houseInfo.getHouseId());
+			return wxHouseInfoMapper.updateByExampleSelective(houseInfo,houseInfoExample);
+		}else{//添加
+			houseInfo.setHouseId(commonMapper.getSeq("HOUSE_SEQ"));
+			return wxHouseInfoMapper.insertSelective(houseInfo);
+		}
+
+
+
+	}
+	@Override
+	public int addHouseAvm(WxHouseAvmLog houseAvmLog) {
+		
+		 return wxHouseAvmLogMapper.insertSelective(houseAvmLog);
+		
+	}
+	
+	@Override
+	public int updateHouseAvm() {
+		 WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+	        com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = houseInfoExample.createCriteria();
+	        cri.andStatusEqualTo("1");
+	        List<WxHouseInfo> list = null;
+	        List<WxHouseInfo> HouseInfoList = new ArrayList<WxHouseInfo>();
+	        try {
+	            list = wxHouseInfoMapper.selectByExample(houseInfoExample);
+	            for (WxHouseInfo houseInfo:list) {
+	                Parameter param = new Parameter();
+	                param.setCommunityId(houseInfo.getCommunityId().longValue());
+	                param.setSquare(houseInfo.getBuildingsquare());
+	                param.setCityId(houseInfo.getCityId().longValue());
+	                String resBody = OpenapiPoster.post(param, "avm/avmSale");
+	                JSONResult<AssessResult> bean = (JSONResult<AssessResult>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<AssessResult>>(){}.getType());
+	                AssessResult assessResult = bean.getData();
+	                if(bean.isSuccess()&&assessResult!=null) {
+	                    BigDecimal avmSalePrice = assessResult.getSaleAssessPrice();
+	                    BigDecimal avmRentPrice = assessResult.getRentAssessPrice();
+
+	                    Date date = new Date(System.currentTimeMillis());
+	                    houseInfo.setAssessTime(date);
+	                    houseInfo.setAssessSalePrice(avmSalePrice);
+	                    cri.andHouseIdEqualTo(houseInfo.getHouseId());
+	                    wxHouseInfoMapper.updateByExampleSelective(houseInfo, houseInfoExample);
+	                    WxHouseAvmLog houseAvmLog = new WxHouseAvmLog();
+	                   // houseAvmLog.setHouseId(houseInfo.getHouseId());
+	                    houseInfo.setAssessSalePrice(avmSalePrice.setScale(0, BigDecimal.ROUND_HALF_UP));
+	                    houseInfo.setAssessRentPrice(avmRentPrice.setScale(0, BigDecimal.ROUND_HALF_UP));
+	                    houseInfo.setAssessTime(date);
+	                    houseAvmLog.setHouseId(houseInfo.getHouseId());
+	                    houseAvmLog.setAssessSalePrice(avmSalePrice.setScale(0, BigDecimal.ROUND_HALF_UP));
+	                    houseAvmLog.setAssessRentPrice(avmRentPrice.setScale(0, BigDecimal.ROUND_HALF_UP));
+	                    houseAvmLog.setAssessTime(date);
+	                    wxHouseAvmLogMapper.insertSelective(houseAvmLog);
+	                    HouseInfoList.add(houseInfo);
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        if (!HouseInfoList.isEmpty()){
+	            return HouseInfoList.size();
+	        }else {
+	            return 0;
+	        }
+	}
+	@Override
+	public List<WxHouseAvmLog> getHouseAvmLogByHouseId(BigDecimal houseId) {
+		 WxHouseAvmLogExample houseAvmLogExample =new WxHouseAvmLogExample();
+	        com.cindata.housekeeper.wx.model.WxHouseAvmLogExample.Criteria cri = houseAvmLogExample.createCriteria();
+	        cri.andHouseIdEqualTo(houseId);
+	        houseAvmLogExample.setOrderByClause("ASSESS_TIME DESC");
+	        List<WxHouseAvmLog> list =wxHouseAvmLogMapper.selectByExample(houseAvmLogExample);
+	        return list;
+	}
+	@Override
+	public List<WxHouseAvmLog> getHouseAvmLogByHouseIdAndMonath(BigDecimal houseId, String startMonth, String endMonth) {
+		WxHouseAvmLogExample houseAvmLogExample =new WxHouseAvmLogExample();
+		com.cindata.housekeeper.wx.model.WxHouseAvmLogExample.Criteria cri = houseAvmLogExample.createCriteria();
+		cri.andHouseIdEqualTo(houseId);
+		Date endDate =StringUtil.getDate(StringUtil.getEndDay(endMonth));
+		Date startDate =StringUtil.getDate(StringUtil.getFirsDay(startMonth));
+		cri.andAssessTimeGreaterThanOrEqualTo(startDate).andAssessTimeLessThanOrEqualTo(endDate);
+		houseAvmLogExample.setOrderByClause("ASSESS_TIME DESC");
+		List<WxHouseAvmLog> list =wxHouseAvmLogMapper.selectByExample(houseAvmLogExample);
+		return list;
+	}
+
+	@Override
+	public List<WxHouseInfo> getWxHouseInfoByUserIdAndCommunityId(String userId, String communityId) {
+		WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+		com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = houseInfoExample.createCriteria();
+		cri.andUserIdEqualTo(userId).andCommunityIdEqualTo(StringUtil.parseBigDecimal(communityId,null))
+				.andStatusEqualTo("1");
+		return wxHouseInfoMapper.selectByExample(houseInfoExample);
+	}
+
+	@Override
+	public WxHouseInfo selectHouseInfoByHouseId(BigDecimal houseId) {
+		
+		/* WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+	        com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = houseInfoExample.createCriteria();
+	        cri.andHouseIdEqualTo(houseId);
+	        
+	       List<WxHouseInfo> list = wxHouseInfoMapper.selectByExample(houseInfoExample);
+	       return list.get(0) == null ? null : list.get(0);*/
+		WxHouseInfo wxHouseInfo =  wxHouseInfoMapper.selectByPrimaryKey(houseId);
+    	return wxHouseInfo;
+	}
+	@Override
+	public int updateHouse(WxHouseInfo houseInfo) {
+		  WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+		  com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria  cri =  houseInfoExample.createCriteria();
+	        cri.andHouseIdEqualTo(houseInfo.getHouseId());
+	        return wxHouseInfoMapper.updateByExampleSelective(houseInfo,houseInfoExample);
+	}
+	@Override
+	public int deleteHouse(WxHouseInfo houseInfo) {
+		houseInfo.setStatus("0");
+		 WxHouseInfoExample houseInfoExample =new WxHouseInfoExample();
+		  com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria  cri =  houseInfoExample.createCriteria();
+	        cri.andHouseIdEqualTo(houseInfo.getHouseId());
+	        return wxHouseInfoMapper.updateByExampleSelective(houseInfo,houseInfoExample);
+		
+	}
+	@Override
+	public List<WxHouseInfo> getHouseByuserId(String userId) {
+		
+		   WxHouseInfoExample wxhouseInfoExample =new WxHouseInfoExample();
+		   com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = wxhouseInfoExample.createCriteria();
+	        cri.andStatusEqualTo("1");
+	        cri.andUserIdEqualTo(userId);
+	        wxhouseInfoExample.setOrderByClause("CREATED_DT DESC");
+	        return wxHouseInfoMapper.selectByExample(wxhouseInfoExample);
+	}
+	@Override
+	public HouseAvmInfo getHouseInfo(WxHouseInfo houseInfo) {
+		BigDecimal appreciation = new BigDecimal(0);
+		String cycleResult = "";
+		BigDecimal rentPrice = new BigDecimal(0);
+		  HouseAvmInfo houseAvmInfo = new HouseAvmInfo();
+		  BigDecimal totalLoan = new BigDecimal(0);
+		  BigDecimal loanPriceTotal = new BigDecimal(0);
+		  BigDecimal assessSalePrice = StringUtil.parseBigDecimal(houseInfo.getAssessSalePrice(),new BigDecimal(0));
+          BigDecimal buildingsquare = StringUtil.parseBigDecimal(houseInfo.getBuildingsquare(),new BigDecimal(0));
+          BigDecimal assessSaleTotalPrice = assessSalePrice.multiply(buildingsquare).divide(new BigDecimal(10000)).setScale(1,BigDecimal.ROUND_HALF_UP);
+         
+          
+          
+          
+          String communityName = houseInfo.getCommunityName();
+         String cityName = houseInfo.getCityName();
+         String distinctName = houseInfo.getDistrictName();
+        String address = houseInfo.getAddress();
+          //购买价格
+          BigDecimal buyPrice = houseInfo.getBuyPrice().divide(new BigDecimal(10000)).setScale(1,BigDecimal.ROUND_HALF_UP);
+          //增值额
+           appreciation = assessSaleTotalPrice.subtract(buyPrice);
+          BigDecimal houseId = houseInfo.getHouseId();
+          WxLoanInfoExample wxLoanInfoExample = new WxLoanInfoExample();
+  		  com.cindata.housekeeper.wx.model.WxLoanInfoExample.Criteria  criteria = wxLoanInfoExample.createCriteria();
+  		  criteria.andHouseIdEqualTo(houseId.toString());
+          List<WxLoanInfo> listLoan = wxLoanInfoMapper.selectByExample(wxLoanInfoExample);
+          for(WxLoanInfo wxLoanInfo : listLoan){
+        	  BigDecimal loanPrice = new BigDecimal(0);
+        	  loanPrice = loanPrice.add(wxLoanInfo.getMoney()).multiply(new BigDecimal(10000));
+        	  
+        	//还款方式
+          	String repayment = wxLoanInfo.getRepayment();
+          	//年利率
+          	BigDecimal rate = wxLoanInfo.getRate();
+          	//还款月数
+          	Double repatMonthNum = wxLoanInfo.getTerm().doubleValue();
+          	//月利率
+          	BigDecimal monthly = rate.divide(new BigDecimal(12), 2,BigDecimal.ROUND_HALF_UP).divide(new BigDecimal(100));
+          	BigDecimal monthlySupply = new BigDecimal(0);
+          	
+          	if("等额本息".equals(repayment)){
+          		//每月月供额=〔贷款本金×月利率×(1＋月利率)＾还款月数〕÷〔(1＋月利率)＾还款月数〕-1
+          		
+          		BigDecimal first = loanPrice.multiply(monthly).multiply(new BigDecimal(Math.pow(new BigDecimal(1).add(monthly).doubleValue(), repatMonthNum)));
+          		BigDecimal two = new BigDecimal(Math.pow(new BigDecimal(1).add(monthly).doubleValue(),repatMonthNum));
+          		
+          		totalLoan = totalLoan.add(first.divide(two,2,BigDecimal.ROUND_HALF_UP).subtract(new BigDecimal(1)));
+          		
+          	}
+          	if("等金本息".equals(repayment)){
+          		//每月月供额=(贷款本金÷还款月数)+(贷款本金-已归还本金累计额)×月利率
+          		BigDecimal first = loanPrice.divide(new BigDecimal(repatMonthNum),2,BigDecimal.ROUND_HALF_UP);
+          		//每月应还本金
+          		BigDecimal monthRepayMoney = loanPrice.divide(new BigDecimal(repatMonthNum),2,BigDecimal.ROUND_HALF_UP);
+         
+          		
+          		java.util.Date dateLoan = wxLoanInfo.getLoanTime();
+          		Calendar calendar = Calendar.getInstance();
+          		calendar.setTime(dateLoan);
+          		int date = calendar.get(Calendar.DATE);
+          		
+          		//租约开始的下个月
+          		/*calendar.add(Calendar.MONTH, 1); 
+          		java.util.Date date = calendar.getTime();
+          		Date nextMonth=new Date(date.getTime());*/
+          		
+          		//当前时间
+          		java.util.Date dateNow = new java.util.Date();
+          		Calendar now = Calendar.getInstance();
+
+          		int year = now.get(Calendar.YEAR);
+          		int month = now.get(Calendar.MONTH);
+          		now.set(year, month,date);
+          		now.add(Calendar.MONTH, 1);
+          		
+          		Date dateResult = new Date(now.getTime().getTime());
+          		//贷款的月份个数
+          		 int resultyear = (now.get(Calendar.YEAR) - calendar.get(Calendar.YEAR)) * 12;
+          	     int resultmonth = now.get(Calendar.MONTH) - calendar.get(Calendar.MONTH);
+          	     //已经还款月份数
+          	     int resultFactdiff = resultyear + resultmonth;
+          	     //已归还本金累计额
+          	     BigDecimal alreadyRepayMoney = monthRepayMoney.multiply(new BigDecimal(resultFactdiff));
+          	     
+          	     BigDecimal two = monthly.multiply(loanPrice.subtract(alreadyRepayMoney));
+          	     BigDecimal three =  first.add(two);
+          	     totalLoan = totalLoan.add(three);
+          	}
+          }
+          
+          
+      
+          //月供支出
+          //loanPrice = loanPrice.divide(new BigDecimal(12),2,BigDecimal.ROUND_HALF_UP);
+          
+          
+          WxRentInfoExample wxRentInfoExample = new WxRentInfoExample();
+  		  com.cindata.housekeeper.wx.model.WxRentInfoExample.Criteria  criteriaRent = wxRentInfoExample.createCriteria();
+  		criteriaRent.andHouseIdEqualTo(houseId.toString());
+  		List<WxRentInfo> listRent = rentInfoMapper.selectByExample(wxRentInfoExample);
+  		for(WxRentInfo wxRentInfo : listRent){
+  			rentPrice = rentPrice.add(wxRentInfo.getMoney());
+  			BigDecimal cycle = wxRentInfo.getCycle();
+  			if(cycle.compareTo(new BigDecimal(1)) == 0){
+  				cycleResult = "按月";
+  			}
+  			if(cycle.compareTo(new BigDecimal(2)) == 0){
+  				cycleResult = "按季";
+  			}
+  			if(cycle.compareTo(new BigDecimal(3)) == 0){
+  				cycleResult = "按年";
+  			}
+  		}
+  		appreciation = appreciation.divide(new BigDecimal(10000),2,BigDecimal.ROUND_HALF_UP);
+  		houseAvmInfo.setAssessSaleTotalPrice(assessSaleTotalPrice);
+  		houseAvmInfo.setAppreciation(appreciation);
+  		houseAvmInfo.setLoanPrice(totalLoan);
+  		houseAvmInfo.setRentPrice(rentPrice);
+  		houseAvmInfo.setCycleResult(cycleResult);
+  		houseAvmInfo.setAddress(address);
+  		houseAvmInfo.setBuildingsquare(buildingsquare);
+  		houseAvmInfo.setDistinctName(distinctName);
+  		houseAvmInfo.setCityName(cityName);
+  		houseAvmInfo.setCommunityName(communityName);
+  		
+		return houseAvmInfo;
+	}
+	@Override
+	public List<WxHouseInfo> getHouseTop() {
+	
+		return wxHouseInfoMapper.getHouseTopPx();
+	}
+	@Override
+	public WxHouseAvmLog selectHouseInfoByHouseIdAndUpdate(Parameter param) {
+		//WxHouseInfo wxHouseInfo = new WxHouseInfo();
+		// WxHouseInfoExample wxhouseInfoExample =new WxHouseInfoExample();
+		  // com.cindata.housekeeper.wx.model.WxHouseInfoExample.Criteria cri = wxhouseInfoExample.createCriteria();
+		 //  cri.andHouseIdEqualTo(new BigDecimal(param.getHouseId())).andUpdateDateEqualTo(param.getUpdate());
+		
+		WxHouseAvmLog wxHouseAvmLog = new WxHouseAvmLog();
+		WxHouseAvmLogExample wxHouseAvmLogExample = new WxHouseAvmLogExample();
+		com.cindata.housekeeper.wx.model.WxHouseAvmLogExample.Criteria cri = wxHouseAvmLogExample.createCriteria();
+		cri.andHouseIdEqualTo(new BigDecimal(param.getHouseId())).andAssessTimeEqualTo(param.getUpdate());
+		   List<WxHouseAvmLog> list = wxHouseAvmLogMapper.selectByExample(wxHouseAvmLogExample);
+		   if(list.size()>=1){
+			   wxHouseAvmLog = list.get(0);
+		   }else{
+			   wxHouseAvmLog = null;
+		   }
+		return wxHouseAvmLog;
+	}
+	@Override
+	public HouseAvmInfo getWxHouseInfo(WxHouseInfo houseInfo) {
+		Calendar now = Calendar.getInstance();
+		BigDecimal appreciation = new BigDecimal(0);
+		String cycleResult = "";
+		BigDecimal rentPrice = new BigDecimal(0);
+		  HouseAvmInfo houseAvmInfo = new HouseAvmInfo();
+		  BigDecimal totalLoan = new BigDecimal(0);
+		  BigDecimal loanPriceTotal = new BigDecimal(0);
+		  BigDecimal assessSalePrice = StringUtil.parseBigDecimal(houseInfo.getAssessSalePrice(),new BigDecimal(0));
+          BigDecimal buildingsquare = StringUtil.parseBigDecimal(houseInfo.getBuildingsquare(),new BigDecimal(0));
+          BigDecimal assessSaleTotalPrice = assessSalePrice.multiply(buildingsquare).divide(new BigDecimal(10000)).setScale(1,BigDecimal.ROUND_HALF_UP);
+          int month = now.get(Calendar.MONTH);
+          //购买价格
+          BigDecimal buyPrice = houseInfo.getBuyPrice().divide(new BigDecimal(10000)).setScale(1,BigDecimal.ROUND_HALF_UP);
+          //增值额
+           appreciation = assessSaleTotalPrice.subtract(buyPrice);
+           //增长率
+           String appreciationPercent =  appreciation.divide(buyPrice,2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).toString() + "%";
+           
+           houseAvmInfo.setAppreciation(appreciation);
+           //houseAvmInfo.setAppreciationPercent(appreciationPercent);
+           houseAvmInfo.setMonth(month);
+		return houseAvmInfo;
+	}
+	@Override
+	public int getCHD(String userId) {
+	
+		int i = wxHouseInfoMapper.getCHD(userId);
+		return i;
+	}
+	@Override
+	public int getCCD(String userId) {
+		int i = wxHouseInfoMapper.getCCD(userId);
+		return i;
+	}
+	@Override
+	public Map getHouseInfo(String userId) {
+		
+		Map map = wxHouseInfoMapper.getInfo(userId);
+		return map;
+	}
+	@Override
+	public List<WxHouseInfo> getcity(String userId) {
+		List<WxHouseInfo> list = wxHouseInfoMapper.getcity(userId);
+		return list;
+	}
+
+	@Override
+	public Map getRankByUserId(String userId) {
+		return wxHouseInfoMapper.getRankByUserId(userId);
+	}
+
+
+
+}

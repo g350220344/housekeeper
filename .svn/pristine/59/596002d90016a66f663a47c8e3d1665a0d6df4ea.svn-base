@@ -1,0 +1,63 @@
+/* progress_m components */
+.i_progress_m {
+    /* border: solid 1px #e3e3e3; */
+    width: 6.9rem;
+    height: 1.78rem;
+    margin: auto;
+    border-radius: 0.3rem;
+    box-shadow: 0 0 0 0.01rem #e3e3e3;
+}
+.i_progress_m_title {
+    line-height: 0.28rem;
+    padding: 0.4rem 0.26rem 0;
+    font-size: 0.3rem;
+    color: #111;
+}
+.i_progress_m_title_span {
+    color: #388cff;
+}
+.i_progress_m_container {
+    width: 6.4rem;
+    height: 0.12rem;
+    margin: 0.38rem auto 0.17rem;
+    background-color: rgba(77, 149, 255, 0.1);
+    position: relative;
+}
+.i_progress_m_content {
+    height: 0.12rem;
+    background-image: linear-gradient(-90deg, 
+		#388cff 0%, 
+		#5fdcff 100%), 
+	linear-gradient(
+		#4d95ff, 
+		#4d95ff);
+	background-blend-mode: normal, 
+        normal;
+}
+.i_progress_m_container_dvider {
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 0.12rem;
+    background: #fff;
+}
+.i_progress_m_label {
+    overflow: hidden;
+    clear: both;
+    padding: 0 0.26rem;
+    line-height: 0.25rem;
+}
+.i_progress_m_label_l {
+    width: 50%;
+    float: left;
+    text-align: left;
+    color: #bbb;
+    font-size: 0.26rem;
+}
+.i_progress_m_label_r {
+    width: 50%;
+    float: left;
+    text-align: right;
+    color: #bbb;
+    font-size: 0.26rem;
+}

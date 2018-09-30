@@ -1,0 +1,26 @@
+/* add_lease page */
+.add_lease_checker {
+    overflow: hidden;
+    clear: both;
+}
+.add_lease_checker_item {
+    list-style: none;
+    width: 1.1rem;
+    height: 0.52rem;
+    line-height: 0.52rem;
+    text-align: center;
+    font-size: 0.26rem;
+    color: #fff;
+    border-radius: 0.26rem;
+    border: 1px solid #388cff;
+    background: inherit;
+    float: left;
+    color: #388cff;
+}
+.add_lease_checker_item:not(:first-child) {
+    margin-left: 0.28rem;
+}
+.add_lease_checker_item_active {
+    background-color: #388cff;
+    color: #fff;
+}

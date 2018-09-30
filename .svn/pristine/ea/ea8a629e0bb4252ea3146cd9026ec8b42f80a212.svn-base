@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>我要换房-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.money_items input {
+			width: 18rem!important;
+			float: left;
+		}
+		.money_items span {
+			float: right!important;
+			width: auto!important;
+			color: #888888!important;
+			font-size: 1.2rem;
+		}
+		.valuation_p {
+			text-align: right;
+			color: #888888!important;
+			font-size: 1.2rem;
+		}
+		#valuation-date {
+			font-size: 1rem;
+			display: inline;
+    		float: none;
+			padding-left: 1rem;
+		}
+		.money_items input {
+			float: none!important;
+		}
+		#total-money {
+			display: inline;
+			float: none!important;
+			padding-right: 1rem;
+		}
+	</style>
+</head>
+<body>
+<div class="index_box">
+	<h1 class="f13 col map_index_h1">填写置换需求，为您智能筛选小区：</h1>
+<div class="bac apply_list map_index">
+	<ul class="padding">
+		<li id="select-house"><span class="f13  f12">置换房产<i>*</i></span><div id="house-address" class="fang_1 f12"><a style="padding-right: 0;"><img src="../img/ico_right.png" alt=""></a></div></li>
+
+		<li><span class="f13">评估价值<i>*</i></span>
+			<p id="valuation-my" class="valuation_p">暂无估价</p>
+		</li>
+	</ul>
+
+</div>
+<div class="bac apply_list map_index">
+
+	<ul class="padding">
+		<li><span class="f13  f12">置换方式<i>*</i></span><div class="apply_top"><p id="nav-1" data-nav="1">先买后卖</p><p id="nav-2" data-nav="0" class="cor">先卖后买</p></div></li>
+
+		<li><span class="f13">现有资金<i>*</i></span><p class="valuation_p money_items"><input id="moneyOwn" class="text required"  type="text"  placeholder="可筹借到的资金总和" onkeyup="clearNoNum(this)"
+			onafterpaste="clearNoNum(this)" ><span>万元</span></p></li>
+		<li id="computed"><span class="f13"> 合计资金</span><p class="valuation_p money_items"><span id="total-money">--</span><span>万元</span></p></li>
+
+		<li><span class="f13">买房预算<i>*</i></span><p class="valuation_p money_items"><input id="budget" class="text required"  type="text"  placeholder="请输入预算" onkeyup="clearNoNum(this)"
+			onafterpaste="clearNoNum(this)"><span>万元</span></p></li>
+	</ul>
+</div>
+<div class="button_box"><button id="next" class="button-1 f14">下一步</button></div>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/change/index.js"></script>
+
+</body>
+</html>

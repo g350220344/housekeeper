@@ -1,0 +1,18 @@
+connect_timeout = 2
+
+network_timeout = 30
+
+charset = UTF-8
+
+http.tracker_http_port = 8090
+
+http.anti_steal_token = no
+
+http.secret_key = FastDFS1234567890
+
+tracker_server = 221.208.141.164:22100
+
+result_http_url = 221.208.141.164:8090
+
+private_server_ip = 192.168.30.23
+

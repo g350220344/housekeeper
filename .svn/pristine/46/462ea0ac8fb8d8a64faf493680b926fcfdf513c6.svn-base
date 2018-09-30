@@ -1,0 +1,129 @@
+<!-- <%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%> -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>地图操作示例</title>
+<script src="http://localhost:8080/arcgis_js_api/library/3.11/3.11/init.js" type="text/javascript"></script>
+<link href="http://localhost:8080/arcgis_js_api/library/3.11/3.11/dijit/themes/tundra/tundra.css" rel="stylesheet" type="text/css" />
+<link href="http://localhost:8080/arcgis_js_api/library/3.11/3.11/esri/css/esri.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">  
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+dojo.require("esri.map");
+dojo.require("esri.toolbars.draw");
+dojo.require("esri.dijit.InfoWindow");
+
+var mapobj;
+
+
+$(function () {
+	
+	var beijingExtent = new esri.geometry.Extent({"xmin":12910302.23,"ymin":4839625.93,"xmax":13000393.03,"ymax":4871971.30,"spatialReference":{"wkid":3785}});
+
+	mapobj = new esri.Map("MyMapDiv",
+						{
+							logo          :false,
+							slider        :true, 
+							sliderStyle   :"large"
+	 					});
+	
+	mapobj.setExtent(beijingExtent);
+	mapobj.infoWindow.resize(200, 75);
+	var BaseTileMapServiceLayer = new esri.layers.ArcGISTiledMapServiceLayer("http://111.40.214.181/arcgis/rest/services/comm/China/MapServer");
+	mapobj.addLayer(BaseTileMapServiceLayer,0);
+	
+	// 定位
+	$("#bt-gopostion").on('click',goposition);
+	
+	dojo.connect(mapobj,"onExtentChange",showExtent);
+	
+	//$(".panel-body").html("想写什么就什么，html代码也可以");
+	
+});
+
+function showExtent(extent){
+	var info = "XMin: "+ extent.xmin + " YMin: " + extent.ymin + " XMax: " + extent.xmax + " YMax: " + extent.ymax;
+	var center_px = (extent.xmax - extent.xmin)/2;
+	var center_py = (extent.ymax - extent.ymin)/2;
+	console.log("center_px="+center_px+",center_py="+center_py);
+	info = info + " " + "center_px="+center_px+",center_py="+center_py;
+	var center_point = mapobj.extent.getCenter();
+	console.log(center_point.x); 
+	clear();
+	showcenterpoint(center_point.x,center_point.y);
+	$(".panel-body").html(info);
+}
+
+function goposition(){
+	var px = $("#px").val();
+	var py = $("#py").val();
+	//alert("px="+px+",py="+py);
+	if(px!=""&&py!=""){
+		showpoint(parseFloat(px),parseFloat(py),"定位点");
+	}
+}
+
+function showpoint(px,py,context){
+	var point = new esri.geometry.Point(px, py, new esri.SpatialReference({wkid:3785}));  
+	//var pt = new esri.geometry.Point(x,y,new SpatialReference({ wkid: "3785" }));
+    var pictureMarkerSymbol = new esri.symbol.PictureMarkerSymbol('resources/image/marker/bluemarker.png', 20, 20);
+    var g = new esri.Graphic(point, pictureMarkerSymbol);  
+    var template = new esri.InfoTemplate();
+    template.setTitle("位置信息");
+    template.setContent(context);
+    g.setInfoTemplate(template);
+    mapobj.graphics.add(g);
+    // 将地图显示到指定的坐标及级别(15)
+    mapobj.centerAndZoom(point,15); 
+}
+
+function showcenterpoint(px,py,context){
+	var point = new esri.geometry.Point(px, py, new esri.SpatialReference({wkid:3785}));  
+	//var pt = new esri.geometry.Point(x,y,new SpatialReference({ wkid: "3785" }));
+    var pictureMarkerSymbol = new esri.symbol.PictureMarkerSymbol('resources/image/marker/red.png', 20, 20);
+    var g = new esri.Graphic(point, pictureMarkerSymbol);  
+    var template = new esri.InfoTemplate();
+    template.setTitle("位置信息");
+    template.setContent(context);
+    g.setInfoTemplate(template);
+    mapobj.graphics.add(g);
+}
+
+function clear(){
+	mapobj.graphics.clear();
+}
+
+</script>
+</head>
+<body class="container-fluid">
+
+<div id="MyMapDiv" style="width:100%;height:100%"></div>
+<div class="panel panel-default">
+	<div class="panel-body">
+	  这是一个基本的面板
+	</div>
+</div>
+<br/>
+<form class="form-inline" role="form">
+	<div class="form-group">
+		<label class="sr-only" for="px">x</label>
+    	<input type="text" class="form-control" id="px" placeholder="请输入x坐标">
+	</div>
+	<div class="form-group">
+		<label class="sr-only" for="name">y</label>
+    	<input type="text" class="form-control" id="py" placeholder="请输入y坐标">
+	</div>
+
+	<button id="bt-gopostion" type="button"  class="btn btn-default">定位</button>
+	
+</form>
+
+</body>
+</html>

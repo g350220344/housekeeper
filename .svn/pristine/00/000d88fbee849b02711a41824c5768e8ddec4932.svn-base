@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>建议小区-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<link rel="stylesheet" type="text/css" href="../icon-font/iconfont.css">
+	<!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_592256_rc1pg2hywplrqkt9.css"> -->
+	<style>
+		.index_box {
+			background: #f8f8f8;
+		}
+		#header {
+			position: absolute;
+			z-index: 2;
+			top: 0;
+			left: 0;
+			width: 100%;
+			/* height: 45px; */
+			/* line-height: 45px; */
+			/* background: #CD235C; */
+			/* padding: 0; */
+			/* color: #eee; */
+			/* font-size: 20px; */
+			/* text-align: center; */
+			/* font-weight: bold; */
+		}
+
+		#wrapper {
+			position: absolute;
+			z-index: 1;
+			top: 8.6rem;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			background: #f8f8f8;
+			overflow: hidden;
+		}
+
+		#scroller {
+			position: absolute;
+			z-index: 1;
+			-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			width: 100%;
+			-webkit-transform: translateZ(0);
+			-moz-transform: translateZ(0);
+			-ms-transform: translateZ(0);
+			-o-transform: translateZ(0);
+			transform: translateZ(0);
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			-webkit-text-size-adjust: none;
+			-moz-text-size-adjust: none;
+			-ms-text-size-adjust: none;
+			-o-text-size-adjust: none;
+			text-size-adjust: none;
+		}
+
+		#scroller ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			text-align: left;
+		}
+
+		#pullDown,  
+		#pullUp,  
+		.pulldown-tips {  
+			height: 40px;  
+			line-height: 40px;  
+			text-align: center;  
+		}  
+			
+		.pulldown-tips {  
+			position: absolute;  
+			top: -40px;  
+			left: 0;  
+			width: 100%;  
+		}
+
+		.sel_area {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			/* background: rgba(0, 0, 0, .5); */
+			text-align: center;
+			z-index: 999;
+			display: none;
+		}
+		.sel_area ul {
+			position: absolute;
+			top: 6.9rem;
+			left: 0;
+			width: 100%;
+			background: #fff;
+			z-index: 18;
+		}
+		.sel_area ul li {
+			height: 4rem;
+			line-height: 4rem;
+			color: #888;
+			overflow: hidden;
+			clear: both;
+			text-align: left;
+			padding: 0 1rem;
+		}
+		.sel_area li:not(:last-child) {
+			border-bottom: 1px solid #ddd;
+		}
+		.sel_area i {
+			float: right;
+			font-size: 1.6rem;
+			color: #fff;
+		}
+		.active {
+			color: #2d8cf0!important;
+			background: #fff;
+		}
+		.active i {
+			color: #2d8cf0!important;
+		}
+		.pc_ding {
+			z-index: 99;
+			bottom: 4rem;
+			
+		}
+		#toTop {
+			display: none;
+		}
+		#nomore {
+			display: none;
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+			background: #f8f8f8;
+		}
+		#area_sel {
+			color: #2d8cf0;
+		}
+		.arrow_active {
+			/* Rotate div */
+			transform:rotate(180deg);
+			-ms-transform:rotate(180deg); /* Internet Explorer */
+			-moz-transform:rotate(180deg); /* Firefox */
+			-webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+			-o-transform:rotate(180deg); /* Opera */
+		}
+		.address-p {
+			height: 3.4rem;
+			line-height: 3.2rem;
+			font-size: 1.2rem;
+		}
+		.mask_bottom {
+			position: absolute;
+			top: 10rem;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			background: rgba(0, 0, 0, .5);
+			z-index: 9;
+		}
+		#select_1 i{
+			color: #2d8cf0;
+		}
+		.icon-sanjiao_xia {
+			font-size: 1.2rem;
+		}
+		.icon-sanjiaoxing-up {
+			font-size: 1.2rem;
+		}
+		.empty_words {
+			line-height: 4rem;
+			text-align: center;
+			color: #888;
+		}
+		#change_condition {
+			color: #2d8cf0;
+			margin-top: 0.7rem;
+			font-size: 1.3rem;
+			text-decoration-line: underline;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="index_box bac">
+		<div id="header" class="fixed-top">
+			<div class="proposal_box f12">根据您的需求，共找到<span id="total">0</span>个小区</div>
+			<div class="propos_ul f11">
+				<p id="select_1">
+					<a><span id="area_sel">意向区域</span>
+						<i class="iconfont icon-sanjiao_xia"></i>
+					</a>
+					
+				</p>
+				<p id="select_2">
+					<a><span id="order_sel">默认排序</span>
+						<i class="iconfont icon-sanjiao_xia"></i>
+					</a>
+				</p>
+				
+			</div>
+		</div>
+		<div id="wrapper">
+			<div id="scroller">
+				<div id="pullDown" class="">
+					<div class="pullDownLabel"></div>
+				</div>
+				<div class="pulldown-tips">下拉刷新</div>
+				<ul class="propor_list" id="propor_list">
+					<div class="empty_words">暂无数据</div>
+				</ul>
+				<div id="pullUp" class="">
+					<div class="pullUpLabel">加载更多</div>
+				</div>
+				<div id="nomore" class="">
+					<div class="nomore-text">没有更多了</div>
+				</div>
+			</div>
+		</div>
+
+
+
+	</div>
+	<div class="pc_ding">
+		<p id="goMap">
+			<img src="../img/p1.png" alt="">
+		</p>
+		<p id="toTop">
+			<img src="../img/p2.png" alt="">
+		</p>
+	</div>
+	<div id="area" class="sel_area">
+		<ul>
+			<li class="active" data-code="all" data-name="全部区域">全部区域<i class="iconfont icon-finish"></i></li>
+			<!-- <li class="active">徐汇（126）</li>
+			<li>长宁（100）</li>
+			<li>闸北（100）</li> -->
+		</ul>
+		<div class="mask_bottom"></div>
+	</div>
+	<div id="order" class="sel_area">
+		<ul>
+			<!-- <li>默认排序</li> -->
+			<li data-val="" class="active">
+				默认排序
+				<i class="iconfont icon-finish"></i>
+			</li>
+			<li data-val="salesqmprice asc,">均价低到高<i class="iconfont icon-finish"></i></li>
+			<li data-val="salesqmprice desc,">均价高到低<i class="iconfont icon-finish"></i></li>
+		</ul>
+		<div class="mask_bottom"></div>
+	</div>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<!-- <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.js"></script> -->
+	<script type="text/javascript" src="../js/iscroll.js"></script>
+	<script type="text/javascript" src="../js/iscroll-probe.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>	
+	<script type="text/javascript" src="../js/change/proposal.js"></script>
+
+</body>
+
+</html>

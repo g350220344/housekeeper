@@ -1,0 +1,81 @@
+$(function(){
+	addHistoryBackListener(localStorage.getItem('back_origin_my'));
+    myHouseproperty(userId);
+    var url=queryUrl("url");
+
+    $("#myHouseproperty").on('click', 'li', function() {
+		var houseId = $(this).attr("data-houseid");
+		var communityId = $(this).attr("data-communityId");
+		console.log(houseId, url)
+		window.location.href = url+'?houseId='+houseId+'&communityId=' + communityId;
+        // if(url != null&&url != "null"){
+        //     $(window).attr('location',url+'?houseId='+houseId+'&communityId=' + communityId);
+        // }
+	});
+	$("#add-house").on('click', function() {
+		// localStorage.setItem('valuation_origin', window.location.href);
+		localStorage.setItem('back_origin_houseAvm', location.href);
+		localStorage.setItem('valuation_target', url)
+		window.location.href = '../valuation/index.html';
+	})
+	clearHouseLocalStorage();
+});
+
+	function myHouseproperty(userId){
+		data ="userId="+userId;
+		link_public.method(server_url+'/rest/house/getHouseList', data, "post", true, function (result) {
+	        // if(result.success) {
+	        // 	// 遍历列表
+	        // 	var html = "";
+	      	// 	for(var i in result.data){
+	      	// 	 var data = result.data[i];
+	      	// 	 	//城市名称
+	        // 	 var cityName = typeof(data.cityName)=="undefined" ? "":data.cityName;
+	        // 		//地址
+	        // 	 var address = typeof(data.address)=="undefined" ? "":data.address;
+	        // 		//行政区名
+	        // 	 var districtname = typeof(data.districtname)=="undefined" ? "":data.districtname;
+	        //          //小区名称
+	        //      var communityName = typeof(data.communityName)=="undefined" ? "":data.communityName;//小区名称
+	        //      var houseId = typeof(data.houseId)=="undefined" ? "":data.houseId;
+	      	// 	 html+="<li id='"+houseId+"'>";
+	      	// 	 html+="<div class='houseproperty_ul_my_list'>";
+	      	// 	 html+="<h1 class='f14'>"+communityName+"</h1>";
+	      	// 	 html+="<p class='hous_p1 f11 col'>"+cityName+""+districtname+""+address+"</p>";
+	      	// 	 html+="<div class='houseproperty_ul_my_listim'><a href=''><img src='../img/ico_right.png' alt=''></a></div></li>";
+	      	// 	} 
+	      	// 	//添加房产列表
+	      	// 	$( "#myHouseproperty" ).html(html);
+			// }
+			if(result.success) {
+				var data = result.data;
+	
+				$("#myHouseproperty").empty();
+				var sumPrice = 0;
+				$.each(data,function (i,item) {
+					var info_str = item.buildingId ? item.buildingId + "栋" : '';
+					info_str += item.unitId ? " - " + item.unitId + "单元" : '';
+					info_str += item.doorNum ? ' - ' + item.doorNum + '室' : '';
+					if(info_str.length > 0) {
+						info_str += item.buildingsquare ? ' | ' + item.buildingsquare + '㎡' : '';
+					}else {
+						info_str += item.buildingsquare ? item.buildingsquare + '㎡' : '';
+					}
+					var html = "<li data-communityId=" + item.communityId + " data-houseid=" + item.houseId +">" +
+						"<div class=\"houseproperty_ul_list\">" +
+						"<input id='houseId' value='"+item.houseId+"' style='display: none'/>" +
+						"<h1 class=\"f14\">"+item.communityName+" <span>"+item.communitytype +"</span></h1>" +
+						"<p class=\"hous_p1 f11 col\">"+ info_str + "</p>" +
+						"<p class=\"hous_p2 f15\">"+item.assessSaleTotalPrice +"<i class=\"f11\">万元</i><span class=\"f11\">（"+(item.assessTime || '--') +"）</span></p>" +
+						"</div>" +
+						"<div class=\"houseproperty_ul_img\"><a><img src=\"../img/ico_right.png\" alt=\"\"></a></div>" +
+						"</li>";
+					sumPrice+= item.assessSaleTotalPrice;
+					$("#myHouseproperty").append(html);
+				})
+				// $("#houseNum").html(data.length);
+				// $("#housePrice").html(sumPrice);
+			}
+	    });
+	} ; 
+		

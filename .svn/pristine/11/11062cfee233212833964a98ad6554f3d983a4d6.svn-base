@@ -1,0 +1,185 @@
+/* my_house page */
+.mh_info_block {
+    width: 100%;
+    height: 4.86rem;
+    background: #fff;
+    text-align: center;
+}
+.mh_info_block_line_1 {
+    height: 0.27rem;
+    line-height: 0.27rem;
+    padding-top: 0.6rem;
+    color: #111;
+    font-size: 0.28rem;
+}
+.mh_info_block_line_2 {
+    padding-top: 0.31rem;
+    color: #111;
+    font-size: 0.68rem;
+    height: 0.51rem;
+    line-height: 0.51rem;
+}
+.mh_info_block_line_3 {
+    padding-top: 0.43rem;
+    font-size: 0.24rem;
+    height: 0.24rem;
+    line-height: 0.24rem;
+    color: rgba(17, 17, 17, 0.75);
+}
+.mh_house_report_btn {
+    color: #fff;
+    width: 3rem;
+    height: 0.78rem;
+    line-height: 0.78rem;
+    box-shadow: 0px 6px 11px 0px 
+		rgba(56, 140, 255, 0.35);
+    border-radius: 39px;
+    background-color: #388cff;
+    margin: 0.34rem auto 0;
+    font-size: 0.28rem;
+}
+.mh_info_block_line_4 {
+    margin: 0.5rem auto 0;
+    overflow: hidden;
+    clear: both;
+    position: relative;
+    width: 7.2rem;
+    height: 0.87rem;
+    line-height: 0.87rem;
+    
+    /* border-top: 0.01rem solid #e3e3e3; */
+}
+.mh_info_block_line_4_item {
+    width: 50%;
+    float: left;
+    color: #111;
+    font-size: 0.26rem;
+}
+.mh_info_block_line_4_divider {
+    position: absolute;
+    width: 0.02rem;
+    height: 0.32rem;
+    left: 50%;
+    top: 0.25rem;
+    background-color: rgba(227, 227, 227, 0.5);
+}
+.mh_info_block_line_4_item img{
+    display: inline-block;
+    vertical-align: baseline;
+    width: 0.13rem;
+    height: 0.22rem;
+}
+.mh_info_block_line_4_item_val {
+    font-size: 0.24rem;
+}
+.mh_block_2 {
+    height: 1.62rem;
+    background: #fff;
+    overflow: hidden;
+    clear: both;
+    margin-top: 0.24rem;
+}
+.mh_block_2_item {
+    width: 50%;
+    height: 100%;
+    float: left;
+    position: relative;
+}
+.mh_block_2_item_icon {
+    position: absolute;
+    /* width: 0.62rem; */
+    height: 0.8rem;
+    top: 0.45rem;
+    right: 0.39rem;
+}
+.mh_block_2_item_val {
+    font-size: 0.32rem;
+    padding-left: 0.45rem;
+    color: #111;
+    height: 0.29rem;
+    margin-top: 0.45rem;
+}
+.mh_block_2_item_label {
+    height: 0.25rem;
+    color: #888;
+    font-size: 0.26rem;
+    margin-top: 0.14rem;
+    padding-left: 0.45rem;
+}
+.mh_block_3 {
+    margin-top: 0.17rem;
+    padding: 0 0.24rem;
+    margin-bottom: 0.2rem;
+}
+.mh_block_3_tool {
+    overflow: hidden;
+    clear: both;
+    background: transparent;
+    height: 0.64rem;
+    line-height: 0.64rem;
+    margin-bottom: -0.2rem;
+
+}
+.mh_block_3_tool_tit {
+    height: 100%;
+    color: #111;
+    font-size: 0.3rem;
+    float: left;
+}
+.mh_block_3_tool_right {
+    color: #4b9af8;
+    font-size: 0.24rem;
+    vertical-align: middle;
+    float: right;
+    height: 100%;
+}
+.mh_block_3_tool_right img {
+    width: 0.32rem;
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 0.05rem;
+    margin-right: 0.05rem;
+}
+.mh_house_address {
+    font-size: 0.26rem;
+    color: #888;
+}
+.mh_house_line_3 {
+    /* margin: 0.5rem auto 0; */
+    overflow: hidden;
+    clear: both;
+    position: relative;
+    height: 0.87rem;
+    line-height: 0.87rem;
+}
+.mh_house_line_3_item {
+    width: 50%;
+    float: left;
+    color: #888;
+    font-size: 0.26rem;
+}
+.mh_house_line_2 {
+    overflow: hidden;
+    clear: both;
+    height: 1.54rem;
+}
+.mh_house_line_2_item {
+    height: 100%;
+    width: 50%;
+    float: left;
+    text-align: center;
+}
+.mh_house_line_2_item_val {
+    margin-top: 0.3rem;
+    font-size: 0.3rem;
+    color: #111;
+    vertical-align: middle;
+}
+.mh_house_line_2_item_val img {
+    width: 0.13;
+    height: 0.22rem;
+}
+.mh_house_line_2_item_label {
+    font-size: 0.24rem;
+    color: #111;
+}

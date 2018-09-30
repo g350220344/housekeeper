@@ -1,0 +1,432 @@
+var renData = null;
+var target = '';
+$(function () {
+    addHistoryBackListener('../index.html');
+    // addRefreshListener();
+    // var data=decodeURIComponent(queryUrl("data"));
+    // console.log(localStorage.getItem('cityData'))
+    // console.log('fjdfji', decodeURIComponent(decodeURIComponent(localStorage.getItem('cityData'))))
+    // var data = decodeURIComponent(localStorage.getItem('cityData'));
+    init();
+    getOpentions();
+});
+function init() {
+    var cookie = eval("("+$.cookie("cityInfo")+")");
+    if(!renData) {
+        renData = {
+            cityId: cookie.cityId,
+            cityName: cookie.areaName
+        }
+    }
+    
+    // renData = {
+    //     cityName: cookie.areaName,
+    //     cityId: cookie.cityId
+    // }
+    
+    
+    target = localStorage.getItem('valuation_target');
+    console.log('target', target);
+    console.log('-----', renData)
+    setHtmlData(renData);
+}
+function getOpentions() {
+    loading.show();
+    link_public.method(server_url + '/rest/common/getPubList', '', "post", true, function (json) {
+        if (json.success) {
+           console.log(json.data);
+           floorplantype(json.data.floorplantype);
+           initAspect(json.data.aspect);
+        } else {
+            showToast(3, '出错了！');
+        }
+        loading.hide();
+    });
+}
+
+function communitytype(arr) {
+    var html = '';
+    for(var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>";
+    }
+    $('#communitytype').html(html);
+    console.log(html);
+}
+
+function floorplantype(arr) {
+    var html = '';
+    for(var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>";
+    }
+    $('#floorplantype').html(html);
+    console.log(html);
+}
+//init朝向options
+function initAspect(arr) {
+    var html = '';
+    for(var i in arr) {
+        html += "<option value=" + arr[i].DICT_VALUE_ID + ">" + arr[i].NAME + "</option>"
+    }
+    $('#aspect').html(html);
+    console.log(html);
+}
+function validate() {
+    if ($("#city").val() == null || $("#city").val() == "") {
+        showToast(1, "请选择城市！");
+        return false;
+    }
+    if ($("#address").html() == null || $("#address").html() == "") {
+        showToast(1, "请选择小区！");
+        return false;
+    }
+    
+    if ($("#buildingsquare").val() == null || $("#buildingsquare").val() == "") {
+        showToast(1, "请填写建筑面积！");
+        return false;
+    }
+    // if(!checkNumber($("#buildingsquare").val())) {
+    //     showToast(1, '建筑面积为数字！');        
+    //     return false;
+    // }
+    if ($("#currentfloor").val() == null || $("#currentfloor").val() == "") {
+        showToast(1, "请填写当前楼层！");
+        return false;
+    }
+    if(!checkNumber($("#currentfloor").val())) {
+        showToast(1, '楼层号为数字！');        
+        return false;
+    }
+    if ($("#totalfloor").val() == null || $("#totalfloor").val() == "") {
+        showToast(1, "请填写总楼层！");
+        return false;
+    }
+    if(!checkNumber($("#totalfloor").val())) {
+        showToast(1, '总楼层为数字');        
+        return false;
+    }
+    if($("#currentfloor").val() - $("#totalfloor").val() > 0) {
+        showToast(1, '当前楼层不可大于总楼层数！');
+        return false;
+    }
+    return true;
+}
+function checkNumber(obj, warnText) {
+    var reg = /^[0-9]+(.[0-9]{2})?$/;
+    if (obj != "" && !reg.test(obj)) {
+        return false;
+    }
+    return true;
+}
+
+function addHouse() {
+    if (!validate()) {
+        return;
+    }
+    loading.show();
+    var houseData = getHtmlData();
+    // console.log('housedata', houseData);
+    link_public.method(server_url + '/rest/house/addHouse', houseData, "post", true, function (json) {
+        if (json.success) {
+            var houseId = json.data;
+            showToast(2, '保存成功！');
+            $(window).attr('location', target +  '?houseId=' + houseId);
+        } else {
+            showToast(3, '房产添加失败！');
+        }
+        loading.hide();
+    });
+
+}
+
+function setHtmlData(data) {
+    //alert(JSON.stringify(data));
+    if (!data) {
+        return;
+    }
+    $("#city").val(data.cityName);
+    $("#city").attr("cityId", data.cityId);
+    $("#cityName").html(data.cityName);
+    $("#address").html(data.communityName);
+    $("#address").attr("communityId", data.communityId);
+    $("#address").attr("address", data.address);
+    $("#address").attr("district", data.districtId);
+    $("#communityName").html(data.communityName);
+    $("#buildingId").val(data.buildingId);
+    $("#unitId").val(data.unitId);
+    $("#doorNum").val(data.doorNum);
+    $("#buildingsquare").val(data.buildingsquare);
+    $("#currentfloor").val(data.currentfloor);
+    $("#totalfloor").val(data.totalfloor);
+    $("#floorplantype").val(data.floorplantype);
+    $("#fang_address").text(data.address);
+    console.log('data', data);
+    $("#aspect").find("option[value=" + data.aspect + "]").attr("selected", true);
+    $("#floorplantype").find("option[value=" + data.floorplantype + "]").attr("selected", true);
+
+
+
+}
+function getHtmlData() {
+    var cityName = $("#city").val();
+    var cityId = $("#city").attr("cityId");
+    var communityName = $("#address").html();
+    var communityId = $("#address").attr("communityId");
+    var address = $("#address").attr("address");
+    var districtId = $("#address").attr("district");
+    var buildingId = $("#buildingId").val();
+    var unitId = $("#unitId").val();
+    var doorNum = $("#doorNum").val();
+    var buildingsquare = $("#buildingsquare").val();
+    var currentfloor = $("#currentfloor").val();
+    var totalfloor = $("#totalfloor").val();
+    var floorplantype = $("#floorplantype").val();
+    var aspect = $("#aspect").val();
+    var floorplantypeName = $("#floorplantype").find("option:selected").text();
+    var aspectName = $("#aspect").find("option:selected").text();
+    var communitytype = $('#communitytype').val();
+    
+    // var address = $("#fang_address").val(data.address);
+    var data = {};
+    data["cityName"] = cityName;
+    data["cityId"] = cityId;
+    data["communityName"] = communityName;
+    data["communityId"] = communityId;
+    data["buildingId"] = buildingId;
+    data["address"] = address;
+    data["unitId"] = unitId;
+    data["buildingsquare"] = buildingsquare;
+    data["doorNum"] = doorNum;
+    data["currentfloor"] = currentfloor;
+    data["totalfloor"] = totalfloor;
+    data["floorplantype"] = floorplantype;
+    data["aspect"] = aspect;
+    data["floorplantypeName"] = floorplantypeName;
+    data["aspectName"] = aspectName;
+    data["userId"] = userId;
+    data["communitytype"] = communitytype;//先写死
+    data["districtid"] = districtId;
+    console.log(data);
+    return data;
+
+}
+
+//选择城市
+function changeCity() {
+    dw(); //搜索框定位
+    cityPy(doSearch);
+    loadHotCitys(doSearch);
+    $('.search-box').show();
+    
+    
+    setTimeout(function() {
+        addSearchListenter();
+        $('#search_city_input').val('');
+    }, 0)
+
+    // localStorage.removeItem('cityData');
+    // var data = JSON.stringify(getHtmlData());
+    // var url = "/valuation/index.html";
+    // $(window).attr('location', '../public/searchCity.html?url=' + url + "&data=" + encodeURI(encodeURI(data)));
+
+}
+
+//选择房产地址
+
+/**搜索弹窗部分代码 */
+function getAddress() {
+    if (!getHtmlData().cityId) {
+        showToast(1, '请先选择城市');
+        return;
+    }
+    $('.search-community-box').show();
+    setTimeout(function() {
+        clearSearchMList();
+        initCommunity();
+        addCommunitySearchListener(doSearchCommunity);
+        $('#search').val('');
+    }, 0)
+    
+    // var data = JSON.stringify(getHtmlData());
+    // var url = "../valuation/index.html";
+    // $(window).attr('location','../public/searchCommunity.html?url='+url+"&data="+encodeURI(encodeURI(data)));
+}
+
+function addSearchListenter() {
+    
+
+    /**搜索Dialog事件 */
+
+    //输入搜索
+    $('#search_city_input').on('input propertychange', function() {
+        var vm = this;
+        if(!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function() {
+            console.log('val:  ', $(vm).val());
+            cityName(doSearch);
+        }, 300);
+        
+    })
+    
+    //根据拼音查找
+    $(".citynav li").click(function(e){
+        e.stopPropagation();
+        console.log('fdjjiij')
+        //var item = $(this).index();  //获取索引下标 也从0开始
+        var cityPy = $(this).text();  //文本内容
+        searchByPin(cityPy, doSearch);
+    });
+
+    //取消按钮事件
+    $('.search_input_button').on('click', function() {
+        $('.search-box').hide();
+    })
+    $('.search_del').on('click', function(e) {
+        e.stopPropagation();
+        var cookie = eval("("+$.cookie("cityInfo")+")");
+        if(!cookie) {
+            return;
+        }
+        console.log(cookie);
+        var cityId = cookie.cityId;
+        var areaName = cookie.areaName;
+        if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+            return;
+        }
+        
+        doSearch(cityId, areaName);
+    })
+    // $('#fixed-to-cur').on('click', function(e) {
+    //     e.stopPropagation();
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     if(!cookie) {
+    //         return;
+    //     }
+    //     console.log(cookie);
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+    // $('#dqcs').on('click', function(e) {
+    //     e.stopPropagation();
+    //     var cookie = eval("("+$.cookie("cityInfo")+")");
+    //     console.log(cookie);
+    //     var cityId = cookie.cityId;
+    //     var areaName = cookie.areaName;
+    //     if(typeof cityId == 'undefined' || typeof areaName == 'undefined') {
+    //         return;
+    //     }
+        
+    //     doSearch(cityId, areaName);
+    // })
+
+    addHotListener(doSearch); //热门搜索
+
+    // $("dl dd").on('click', function(){
+    //     //var item = $(this).index();  //获取索引下标 也从0开始
+    //     var cityName = $(this).text();  //文本内容
+    //     var cityId = $(this).attr("data-id");
+    //     doSearch(cityId,cityName);
+    // });
+}
+
+function doSearchCommunity(data) {
+    renData.cityId = data.cityId;
+    renData.communityId = data.communityId;
+    renData.communityName = data.communityName;
+    renData.address = data.address;
+    renData.districtId = data.districtId;
+    // console.log('fjdjfdfjdo', data);
+    if(!!data.cityName) {
+        renData.cityName = data.cityName;        
+    }
+    // localStorage.setItem('communityData', encodeURI(encodeURI(JSON.stringify(renData))));  
+    init();
+    $('.search-community-box').hide();
+           
+}
+
+function doSearch(cityId, cityName) {
+    renData = getHtmlData();
+    
+    if(renData.cityId != cityId || !cityId) {
+        renData.communityName = '';
+        renData.communityId = '';
+        renData.address = '';
+    }
+    
+    renData.cityId = cityId;
+    renData.cityName = cityName
+    console.log('renderdata', renData);
+    // localStorage.setItem('cityData', encodeURI(encodeURI(JSON.stringify(renData))));       
+    init(renData);
+    $('.search-box').hide();     
+}
+
+
+/**搜索房产地址 community */
+
+//搜索房产地址事件监听
+function addCommunitySearchListener(cb) {
+    //input 联想搜索
+    $('#search').on('input propertychange', function (e) {
+        e.preventDefault();
+        var vm = this;
+        if (!!timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            console.log('val:  ', $(vm).val());
+            //请求搜索接口
+            var searchContent = $(vm).val();
+            if (searchContent == '') {
+                //alert('请输入检索内容！');
+            } else {
+                var cityId = renData.cityId;
+                searchCommunity(searchContent, cityId, cb);
+            }
+        }, 300);
+        return false;
+    })
+
+
+    $("#clearHistory").click(function () {
+        clearHistory();
+    })
+    $("#searchHistory").on('click', 'li', function (e) {
+        // var text = $(this).find("span").eq(0).html();
+        // var cityId = $(this).attr("id");
+        // searchCommunity(text, cityId);
+        // var renData = JSON.parse(data);
+        e.stopPropagation();
+        var cityName = $($(this).find('span')[1]).text();
+        console.log($(this).find('span')[0])
+        renData["communityName"] = $($(this).find('span')[0]).text();
+        renData["address"] = $(this).attr('data-address');
+        renData["communityId"] = $(this).attr('data-community');
+        renData["districtId"] = $(this).attr('data-district');
+        renData["cityId"] = $(this).attr('id');
+        renData["cityName"] = cityName.substring(1, cityName.length - 1);
+        var address = $(this).attr('data-address');
+        address = (typeof address == 'undefined' || address == 'undefined') ? '' : address;
+        var data = {
+            communityName: $($(this).find('span')[0]).text(),
+            address: address,
+            communityId: $(this).attr('data-community'),
+            cityId: $(this).attr('id'),
+            cityName: cityName.substring(1, cityName.length - 1),
+            districtId: $(this).attr('data-district')
+        }
+        doSearchCommunity(data);
+    });
+    
+    //取消
+    $('#cs-cancel').on('click', function() {
+        $('.search-community-box').hide();
+    });
+}

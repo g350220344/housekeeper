@@ -1,0 +1,117 @@
+/* search page */
+.search_input_box {
+    width: 100%;
+    /* height: 0.62rem; */
+    padding: 0.15rem 0 0.15rem;
+    overflow: hidden;
+    clear: both;
+    line-height: 0.62rem;
+    text-align: center;
+    background: #fff;
+}
+.search_input_box_city {
+    width: 1.52rem;
+    height: 0.62rem;
+    float: left;
+    font-size: 0.3rem;
+    color: #111;
+
+}
+.search_input_box_city_icon {
+    width: 0.12rem;
+    margin-left: 0.1rem;
+    vertical-align: middle;
+}
+.search_input_box_cancel {
+    width: 1.16rem;
+    height: 0.62rem;
+    float: left;
+    font-size: 0.3rem;
+    color: #388cff;
+}
+.search_input_box_inner {
+    display: block;
+    width: 4.8rem;
+    height: 0.62rem;
+    line-height: 0.62rem;
+    background: #f2f2f2;
+    border-radius: 0.31rem;
+    font-size: 0.26rem;
+    color: #bbb;
+    text-align: center;
+    border: none;
+    float: left;
+}
+.search_input_box_inner::-webkit-input-placeholder {
+    font-size: 0.26rem;
+    color: #bbb;
+    text-align: center;
+}
+.search_input_box_inner:focus {
+    outline: none;
+}
+.search_history_box {
+    padding: 0 0.3rem;
+}
+.search_history_box_tool {
+    height: 0.9rem;
+    line-height: 0.9rem;
+    color: #bbb;
+    font-size: 0.26rem;
+    position: relative;
+}
+.search_history_box_tool img {
+    position: absolute;
+    width: 0.26rem;
+    bottom: 0.3rem;
+    right: 0;
+}
+.search_history_box ul {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clear: both;
+}
+.search_history_box ul li{
+    list-style: none;
+    padding: 0 0.34rem;
+    font-size: 0.28rem;
+    color: #555;
+    height: 0.6rem;
+    line-height: 0.6rem;
+    border-radius: 0.3rem;
+    border: solid 1px #f0f0f0;
+    text-align: center;
+    float: left;
+    margin-bottom: 0.2rem;
+    margin-left: 0.2rem;
+}
+.search_history_box ul li:nth-child(odd){
+    margin-left: 0;
+}
+.search_history_box ul li span {
+    color: #888;
+}
+.search_scroll_wrap {
+    overflow-y: auto;
+}
+.search_res_box {
+    padding-left: 0.3rem;
+}
+.search_res_item {
+    min-height: 1rem;
+    list-style: none;
+    padding-left: 0.1rem;
+}
+.search_res_item_name {
+    padding-top: 0.12rem;
+    color: #111;
+    font-size: 0.26rem;
+    line-height: 0.4rem;
+}
+.search_res_item_address {
+    line-height: 0.4rem;
+    font-size: 0.26rem;
+    color: #888;
+    padding-right: 0.1rem;
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>选择城市-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+<body>
+<div class="index_box">
+	<ul class="citynav">
+		<li>热门</li>
+		<li>A</li>
+		<li>B</li>
+		<li>C</li>
+		<li>D</li>
+		<li>E</li>
+		<li>F</li>
+		<li>G</li>
+		<li>H</li>
+		<li>I</li>
+		<li>J</li>
+		<li>K</li>
+		<li>L</li>
+		<li>M</li>
+		<li>N</li>
+		<li>O</li>
+		<li>P</li>
+		<li>Q</li>
+		<li>R</li>
+		<li>S</li>
+		<li>T</li>
+		<li>W</li>
+		<li>X</li>
+		<li>Y</li>
+		<li>Z</li>
+	
+	</ul>
+
+	<div class="search_box bac">
+		<div class="search_input"><img src="../img/search.png" class="ding_w" onclick="cityName()"><input class="text required" type="search" placeholder="搜索城市名称"  name = "cityName" ></div><a class="search_input_button f14">取消</a>
+	</div>
+	<div class="search_del">
+		<div class="search_del_list"><p class="f11 col" id="dqcs"><img src="../img/ding.png" alt="" class="ding_w">上海</p><a id="fixed-to-cur" class="f11">当前城市</a></div>
+	</div>
+	<dl class="hotcity">
+		<dt>热门城市</dt>
+		<dd data-id="1101">北京</dd>
+		<dd>上海</dd>
+		<dd>广州</dd>
+		<dd>深圳</dd>
+		<dd>杭州</dd>
+		<dd>苏州</dd>
+		<dd>南京</dd>
+		<dd>天津</dd>
+		<dd>石家庄</dd>
+	</dl>
+	<dl class="citylist" id="a">
+		<dt id="py">A</dt>
+		<dd>阿坝</dd>
+		<dd>安泽</dd>
+		<dd>鞍山</dd>
+		<dd>敖汉旗</dd>
+	</dl>
+	<!-- <dl class="citylist">
+		<dt>B</dt>
+		<dd>北京</dd>
+		<dd>巴楚</dd>
+		<dd>巴东</dd>
+	</dl> -->
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/lodash.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+<script type="text/javascript" src="../js/public/searchCity.js"></script>
+	
+</body>
+</html>

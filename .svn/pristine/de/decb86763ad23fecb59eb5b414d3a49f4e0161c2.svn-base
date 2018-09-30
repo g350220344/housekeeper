@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>小区详情-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.pre_style {
+			color: #eee!important;
+			background: #eee!important;
+		}
+		.empty-words {
+			text-align: center;
+			color: gray;
+			width: 100%;
+			height: 5rem;
+			line-height: 5rem;
+		}
+
+		.details_map ul li span {
+			display: inline-block;
+			color: #555;
+			padding-left: 1rem;
+			/* line-height: 1.5rem; */
+			width: 9rem;
+			vertical-align: top;
+		}
+
+		.details_map ul li {
+			padding-top: 0.5rem;
+		}
+
+		.tuli {
+			width: 100%;
+			text-align: center;
+		}
+
+		.tuli span {
+			padding: 0 1rem;
+		}
+
+		.tuli span i {
+			display: inline-block;
+			width: 0.5rem;
+			height: 0.5rem;
+			/* background: cadetblue; */
+			border-radius: 50%;
+			margin-right: 0.5rem;
+			margin-bottom: 0.2rem;
+		}
+
+		.tuli-span-1 {
+			color: #276FEB;
+		}
+
+		.tuli-span-1 i {
+			background: #276FEB;
+		}
+
+		.tuli-span-2 {
+			color: #94c3ee;
+		}
+
+		.tuli-span-2 i {
+			background: #94c3ee;
+		}
+
+		.tuli-span-3 {
+			color: #ffba27;
+		}
+
+		.tuli-span-3 i {
+			background: #ffba27;
+		}
+
+		#allmap {
+			width: 100%;
+			height: 20rem;
+		}
+
+		.i_map_mask {
+			width: 100%;
+			height: 20rem;
+			position: absolute;
+			top: 0;
+			left: 0;
+			background: transparent;
+			z-index: 999;
+		}
+
+		#chart_loading {
+			display: block;
+		}
+
+		.loading_mask img {
+			margin-top: 20%;
+		}
+
+		.one_row_li {
+			width: 100%!important;
+		}
+
+		.one_row_li span {
+			width: 22rem!important;
+		}
+		.details_ul_pre {
+			overflow: hidden;
+			padding: 0 0.8rem;
+			background: #fff;
+		}
+		.details_ul_pre li {
+			width: 29.9%;
+			float: left;
+			margin: 0 1.7%;
+			height: 6rem;
+		}
+		#top_block {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="index_box ">
+		<div id="top_block">
+			<div class="details_box bac">
+				<h1 id="comunity_name" class="f15">金域蓝城</h1>
+				<p class="ipo_entry">
+					<img src="../img/ca1.jpg" class="a-1" alt="">
+					<span id="detailaddress"></span>
+					<img id="address-arrow" src="../img/ico_right.png" class="a-2" alt="">
+				</p>
+			</div>
+			<div class="trend_box bac">
+				<ul>
+					<li>
+						<span class="f11">本月均价</span>
+						<p class="f13">
+							<i id="salesqmprice">--</i>
+						</p>
+					</li>
+					<li>
+						<span class="f11">环比上月</span>
+						<p id="saleSqmPriceLinkRelativeRatio" class="f13 down">
+							<img src="../img/ico_x.png" alt="">2.3%</p>
+					</li>
+					<li>
+						<span class="f11">同比去年</span>
+						<p id="saleSqmPriceOnYear_on_YearBasis" class="f13 up">
+							<img src="../img/ico_s.png" alt="">1.62%</p>
+					</li>
+				</ul>
+			</div>
+			<ul class="details_ul">
+				<li>
+					<a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a>
+				</li>
+			</ul>
+			<div id="cityScale_box" class="details_bcli">
+				<h1 class="f12">均价超过
+					<span class="pos_lable">上海</span>
+					</span>
+					<i id="cityScale">55.3% </i>的小区</h1>
+				<div class="details_div">
+					<p>
+						<i id="cityScale-view" style="width:80%;"></i>
+					</p>
+					<span class="deta-span1">低</span>
+					<span class="deta-span2">高</span>
+				</div>
+			</div>
+			<div id="differenceScale_box" class="details_bcli">
+				<h1 class="f12">月增长率超过
+					<span class="pos_lable">上海</span>
+					<i id="differenceScale">55.3% </i>的小区</h1>
+				<div class="details_div">
+					<p>
+						<i id="differenceScale-view" style="width:80%;"></i>
+					</p>
+					<span class="deta-span1">低</span>
+					<span class="deta-span2">高</span>
+				</div>
+			</div>
+		</div>
+		<div id="top_block_pre" class="part_loading_box">
+			<div id="top_loading" class="loading_mask" style="background: transparent;display: block;">
+				<img style="margin-top: 35%;" class="demo-spin-icon-load" src="../img/loading_inline.png">
+			</div>
+			<div class="details_box bac">
+				<h1 style="margin-bottom: 0.5rem; width: 13rem;" class="f15 pre_style">金域蓝城</h1>
+				<p class="ipo_entry pre_style">
+					<!-- <img src="../img/ca1.jpg" class="a-1" alt=""> -->
+					<span id="detailaddress"></span>
+					<!-- <img id="address-arrow" src="../img/ico_right.png" class="a-2" alt=""> -->
+				</p>
+			</div>
+			<div class="trend_box bac">
+				<ul style="padding-top: 1rem; padding-bottom: 2rem;">
+					<li style="padding-right: 0.5rem;">
+						<span class="f11 pre_style">本月均价</span>
+						<!-- <p class="f13">
+							<i id="salesqmprice">--</i>
+						</p> -->
+					</li>
+					<li style="padding: 0 0.5rem;">
+						<span class="f11 pre_style">环比上月</span>
+						<!-- <p id="saleSqmPriceLinkRelativeRatio" class="f13 down">
+							<img src="../img/ico_x.png" alt="">2.3%</p> -->
+					</li>
+					<li style="padding-left: 0.5rem;">
+						<span class="f11 pre_style">同比去年</span>
+						<!-- <p id="saleSqmPriceOnYear_on_YearBasis" class="f13 up">
+							<img src="../img/ico_s.png" alt="">1.62%</p> -->
+					</li>
+				</ul>
+			</div>
+			<ul class="details_ul_pre">
+				<li class="pre_style">
+					<!-- <a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a> -->
+				</li>
+				<li class="pre_style">
+					<!-- <a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a> -->
+				</li>
+				<li class="pre_style">
+					<!-- <a href="#">
+						<img src="../img/ca2.jpg" alt="">
+					</a> -->
+				</li>
+			</ul>
+			<div style="padding-top: 1.5rem;"  class="details_box bac">
+				<h1 style="margin-bottom: 0.5rem; width: 13rem;" class="f15 pre_style">金域蓝城</h1>
+				<p class="ipo_entry pre_style">
+					<!-- <img src="../img/ca1.jpg" class="a-1" alt=""> -->
+					<span id="detailaddress"></span>
+					<!-- <img id="address-arrow" src="../img/ico_right.png" class="a-2" alt=""> -->
+				</p>
+			</div>
+			<div style="padding-top: 1.5rem;" class="details_box bac">
+				<h1 style="margin-bottom: 0.5rem; width: 13rem;" class="f15 pre_style">金域蓝城</h1>
+				<p class="ipo_entry pre_style">
+					<!-- <img src="../img/ca1.jpg" class="a-1" alt=""> -->
+					<span id="detailaddress"></span>
+					<!-- <img id="address-arrow" src="../img/ico_right.png" class="a-2" alt=""> -->
+				</p>
+			</div>
+			
+		</div>
+		<div class="details_map bac">
+			<h1 class="f13">基本信息</h1>
+			<div class="part_loading_box" >
+				<div style="display: block;" id="detail_loading" class="loading_mask">
+					<img style="margin-top: 8%;" class="demo-spin-icon-load" src="../img/loading_inline.png">
+				</div>
+				<ul id="baseInfo" class="f12">
+					<li>建筑年代
+						<span>1995</span>
+					</li>
+					<li>总户数
+						<span>1995</span>
+					</li>
+					<li>容积率
+						<span>1.6</span>
+					</li>
+					<li>停车位
+						<span>169</span>
+					</li>
+					<li>绿化率
+						<span>35%</span>
+					</li>
+					<li>物业费
+						<span>1.3元/㎡/月</span>
+					</li>
+					<li>主力面积
+						<span>37-85㎡</span>
+					</li>
+					<li class="one_row_li">开发商
+						<span>上海建工集团</span>
+					</li>
+					<li class="one_row_li">物业公司
+						<span>建工物业</span>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+
+		<div id="chart_box" class="details_map bac">
+			<h1 class="f13">均价走势</h1>
+
+			<div class="details_mapimg part_loading_box">
+				<div id="chart_loading" class="loading_mask">
+					<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+				</div>
+				<div id="chart_box_inner">
+					<span class="f13" style="padding-left: 2rem; color: #bbb;">(元/㎡)</span>
+					<div class="tubiao_box">
+
+						<div id="container" style="max-width:80rem;height:20rem"></div>
+					</div>
+					<div class="tuli">
+						<span class="tuli-span-1">
+							<i></i>梧桐花园</span>
+						<span class="tuli-span-2">
+							<i></i>徐汇</span>
+						<span class="tuli-span-3">
+							<i></i>上海</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="address_map" class="details_map bac">
+			<h1 class="f13 ipo_entry">位置地图</h1>
+			<div style="position: relative;" class="details_mapimg part_loading_box">
+				<div style="display: block;" id="map_loading" class="loading_mask">
+					<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+				</div>
+				<div class="i_map_mask"></div>
+				<!-- <img src="../img/ca4.jpg" alt=""> -->
+				<div id="allmap"></div>
+			</div>
+		</div>
+		<div class="Advertisement">
+			<!-- <img src="../img/4号.jpg" alt=""> -->
+		</div>
+		<h1 class="h1detal">这已经是我的底线了~</h1>
+	</div>
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+	<script src="https://cdn.hcharts.cn/highstock/highstock.js"></script>
+	<script type="text/javascript" src="../js/baiduMap.js"></script>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>
+	<script type="text/javascript" src="../js/change/details.js"></script>
+	
+</body>
+
+</html>

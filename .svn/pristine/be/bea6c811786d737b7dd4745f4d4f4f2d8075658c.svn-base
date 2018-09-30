@@ -1,0 +1,185 @@
+package com.cindata.housekeeper.wx.service.impl;
+
+import com.cindata.housekeeper.core.common.tools.EqualAmountOfInterestUtils;
+import com.cindata.housekeeper.core.common.tools.EqualAmountOfPrincipalUtils;
+import com.cindata.housekeeper.core.common.tools.StringUtil;
+import com.cindata.housekeeper.wx.dao.WxLoanInfoMapper;
+import com.cindata.housekeeper.wx.model.WxLoanInfo;
+import com.cindata.housekeeper.wx.model.WxLoanInfoExample;
+import com.cindata.housekeeper.wx.service.WxLoanService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class WxLoanServiceImpl implements WxLoanService {
+	@Resource
+	private WxLoanInfoMapper wxLoanInfoMapper;
+
+	@Override
+	public int addLoan(WxLoanInfo loanInfo) {
+		return wxLoanInfoMapper.insertSelective(loanInfo);
+	}
+	@Override
+	public List<WxLoanInfo> selectLoanByUserId(String userId) {
+		WxLoanInfoExample exa = new WxLoanInfoExample();
+        WxLoanInfoExample.Criteria cri = exa.createCriteria();
+        cri.andUserIdEqualTo(userId).andStateNotEqualTo(new BigDecimal(2));
+		List<WxLoanInfo> list = wxLoanInfoMapper.selectByExample(exa);
+		return list;
+	}
+	@Override
+	public int updateLoanByLoanId(WxLoanInfo wxLoanInfo) {
+		int i = 0;
+		WxLoanInfoExample wxRentInfoExample = new WxLoanInfoExample();
+		WxLoanInfoExample.Criteria criteria = wxRentInfoExample.createCriteria();
+		criteria.andIdEqualTo(wxLoanInfo.getId());
+		i = wxLoanInfoMapper.updateByExampleSelective(wxLoanInfo, wxRentInfoExample);
+		return i;
+	}
+	@Override
+	public int deleteLoan(WxLoanInfo wxLoanInfo) {
+		int i = 0;
+		/*wxLoanInfo.setState(new BigDecimal(2));
+		WxLoanInfoExample wxRentInfoExample = new WxLoanInfoExample();
+		com.cindata.housekeeper.wx.model.WxLoanInfoExample.Criteria  criteria = wxRentInfoExample.createCriteria();
+		criteria.andIdEqualTo(wxLoanInfo.getId());
+		i = wxLoanInfoMapper.updateByExampleSelective(wxLoanInfo, wxRentInfoExample);*/
+		i = wxLoanInfoMapper.deleteByPrimaryKey(wxLoanInfo.getId());
+		return i;
+	}
+	@Override
+	public List<WxLoanInfo> selectLoanByHouseId(String houseId) {
+		WxLoanInfoExample wxRentInfoExample = new WxLoanInfoExample();
+		WxLoanInfoExample.Criteria criteria = wxRentInfoExample.createCriteria();
+		criteria.andHouseIdEqualTo(houseId);
+		List<WxLoanInfo> list = wxLoanInfoMapper.selectByExample(wxRentInfoExample);
+		return list;
+	}
+
+    @Override
+    public List<WxLoanInfo> selectLoan(WxLoanInfo wxLoanInfo) {
+        WxLoanInfoExample exa = new WxLoanInfoExample();
+        WxLoanInfoExample.Criteria cri = exa.createCriteria();
+        if(StringUtils.isNotBlank(wxLoanInfo.getId())){
+            cri.andIdEqualTo(wxLoanInfo.getId());
+        }
+        if(StringUtils.isNotBlank(wxLoanInfo.getUserId())){
+            cri.andUserIdEqualTo(wxLoanInfo.getUserId());
+        }
+        if(StringUtils.isNotBlank(wxLoanInfo.getHouseId())){
+            cri.andHouseIdEqualTo(wxLoanInfo.getHouseId());
+        }
+        if(StringUtil.isNotNullOrEmpty(wxLoanInfo.getState())){
+            cri.andStateEqualTo(wxLoanInfo.getState());
+        } else{
+            cri.andStateNotEqualTo(new BigDecimal("2"));
+        }
+        List<WxLoanInfo> list = wxLoanInfoMapper.selectByExample(exa);
+        return list;
+    }
+
+	@Override
+	public List<WxLoanInfo> selectLoanByUserIdAndStatus(String userId,int status) {
+		WxLoanInfoExample exa = new WxLoanInfoExample();
+		WxLoanInfoExample.Criteria cri = exa.createCriteria();
+		cri.andUserIdEqualTo(userId).andStateEqualTo(new BigDecimal(status));
+		List<WxLoanInfo> list = wxLoanInfoMapper.selectByExample(exa);
+		return list;
+	}
+
+	@Override
+	public BigDecimal getLoanPrice(List<WxLoanInfo> wxLoanInfoList, Date date) {
+		BigDecimal loanPrice = new BigDecimal(0);
+
+		for(int i=0;i<wxLoanInfoList.size();i++){
+			WxLoanInfo wxLoanInfo = wxLoanInfoList.get(i);
+			double invest = wxLoanInfo.getMoney().doubleValue() * 10000; // 本金
+			int month =wxLoanInfo.getTerm().intValue();
+			double yearRate = wxLoanInfo.getRate().doubleValue() / 100; // 年利率
+			if(wxLoanInfo.getRepayment().equals("等额本息")){
+				//等额本息
+				double perMonthPrincipalInterest = EqualAmountOfInterestUtils.getPerMonthPrincipalInterest(invest, yearRate, month);
+				loanPrice = loanPrice.add(StringUtil.parseBigDecimal(perMonthPrincipalInterest,null));
+			}
+			if(wxLoanInfo.getRepayment().equals("等额本金")){
+				//等额本金
+				int h = StringUtil.getTwoMonthsDifference(date,wxLoanInfo.getLoanTime());
+				Map<Integer, Double> getPerMonthPrincipalInterest = EqualAmountOfPrincipalUtils.getPerMonthPrincipalInterest(invest, yearRate, month);
+				if(h>0){
+					loanPrice = loanPrice.add(StringUtil.parseBigDecimal(getPerMonthPrincipalInterest.get(h),null));
+				}
+			}
+
+		}
+		return loanPrice;
+	}
+	@Override
+	public Map<String,BigDecimal> getLoanTotalPrice(List<WxLoanInfo> wxLoanInfoList, Date date) {
+		BigDecimal loanPrice = new BigDecimal(0);
+		BigDecimal loanTotalPrice = new BigDecimal(0);
+		for(int i=0;i<wxLoanInfoList.size();i++){
+			//计算 总共还款本息
+			WxLoanInfo wxLoanInfo = wxLoanInfoList.get(i);
+			int h = StringUtil.getTwoMonthsDifference(date,wxLoanInfo.getLoanTime());
+			double invest = wxLoanInfo.getMoney().doubleValue() * 10000; // 本金
+			int month =wxLoanInfo.getTerm().intValue();
+			double yearRate = wxLoanInfo.getRate().doubleValue() / 100; // 年利率
+			if(h>0) {
+				if (wxLoanInfo.getRepayment().equals("等额本息")) {
+					//等额本息
+					double perMonthPrincipalInterest = EqualAmountOfInterestUtils.getPerMonthPrincipalInterest(invest, yearRate, month);
+					//总本息
+					double principalInterestCount = EqualAmountOfInterestUtils.getPrincipalInterestCount(invest, yearRate, month);
+					loanTotalPrice = loanTotalPrice.add(StringUtil.parseBigDecimal(principalInterestCount,new BigDecimal(0)));
+					loanPrice = loanPrice.add(StringUtil.parseBigDecimal(perMonthPrincipalInterest, null).multiply(new BigDecimal(h)));
+				}
+				if (wxLoanInfo.getRepayment().equals("等额本金")) {
+					//等额本金
+					double count = EqualAmountOfPrincipalUtils.getInterestCount(invest, yearRate, month);
+					//总本息
+					double principalInterestCount = invest + count;
+					loanTotalPrice = loanTotalPrice.add(StringUtil.parseBigDecimal(principalInterestCount,new BigDecimal(0)));
+					Map<Integer, Double> getPerMonthPrincipalInterest = EqualAmountOfPrincipalUtils.getPerMonthPrincipalInterest(invest, yearRate, month);
+					for (int j=1;j<=h;j++) {
+						loanPrice = loanPrice.add(StringUtil.parseBigDecimal(getPerMonthPrincipalInterest.get(j), null));
+					}
+				}
+			}
+
+		}
+		Map<String,BigDecimal> map =new HashMap();
+		map.put("loanTotalPrice",loanTotalPrice);
+		map.put("loanPrice",loanPrice);
+		return map;
+	}
+
+	@Override
+	public int getLoanCountByHouseId(BigDecimal houseId) {
+		WxLoanInfoExample exa = new WxLoanInfoExample();
+		WxLoanInfoExample.Criteria cri = exa.createCriteria();
+		cri.andHouseIdEqualTo(houseId.toString()).andStateEqualTo(new BigDecimal(0));
+		return wxLoanInfoMapper.countByExample(exa);
+	}
+
+	@Override
+	public int updateLoanStatus() {
+		return wxLoanInfoMapper.updateLoanStatus();
+	}
+
+	@Override
+	public List<WxLoanInfo> selectLoanByHouseIdAndStatus(String houseId, int status) {
+		WxLoanInfoExample exa = new WxLoanInfoExample();
+		WxLoanInfoExample.Criteria cri = exa.createCriteria();
+		cri.andHouseIdEqualTo(houseId).andStateEqualTo(new BigDecimal(status));
+		List<WxLoanInfo> list = wxLoanInfoMapper.selectByExample(exa);
+		return list;
+	}
+
+}

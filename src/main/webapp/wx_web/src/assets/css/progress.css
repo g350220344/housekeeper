@@ -1,0 +1,36 @@
+/* progress 组件 */
+.i_progress {
+    width: 6.12rem;
+    margin: auto;
+}
+.i_progress_container {
+    height: 0.12rem;
+    border-radius: 0.06rem;
+    background-color: #f2f2f2;
+}
+.i_progress_content {
+    height: 0.12rem;
+    border-radius: 0.06rem;
+    background-color: #f9354d;    
+}
+.i_progress_label {
+    height: 0.73rem;
+    line-height: 0.73rem;
+    color: #555;
+    font-size: 0.26rem;
+    overflow: hidden;
+    clear: both;
+}
+.i_progress_label_l {
+    height: 100%;
+    width: 50%;
+    float: left;
+    text-align: left;
+}
+.i_progress_label_r {
+    height: 100%;
+    width: 50%;
+    float: left;
+    text-align: right;
+}
+

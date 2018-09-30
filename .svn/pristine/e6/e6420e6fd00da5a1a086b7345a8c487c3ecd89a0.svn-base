@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.wx.dao.WxUserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.wx.model.WxUserInfo" >
+    <id column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="MOBILE" property="mobile" jdbcType="DECIMAL" />
+    <result column="BIND" property="bind" jdbcType="DECIMAL" />
+    <result column="WX_NAME" property="wxName" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="DATE" />
+    <result column="LAST_LOGIN_TIME" property="lastLoginTime" jdbcType="DATE" />
+    <result column="HEAD_URL" property="headUrl" jdbcType="VARCHAR" />
+    <result column="WX_OPENID" property="wxOpenid" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="COUNTRY_NAME" property="countryName" jdbcType="VARCHAR" />
+    <result column="REG_IP" property="regIp" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
+    <result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="DECIMAL" />
+    <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="DISTRICT_ID" property="districtId" jdbcType="DECIMAL" />
+    <result column="DISTRICT_NAME" property="districtName" jdbcType="VARCHAR" />
+    <result column="SMS_MONTH" property="smsMonth" jdbcType="DECIMAL" />
+    <result column="MESSAGE_MONTH" property="messageMonth" jdbcType="DECIMAL" />
+    <result column="SMS_RENT" property="smsRent" jdbcType="DECIMAL" />
+    <result column="MESSAGE_RENT" property="messageRent" jdbcType="DECIMAL" />
+    <result column="SMS_PRICE" property="smsPrice" jdbcType="DECIMAL" />
+    <result column="MESSAGE_PRICE" property="messagePrice" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    USER_ID, MOBILE, BIND, WX_NAME, UPDATE_TIME, LAST_LOGIN_TIME, HEAD_URL, WX_OPENID, 
+    PROVINCE_NAME, COUNTRY_NAME, REG_IP, STATE, NICKNAME, REALNAME, SEX, CITY_ID, CITY_NAME, 
+    DISTRICT_ID, DISTRICT_NAME, SMS_MONTH, MESSAGE_MONTH, SMS_RENT, MESSAGE_RENT, SMS_PRICE, 
+    MESSAGE_PRICE, CREATE_TIME
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.wx.model.WxUserInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from WX_HOUSEKEEPER_USER_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from WX_HOUSEKEEPER_USER_INFO
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WX_HOUSEKEEPER_USER_INFO
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.wx.model.WxUserInfoExample" >
+    delete from WX_HOUSEKEEPER_USER_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.wx.model.WxUserInfo" >
+    insert into WX_HOUSEKEEPER_USER_INFO (USER_ID, MOBILE, BIND, 
+      WX_NAME, UPDATE_TIME, LAST_LOGIN_TIME, 
+      HEAD_URL, WX_OPENID, PROVINCE_NAME, 
+      COUNTRY_NAME, REG_IP, STATE, 
+      NICKNAME, REALNAME, SEX, 
+      CITY_ID, CITY_NAME, DISTRICT_ID, 
+      DISTRICT_NAME, SMS_MONTH, MESSAGE_MONTH, 
+      SMS_RENT, MESSAGE_RENT, SMS_PRICE, 
+      MESSAGE_PRICE, CREATE_TIME)
+    values (#{userId,jdbcType=VARCHAR}, #{mobile,jdbcType=DECIMAL}, #{bind,jdbcType=DECIMAL}, 
+      #{wxName,jdbcType=VARCHAR}, #{updateTime,jdbcType=DATE}, #{lastLoginTime,jdbcType=DATE}, 
+      #{headUrl,jdbcType=VARCHAR}, #{wxOpenid,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
+      #{countryName,jdbcType=VARCHAR}, #{regIp,jdbcType=VARCHAR}, #{state,jdbcType=DECIMAL}, 
+      #{nickname,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, #{sex,jdbcType=DECIMAL}, 
+      #{cityId,jdbcType=DECIMAL}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=DECIMAL}, 
+      #{districtName,jdbcType=VARCHAR}, #{smsMonth,jdbcType=DECIMAL}, #{messageMonth,jdbcType=DECIMAL}, 
+      #{smsRent,jdbcType=DECIMAL}, #{messageRent,jdbcType=DECIMAL}, #{smsPrice,jdbcType=DECIMAL}, 
+      #{messagePrice,jdbcType=DECIMAL}, #{createTime,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.wx.model.WxUserInfo" >
+    insert into WX_HOUSEKEEPER_USER_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="mobile != null" >
+        MOBILE,
+      </if>
+      <if test="bind != null" >
+        BIND,
+      </if>
+      <if test="wxName != null" >
+        WX_NAME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="lastLoginTime != null" >
+        LAST_LOGIN_TIME,
+      </if>
+      <if test="headUrl != null" >
+        HEAD_URL,
+      </if>
+      <if test="wxOpenid != null" >
+        WX_OPENID,
+      </if>
+      <if test="provinceName != null" >
+        PROVINCE_NAME,
+      </if>
+      <if test="countryName != null" >
+        COUNTRY_NAME,
+      </if>
+      <if test="regIp != null" >
+        REG_IP,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="nickname != null" >
+        NICKNAME,
+      </if>
+      <if test="realname != null" >
+        REALNAME,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="cityId != null" >
+        CITY_ID,
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME,
+      </if>
+      <if test="districtId != null" >
+        DISTRICT_ID,
+      </if>
+      <if test="districtName != null" >
+        DISTRICT_NAME,
+      </if>
+      <if test="smsMonth != null" >
+        SMS_MONTH,
+      </if>
+      <if test="messageMonth != null" >
+        MESSAGE_MONTH,
+      </if>
+      <if test="smsRent != null" >
+        SMS_RENT,
+      </if>
+      <if test="messageRent != null" >
+        MESSAGE_RENT,
+      </if>
+      <if test="smsPrice != null" >
+        SMS_PRICE,
+      </if>
+      <if test="messagePrice != null" >
+        MESSAGE_PRICE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=DECIMAL},
+      </if>
+      <if test="bind != null" >
+        #{bind,jdbcType=DECIMAL},
+      </if>
+      <if test="wxName != null" >
+        #{wxName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="lastLoginTime != null" >
+        #{lastLoginTime,jdbcType=DATE},
+      </if>
+      <if test="headUrl != null" >
+        #{headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="wxOpenid != null" >
+        #{wxOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryName != null" >
+        #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="regIp != null" >
+        #{regIp,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null" >
+        #{districtId,jdbcType=DECIMAL},
+      </if>
+      <if test="districtName != null" >
+        #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="smsMonth != null" >
+        #{smsMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="messageMonth != null" >
+        #{messageMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="smsRent != null" >
+        #{smsRent,jdbcType=DECIMAL},
+      </if>
+      <if test="messageRent != null" >
+        #{messageRent,jdbcType=DECIMAL},
+      </if>
+      <if test="smsPrice != null" >
+        #{smsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="messagePrice != null" >
+        #{messagePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.wx.model.WxUserInfoExample" resultType="java.lang.Integer" >
+    select count(*) from WX_HOUSEKEEPER_USER_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update WX_HOUSEKEEPER_USER_INFO
+    <set >
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobile != null" >
+        MOBILE = #{record.mobile,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bind != null" >
+        BIND = #{record.bind,jdbcType=DECIMAL},
+      </if>
+      <if test="record.wxName != null" >
+        WX_NAME = #{record.wxName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null" >
+        UPDATE_TIME = #{record.updateTime,jdbcType=DATE},
+      </if>
+      <if test="record.lastLoginTime != null" >
+        LAST_LOGIN_TIME = #{record.lastLoginTime,jdbcType=DATE},
+      </if>
+      <if test="record.headUrl != null" >
+        HEAD_URL = #{record.headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.wxOpenid != null" >
+        WX_OPENID = #{record.wxOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.provinceName != null" >
+        PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.countryName != null" >
+        COUNTRY_NAME = #{record.countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.regIp != null" >
+        REG_IP = #{record.regIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=DECIMAL},
+      </if>
+      <if test="record.nickname != null" >
+        NICKNAME = #{record.nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.realname != null" >
+        REALNAME = #{record.realname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null" >
+        SEX = #{record.sex,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cityId != null" >
+        CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cityName != null" >
+        CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.districtId != null" >
+        DISTRICT_ID = #{record.districtId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.districtName != null" >
+        DISTRICT_NAME = #{record.districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.smsMonth != null" >
+        SMS_MONTH = #{record.smsMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="record.messageMonth != null" >
+        MESSAGE_MONTH = #{record.messageMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="record.smsRent != null" >
+        SMS_RENT = #{record.smsRent,jdbcType=DECIMAL},
+      </if>
+      <if test="record.messageRent != null" >
+        MESSAGE_RENT = #{record.messageRent,jdbcType=DECIMAL},
+      </if>
+      <if test="record.smsPrice != null" >
+        SMS_PRICE = #{record.smsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.messagePrice != null" >
+        MESSAGE_PRICE = #{record.messagePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update WX_HOUSEKEEPER_USER_INFO
+    set USER_ID = #{record.userId,jdbcType=VARCHAR},
+      MOBILE = #{record.mobile,jdbcType=DECIMAL},
+      BIND = #{record.bind,jdbcType=DECIMAL},
+      WX_NAME = #{record.wxName,jdbcType=VARCHAR},
+      UPDATE_TIME = #{record.updateTime,jdbcType=DATE},
+      LAST_LOGIN_TIME = #{record.lastLoginTime,jdbcType=DATE},
+      HEAD_URL = #{record.headUrl,jdbcType=VARCHAR},
+      WX_OPENID = #{record.wxOpenid,jdbcType=VARCHAR},
+      PROVINCE_NAME = #{record.provinceName,jdbcType=VARCHAR},
+      COUNTRY_NAME = #{record.countryName,jdbcType=VARCHAR},
+      REG_IP = #{record.regIp,jdbcType=VARCHAR},
+      STATE = #{record.state,jdbcType=DECIMAL},
+      NICKNAME = #{record.nickname,jdbcType=VARCHAR},
+      REALNAME = #{record.realname,jdbcType=VARCHAR},
+      SEX = #{record.sex,jdbcType=DECIMAL},
+      CITY_ID = #{record.cityId,jdbcType=DECIMAL},
+      CITY_NAME = #{record.cityName,jdbcType=VARCHAR},
+      DISTRICT_ID = #{record.districtId,jdbcType=DECIMAL},
+      DISTRICT_NAME = #{record.districtName,jdbcType=VARCHAR},
+      SMS_MONTH = #{record.smsMonth,jdbcType=DECIMAL},
+      MESSAGE_MONTH = #{record.messageMonth,jdbcType=DECIMAL},
+      SMS_RENT = #{record.smsRent,jdbcType=DECIMAL},
+      MESSAGE_RENT = #{record.messageRent,jdbcType=DECIMAL},
+      SMS_PRICE = #{record.smsPrice,jdbcType=DECIMAL},
+      MESSAGE_PRICE = #{record.messagePrice,jdbcType=DECIMAL},
+      CREATE_TIME = #{record.createTime,jdbcType=DATE}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cindata.housekeeper.wx.model.WxUserInfo" >
+    update WX_HOUSEKEEPER_USER_INFO
+    <set >
+      <if test="mobile != null" >
+        MOBILE = #{mobile,jdbcType=DECIMAL},
+      </if>
+      <if test="bind != null" >
+        BIND = #{bind,jdbcType=DECIMAL},
+      </if>
+      <if test="wxName != null" >
+        WX_NAME = #{wxName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="lastLoginTime != null" >
+        LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=DATE},
+      </if>
+      <if test="headUrl != null" >
+        HEAD_URL = #{headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="wxOpenid != null" >
+        WX_OPENID = #{wxOpenid,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null" >
+        PROVINCE_NAME = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryName != null" >
+        COUNTRY_NAME = #{countryName,jdbcType=VARCHAR},
+      </if>
+      <if test="regIp != null" >
+        REG_IP = #{regIp,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="nickname != null" >
+        NICKNAME = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        REALNAME = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        SEX = #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="cityId != null" >
+        CITY_ID = #{cityId,jdbcType=DECIMAL},
+      </if>
+      <if test="cityName != null" >
+        CITY_NAME = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null" >
+        DISTRICT_ID = #{districtId,jdbcType=DECIMAL},
+      </if>
+      <if test="districtName != null" >
+        DISTRICT_NAME = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="smsMonth != null" >
+        SMS_MONTH = #{smsMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="messageMonth != null" >
+        MESSAGE_MONTH = #{messageMonth,jdbcType=DECIMAL},
+      </if>
+      <if test="smsRent != null" >
+        SMS_RENT = #{smsRent,jdbcType=DECIMAL},
+      </if>
+      <if test="messageRent != null" >
+        MESSAGE_RENT = #{messageRent,jdbcType=DECIMAL},
+      </if>
+      <if test="smsPrice != null" >
+        SMS_PRICE = #{smsPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="messagePrice != null" >
+        MESSAGE_PRICE = #{messagePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=DATE},
+      </if>
+    </set>
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cindata.housekeeper.wx.model.WxUserInfo" >
+    update WX_HOUSEKEEPER_USER_INFO
+    set MOBILE = #{mobile,jdbcType=DECIMAL},
+      BIND = #{bind,jdbcType=DECIMAL},
+      WX_NAME = #{wxName,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=DATE},
+      LAST_LOGIN_TIME = #{lastLoginTime,jdbcType=DATE},
+      HEAD_URL = #{headUrl,jdbcType=VARCHAR},
+      WX_OPENID = #{wxOpenid,jdbcType=VARCHAR},
+      PROVINCE_NAME = #{provinceName,jdbcType=VARCHAR},
+      COUNTRY_NAME = #{countryName,jdbcType=VARCHAR},
+      REG_IP = #{regIp,jdbcType=VARCHAR},
+      STATE = #{state,jdbcType=DECIMAL},
+      NICKNAME = #{nickname,jdbcType=VARCHAR},
+      REALNAME = #{realname,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=DECIMAL},
+      CITY_ID = #{cityId,jdbcType=DECIMAL},
+      CITY_NAME = #{cityName,jdbcType=VARCHAR},
+      DISTRICT_ID = #{districtId,jdbcType=DECIMAL},
+      DISTRICT_NAME = #{districtName,jdbcType=VARCHAR},
+      SMS_MONTH = #{smsMonth,jdbcType=DECIMAL},
+      MESSAGE_MONTH = #{messageMonth,jdbcType=DECIMAL},
+      SMS_RENT = #{smsRent,jdbcType=DECIMAL},
+      MESSAGE_RENT = #{messageRent,jdbcType=DECIMAL},
+      SMS_PRICE = #{smsPrice,jdbcType=DECIMAL},
+      MESSAGE_PRICE = #{messagePrice,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=DATE}
+    where USER_ID = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

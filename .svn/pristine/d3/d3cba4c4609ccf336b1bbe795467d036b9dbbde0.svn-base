@@ -1,0 +1,286 @@
+/* community page 小区基本信息 */
+.cmt_page {
+    /* position: relative; */
+}
+.cmt_pic_wrapper {
+    position: relative;
+}
+.cmt_pic_tips {
+    position: absolute;
+    width: 0.88rem;
+    height: 0.42rem;
+    line-height: 0.42rem;
+    color: #fff;
+    border-radius: 0.1rem;
+    background-color: rgba(17, 17, 17, 0.5);
+    opacity: 0.5;
+    font-size: 0.26rem;
+    text-align: center;
+    bottom: 0.1rem;
+    right: 0.3rem;
+    z-index: 99;
+}
+.cmt_block_1 {
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.cmt_block_1_top {
+    padding: 0.36rem 0.13rem;
+}
+.cmt_block_1_top_name {
+    line-height: 0.34rem;
+    font-size: 0.36rem;
+    color: #111;
+}
+.cmt_block_1_top_address {
+    padding-top: 0.31rem;
+    font-size: 0.28rem;
+    line-height: 0.27rem;
+    color: #bbb;
+}
+.cmt_block_1_bottom {
+    overflow: hidden;
+    clear: both;
+}
+.cmt_block_1_bottom_item {
+    padding: 0.37rem 0;
+    width: 33.3%;
+    float: left;
+    text-align: center;
+}
+.cmt_block_1_bottom_item_label {
+    line-height: 0.25rem;
+    color: #bbb;
+    font-size: 0.26rem;
+}
+.cmt_block_1_bottom_item_val {
+    color: #111;
+    font-size: 0.3rem;
+    line-height: 0.28rem;
+    padding-top: 0.26rem;
+    vertical-align: middle;
+}
+.cmt_rate_up {
+    color: #fb344c;
+}
+.cmt_rate_down {
+    color: #00d0c2;
+}
+.cmt_block_1_bottom_item_val img {
+    width: 0.13rem;
+    height: 0.22rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+.cmt_block_2 {
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.cmt_block_title {
+    line-height: 0.89rem;
+    padding-left: 0.13rem;
+    color: #111;
+    font-size: 0.3rem;
+}
+.cmt_block_2_ctn {
+    overflow: hidden;
+    clear: both;
+    padding: 0.2rem 0;
+}
+.cmt_block_2_ctn_item {
+    width: 50%;
+    float: left;
+    height: 0.58rem;
+    line-height: 0.58rem;
+    font-size: 0.28rem;
+}
+.cmt_block_2_ctn_item_label {
+    width: 1.15rem;
+    text-align-last: justify;
+    color: #888;
+    padding-left: 0.13rem;
+    margin-right: 0.2rem;
+    display: inline-block;
+}
+.cmt_block_2_ctn_item_val {
+    display: inline-block;
+    color: #555;
+}
+.cmt_block_3 {
+    background: #fff;
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+}
+.cmt_block_3_ctn {
+    height: 5.68rem;
+    background: #fff;
+    padding-top: 0.3rem;
+    position: relative;
+}
+.cmt_block_3_ctn_maker {
+    position: absolute;
+    height: 1.2rem;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.1rem;
+    z-index: 99;
+}
+.cmt_block_3_ctn_maker_inner {
+    width: 3.52rem;
+    height: 100%;
+    margin: auto;
+    background: #fff;
+}
+.cmt_block_3_ctn_maker_inner_tit {
+    font-size: 0.28rem;
+    color: #111;
+    line-height: 0.26rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.17rem;
+}
+.cmt_block_3_ctn_maker_inner_address {
+    font-size: 0.24rem;
+    color: #888;
+    line-height: 0.23rem;
+}
+.cmt_block_3_ctn_map_mask {
+    width: 100%;
+    height: 3.82rem;
+    position: absolute;
+    z-index: 999;
+}
+.cmt_block_3_ctn_map:after {
+    display: block;
+    position: absolute;
+    content: "";
+    top: 1.3rem;
+    left: 49%;
+    border-top: solid #fff;
+    border-right: solid transparent;
+    border-bottom: solid transparent;
+    border-left: solid transparent;
+    border-width: 0.13rem;
+    z-index: 99;
+}
+.cmt_block_3_ctn_map {
+    width: 6.9rem;
+    height: 3.82rem;
+    margin: auto;
+    position: relative;
+}
+.cmt_tool_bar {
+    position: absolute;
+    width: 100%;
+    height: 1rem;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
+    text-align: center;
+    overflow: hidden;
+    clear: both;
+    background-color: #fff;
+}
+.cmt_tool_bar_little_item {
+    font-size: 0.24rem;
+    color: #111;
+    width: 1.43rem;
+    height: 100%;
+    float: left;
+}
+.cmt_tool_bar_big_item {
+    line-height: 1rem;
+    font-size: 0.32rem;
+    color: #fff;
+    width: 2.3rem;
+    float: left;
+    height: 100%;
+}
+.cmt_tool_bar_little_item img {
+    height: 0.3rem;
+    width: auto;
+    display: block;
+    margin: auto;
+    padding-top: 0.15rem;
+    padding-bottom: 0.08rem;
+}
+
+.rb_block_1 {
+    margin-top: 0.2rem;
+    background: #fff;
+    padding: 0.29rem 0;
+}
+.rb_block_2 {
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.rb_block_3 {
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.rb_block_3_ctn {
+    overflow: hidden;
+    clear: both;
+    padding-bottom: 0.37rem;
+    padding-left: 0.15rem;
+}
+.rb_block_3_ctn_item {
+    width: 3.12rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    font-size: 0.26rem;
+    color: #111;
+    background-color: #f8f8f8;
+    float: left;
+    margin-top: 0.29rem;
+    text-align: center;
+}
+.rb_block_3_ctn_item:nth-child(even) {
+    margin-left: 0.32rem;
+}
+.rb_block_3_ctn_item_label {
+    display: inline-block;
+    width: 1.7rem;
+    text-align: left;
+}
+.rb_block_4 {
+    margin-top: 0.2rem;
+    padding: 0 0.3rem;
+    background: #fff;
+}
+.rb_block_4_ctn {
+    position: relative;
+}
+.rb_block_4_tab {
+    line-height: 0.25rem;
+    padding-top: 0.56rem;
+    color: #888;
+    font-size: 0.28rem;
+    padding-left: 0.2rem;
+}
+.rb_block_4_tab_item {
+    width: 1rem;
+    display: inline-block;
+}
+.rb_block_4_tab_item_active {
+    color: #388cff;
+}
+.rb_block_4_chart_box_inner {
+    height:4.7rem; 
+    margin: auto;
+}
+.rb_block_4_chart_box {
+    position: relative;
+    padding: 0 0.1rem;
+}
+.rb_block_4_chart_unit {
+    position: absolute;
+    font-size: 0.25rem;
+    color: #888;
+    top: 1.38rem;
+    right: 0.63rem;
+    line-height: 0.25rem;
+    z-index: 99;
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:03 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>贷款申请</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    
+    <style>
+        .search-label {
+            line-height: 30px;
+            display: block;
+            float: left;
+            margin-right: 10px;
+        }
+        .search-box-outer {
+            display: inline-block;
+            width: auto;
+            overflow: hidden;
+            clear: both;
+        }
+        .form-control {
+            width: 180px;
+            float: left;
+            margin-right: 10px;
+        }
+        /* #province_placeholder {
+            display: none!important;
+        } */
+    </style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Bootstrap table <a href="http://bootstrap-table.wenzhixin.net.cn/zh-cn/" target="_blank">http://bootstrap-table.wenzhixin.net.cn/zh-cn/</a></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <p>Bootstrap table是国人开发的一款基于 Bootstrap 的 jQuery 表格插件，通过简单的设置，就可以拥有强大的单选、多选、排序、分页，以及编辑、导出、过滤（扩展）等等的功能。目前在github上已经有2600多个Star，可见其受欢迎程度。</p>
+                <ul>
+                    <li>支持 Bootstrap 3 和 Bootstrap 2</li>
+                    <li>自适应界面</li>
+                    <li>固定表头</li>
+                    <li>非常丰富的配置参数</li>
+                    <li>直接通过标签使用</li>
+                    <li>显示/隐藏列</li>
+                    <li>显示/隐藏表头</li>
+                    <li>通过 AJAX 获取 JSON 格式的数据</li>
+                    <li>支持排序</li>
+                    <li>格式化表格</li>
+                    <li>支持单选或者多选</li>
+                    <li>强大的分页功能</li>
+                    <li>支持卡片视图</li>
+                    <li>支持多语言</li>
+                    <li>支持插件</li>
+                </ul>
+            </div>
+        </div> -->
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <!-- <h5>
+                    昨日新增用户： <span id="user_yes_new" class="user-data-span">88个</span> ／
+                    总用户：<span id="user_count" class="user-data-span">1,888个</span> ／
+                    昨日新增房产：<span id="house_yes_new" class="user-data-span">79套</span> ／
+                    总房产：<span id="house_count" class="user-data-span">72966套</span>
+                </h5> -->
+                <h5>贷款申请</h5>
+                <!-- <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div> -->
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <!-- <div class="col-sm-6">
+                        <h4 class="example-title">从URL加载</h4>
+                        <div class="example">
+                            <table data-toggle="table" data-url="js/demo/table_base.json" data-height="250" data-mobile-responsive="true">
+                                <thead>
+                                    <tr>
+                                        <th data-field="Tid">ID</th>
+                                        <th data-field="First">姓名</th>
+                                        <th data-field="sex">性别</th>
+                                        <th data-field="Score">评分</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                        <div class="search-box row">
+                            <div class="col-sm-5">
+                                
+                                <div id="data_5" class="search-box-outer">
+                                    <span class="search-label">申请日期</span>
+                                    <div class="input-daterange input-group" id="datepicker">
+                                        <input value="" id="date-s" type="text" class="input-sm form-control" name="start" value="2014-11-11" />
+                                        <span class="input-group-addon">--</span>
+                                        <input value="" id="date-e" type="text" class="input-sm form-control" name="end" value="2014-11-17" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="search-box-outer">
+                                    <span class="search-label">处理状态</span>
+                                    <select id="state" class="form-control m-b" placeholer="省份">
+                                        <!-- <option value='' disabled selected style='display:none;'>省份</option> -->
+                                        <option value=''>全部</option>
+                                        <option value=1>已处理</option>
+                                        <option value=2>未处理</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-3">
+                                <button style="width: 70px;" id="table-search" class="btn btn-success " type="button">查询</button>
+                                <!-- <button id="table-refresh" name="refresh" data-toggle="button" class="btn btn-success btn-outline" type="button"><i class="glyphicon glyphicon-repeat"></i>重置</button> -->
+                            </div>
+                        </div>
+                        <!-- <h4 class="example-title">查询结果：用户<span id="user-total">266</span>个，房产<span id="house-total">465</span>套，房产总额<span id="house-value">12.89亿</span></h4> -->
+                        
+                        <div class="example">
+                            <table id="exampleTableFromData" data-striped="true" data-mobile-responsive="true" data-pagination="true">
+                                <thead>
+                                    <tr>
+                                        <th data-align="center" data-valign="middle" data-field="userId">申请时间</th>
+                                        <th data-align="center" data-valign="middle" data-field="communityName" data-formatter="houseInfo">用户名</th>
+                                        <th data-align="center" data-valign="middle" data-field="addressDetail" data-formatter="buildingNum">产品名称</th>
+                                        <th data-align="center" data-valign="middle" data-field="buildingsquare">所在城市</th>
+                                        <th data-align="center" data-valign="middle" data-field="assessSalePrice" data-formatter="salePrice">申请金额</th>
+                                        <th data-align="center" data-valign="middle" data-field="createdDt">姓名</th>
+                                        <th data-align="center" data-valign="middle" data-field="createdDt">手机号码</th>
+                                        <th data-align="center" data-valign="middle" data-field="createdDt" data-formatter="handleStatus">处理状态</th>                                        
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Basic -->
+
+    </div>
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/content.min.js?v=1.0.0"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="js/plugins/chosen/chosen.jquery.js"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- date-picker -->
+    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="js/crypto-js.js"></script>
+    <script src="js/mode-ecb.js"></script>
+    <script src="js/config.js"></script>    
+    <script src="js/scripts/intention_client.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+    <script>
+        $("#data_5 .input-daterange").datepicker({
+            keyboardNavigation:!1,
+            forceParse:!1,autoclose:!0
+        });
+        // CryptoJS.AES.encrypt('my message', 'secret key 123');
+        console.log(CryptoJS.pad)
+        function encryptByDES(message, key) {
+            // var keyHex = key;
+            var keyHex = CryptoJS.enc.Utf8.parse(key);
+            var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encrypted.toString();
+        }
+        
+        
+        function encrptTest(key) {
+            var urlData = 'str=' + key;
+            console.log('crypto-test: ', key);
+            link_public.method(server_url + '/rest/test/des', urlData, "post", false, function (json) {
+                if (json.statusCode == 1) {
+                    console.log('data', json.data);
+                } else {
+                    // showToast(3, json.message);
+                    // $('.index_box').html(emptyContent);
+                }
+            });
+        }
+        // encrptTest(encryptByDES('hello world', '12345678'));
+        // var config={".chosen-select":{},".chosen-select-deselect":{allow_single_deselect:!0},".chosen-select-no-single":{disable_search_threshold:10},".chosen-select-no-results":{no_results_text:"Oops, nothing found!"},".chosen-select-width":{width:"95%"}};
+        // for(var selector in config)$(selector).chosen(config[selector]);
+    </script>
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:06 GMT -->
+</html>

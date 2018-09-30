@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>房产评估-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.valuation_p select {
+			-moz-appearance: none;
+			-webkit-appearance: none;
+			border: none;
+	
+			outline: none;
+	
+			width: 100%;
+			height: 40px;
+			line-height: 40px;
+	
+			appearance: none;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+	
+			color: #888;
+			width: 100%;
+			direction: rtl;
+			padding-right: 0.5rem;
+			outline: none;
+			background: transparent;
+		}
+	
+		.valuation_p select option:checked {
+			text-align: center;
+			border: solid 0.1rem #000;
+			width: 50%
+		}
+	
+		.apply-list-tag {
+			position: absolute;
+			right: -4rem;
+			top: 0;
+			color: #888888 !important;
+		}
+	
+		.search-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+	
+		.search-community-box {
+			width: 100%;
+			min-height: 100%;
+			overflow-x: hidden;
+			overflow-y: auto;
+			position: absolute;
+			z-index: 999;
+			background: #f8f8f8;
+			display: none;
+		}
+	
+		.index_box_ctn {
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+		}
+
+		.fang_address {
+    		color: grey;
+			line-height: 1.5rem;
+			padding-bottom: 1rem;
+		}
+		.form-box {
+			width: 100%;
+			margin-top: 0.8rem;
+		}
+		.form-ul {
+			padding: 0 1.5rem;
+			background: #fff;
+			text-align: justify;
+		}
+		.form-li {
+			display: inline-block;
+			background: #fff;
+			border-bottom: solid 0.1rem #fbfbfb;
+			width: 100%;
+			line-height: 4rem;
+			/* height: 4rem; */
+			position: relative;
+			font-size: 1.2rem;
+		}
+		.form-li input {
+			border: none;
+		}
+		.form-li select {
+			/* border: none;
+			background: transparent;
+			-webkit-appearance: none;  
+			-webkit-tap-highlight-color: transparent;  
+			outline: 0;
+			color: #888; */
+			border: 0;  
+			display: block;  
+			/* position: relative;   */
+			/* min-height: 1.146667rem;  
+			line-height: 1.146667rem;   */
+			/* white-space: nowrap;   */
+			/* width: 100%;   */
+			overflow: hidden;  
+			/* padding-right: .6rem;   */
+			/* background-color: #eee;   */
+			background: transparent;  
+			appearance:none;  
+			-moz-appearance:none; /* Firefox */  
+			-webkit-appearance:none; /* Safari 和 Chrome */  
+		}
+		.form-li i {
+			color: #ff5653;
+			line-height: 4rem;
+		}
+		/* .toast-container {
+			display: none;
+		} */
+		.form-label {
+			display: inline-block;
+			width: 23%;
+			height: 100%;
+			/* background: #ddd; */
+			vertical-align: top;
+			color: #555;
+		}
+		.form-content {
+			display: inline-block;
+			width: 70%;
+			height: 100%;
+			/* background: gold; */
+			position: relative;
+		}
+		.form-content>input {
+			/* position: absolute; */
+			width: 100%;
+			height: 100%;
+			line-height: 4rem;
+			text-align: right;
+			font-size: 1.2rem;
+			padding-right: 0.2rem;
+			/* background: none; */
+		}
+		.form-content>select {
+			/* position: absolute; */
+			width: 100%;
+			height: 100%;
+			line-height: 4rem;
+			text-align: right;
+			font-size: 1.2rem;
+			color: #888;
+		}
+		.mix-content {
+			text-align: right;
+			color: #888;
+		}
+		.form-icon {
+			position: absolute;
+			right: 0;
+			top: 0;
+			/* background: dodgerblue; */
+			width: 7%;
+			height: 100%;
+			text-align: right;
+			color: #888;
+		}
+		.form-icon>img {
+			width: 0.7rem;
+    		height: 1.2rem;
+			vertical-align: -0.2rem;
+			text-align: center;
+		}
+		.input-inline {
+			width: 4rem;
+			text-align: right;
+			margin-right: 0.2rem;
+			color: #888;
+		}
+		.input-inline:focus {
+			outline: none;
+		}
+		.span_justify {
+			display: inline-block;
+			text-align: justify;
+			text-align-last: justify;
+			justify-content: space-between;
+			width: 75%;
+		}
+		#address {
+			display: block;
+			line-height: 4rem;
+			text-align: right;
+		}
+		.input-inline-m {
+			margin-right: 0.4rem;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="search-box">
+		<div class="index_box">
+			<ul class="citynav">
+				<li>热门</li>
+				<li>A</li>
+				<li>B</li>
+				<li>C</li>
+				<li>D</li>
+				<li>E</li>
+				<li>F</li>
+				<li>G</li>
+				<li>H</li>
+				<li>I</li>
+				<li>J</li>
+				<li>K</li>
+				<li>L</li>
+				<li>M</li>
+				<li>N</li>
+				<li>O</li>
+				<li>P</li>
+				<li>Q</li>
+				<li>R</li>
+				<li>S</li>
+				<li>T</li>
+				<li>W</li>
+				<li>X</li>
+				<li>Y</li>
+				<li>Z</li>
+
+			</ul>
+
+			<div class="search_box bac">
+				<div class="search_input">
+					<img src="../img/search.png" class="ding_w" onclick="cityName()">
+					<input id="search_city_input" class="text required" type="search" placeholder="搜索城市名称" name="cityName">
+				</div>
+				<a class="search_input_button f14">取消</a>
+			</div>
+			<div class="search_del">
+				<div class="search_del_list">
+					<p class="f11 col" id="dqcs">
+						<img src="../img/ding.png" alt="" class="ding_w"><span></span></p>
+					<a id="fixed-to-cur" class="f11">当前城市</a>
+				</div>
+			</div>
+			<dl class="hotcity">
+				<!-- <dt>热门城市</dt>
+				<dd data-id="1101">北京</dd>
+				<dd data-id="3101">上海</dd>
+				<dd data-id="4401">广州</dd>
+				<dd data-id="4403">深圳</dd>
+				<dd data-id="3301">杭州</dd>
+				<dd data-id="3205">苏州</dd>
+				<dd data-id="3201">南京</dd>
+				<dd data-id="1201">天津</dd>
+				<dd data-id="1301">石家庄</dd> -->
+			</dl>
+			<dl class="citylist" id="a">
+				<dt id="py">A</dt>
+				<dd>阿坝</dd>
+				<dd>安泽</dd>
+				<dd>鞍山</dd>
+				<dd>敖汉旗</dd>
+			</dl>
+
+		</div>
+	</div>
+	<div class="search-community-box">
+		<div class="index_box">
+			<div class="search_box bac">
+				<div class="search_input">
+					<img src="../img/search.png" alt="">
+					<input class="text required" id="search" type="search" placeholder="搜索小区名称或小区地址">
+				</div>
+				<a id="cs-cancel" class="search_input_button f14">取消</a>
+			</div>
+			<div class="search_del" id="search_del">
+				<div class="search_del_list">
+					<p class="f11">搜索历史</p>
+					<a class="f11" id="clearHistory">
+						<img src="../img/del.png" alt="">清空</a>
+				</div>
+				<ul class="search_del_list_ul f12" id="searchHistory">
+				</ul>
+			</div>
+			<ul class="search1_box" id="search_box"></ul>
+		</div>
+	</div>
+	<div class="index_box_ctn">
+		<div class="index_box">
+			<div class="form-box">
+				<ul class="form-ul">
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">城市</span><i>*</i></div>
+						<div class="form-content" onclick="changeCity()">
+							<input id="city" type="text" placeholder="">
+						</div>
+						<div class="form-icon">
+							<img src="../img/ico_right.png" alt="">
+						</div>
+					</li>
+					<li class="form-li" onclick="getAddress()">
+						<div class="form-label"><span class="span_justify">房产地址</span><i>*</i></div>
+						<div class="form-content" >
+							<!-- <input id="address" type="text" placeholder=""> -->
+							<div id="address"></div>
+							<div id="fang_address" class="fang_1 f12 fang_address"></div>
+						</div>
+						<div class="form-icon">
+							<img src="../img/ico_right.png" alt="">
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">楼栋室号</span></div>
+						<div class="form-content mix-content">
+							<span><input maxlength="5" class="input-inline input-inline-m" id="buildingId" type="text" placeholder="">楼栋</span>
+							<span><input maxlength="5" class="input-inline input-inline-m" id="unitId" type="text" placeholder="">单元</span>	
+							<span><input maxlength="5" class="input-inline" id="doorNum" type="text" placeholder=""></span>							
+						</div>
+						<div class="form-icon">
+							室号
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">物业用途</span></div>
+						<div class="form-content">
+							<select dir="rtl" id="communitytype">
+								<option value="住宅">住宅</option>
+							</select>
+						</div>
+						<div class="form-icon">
+							<img src="../img/ico_right.png" alt="">
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">建筑面积</span><i>*</i></div>
+						<div class="form-content">
+							<input maxlength="6" style="font-size: 1.4rem;" class="input-inline" type="text" id="buildingsquare" placeholder="" onkeyup="clearNoNum(this)"
+							onafterpaste="clearNoNum(this)">
+						</div>
+						<div class="form-icon" style="font-size: 1.4rem;">
+							平
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">楼层</span><i>*</i></div>
+						<div class="form-content mix-content">
+							<span>第<input maxlength="3" class="input-inline input-inline-m" id="currentfloor" type="text" placeholder="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+								onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"></span>
+							<span>层/共<input maxlength="3" class="input-inline" id="totalfloor" type="text" placeholder="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+								onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"></span>	
+						</div>
+						<div class="form-icon">
+							层
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">户型</span></div>
+						<div class="form-content">
+							
+							<select dir="rtl" id="floorplantype"></select>
+						</div>
+						<div class="form-icon">
+							
+							<img src="../img/ico_right.png" alt="">
+						</div>
+					</li>
+					<li class="form-li">
+						<div class="form-label"><span class="span_justify">朝向</span></div> 
+						<div class="form-content">
+							<select dir="rtl" id="aspect"></select>
+						</div>
+						<div class="form-icon">
+							<img src="../img/ico_right.png" alt="">
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!-- <div class="bac apply_list">
+				<ul class="padding">
+					<li>
+						<span class="f13  f12 col">城市<i>*</i>
+						</span>
+						<div class="fang_1 f12 col" onclick="changeCity()">
+							<span id="cityName" style="width:88%">请选择房产所在城市</span>
+							<input value="" id="city" cityId="" style="display: none" type="text" />
+							<a>
+								<img src="../img/ico_right.png" alt="">
+							</a>
+						</div>
+					</li>
+
+					<li>
+						<span class="f13">房产地址<i>*</i>
+						</span>
+						<div class="fang_1 f12 col" onclick="getAddress()">
+							<span id="communityName" style="width:88%; height: 3rem;"></span>
+							<input value="" address="" id="address" communityId="" style="display: none" type="text" />
+							<a>
+								<img src="../img/ico_right.png" alt="">
+							</a>
+							<div id="fang_address" class="fang_1 f12 fang_address"></div>
+							
+						</div>
+					</li>
+
+					<li>
+						<span class="f13">楼栋室号</span>
+						<div class="loan_lis1 col" style="width:20rem">
+							<p>
+								<input maxlength="5" class="text required" id="buildingId" type="text" placeholder="">
+							</p>
+							<span class="f12 col">楼栋</span>
+							<p>
+								<input maxlength="5" class="text required" id="unitId" type="text" placeholder="">
+							</p>
+							<span class="f12 col">单元</span>
+							<p>
+								<input maxlength="5" class="text required" id="doorNum" type="text" placeholder="">
+							</p>
+							<span class="f12 col">室号</span>
+						</div>
+					</li>
+					<li>
+						<span class="f13">物业用途</span>
+						<p class="valuation_p">
+							<select dir="rtl" id="communitytype">
+								<option value="住宅">住宅</option>
+							</select>
+						</p>
+						<img src="../img/ico_right.png" alt="">
+					</li>
+		
+					<li>
+						<span class="f13">建筑面积<i>*</i>
+						</span>
+						<p style="position: relative;" class="valuation_p">
+							<input maxlength="6" class="text required" type="text" id="buildingsquare" placeholder="" onkeyup="clearNoNum(this)"
+							onafterpaste="clearNoNum(this)">
+							<span class="apply-list-tag">m²</span>
+						</p>
+					</li>
+
+					<li>
+						<span class="f13">楼层<i>*</i>
+						</span>
+						<div class="loan_lis col">
+							<span class="f12 col">第</span>
+							<p>
+								<input maxlength="3" class="text required" id="currentfloor" type="text" placeholder="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+								onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+							</p>
+							<span class="f12 col">层/共</span>
+							<p>
+								<input maxlength="3" class="text required" id="totalfloor" type="text" placeholder="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+								onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+							</p>
+							<span class="f12 col">层</span>
+						</div>
+					</li>
+
+					<li>
+						<span class="f13">户型</span>
+						<p class="valuation_p">
+							<select dir="rtl" id="floorplantype">
+								
+							</select>
+						</p>
+						<img src="../img/ico_right.png" alt="">
+					</li>
+
+					<li>
+						<span class="f13">朝向</span>
+						<p class="valuation_p">
+							<select dir="rtl" id="aspect">
+								<option background color placeholder="volvo" value="15753692">东</option>
+								<option placeholder="saab" value="15753693">南</option>
+								<option placeholder="opel" value="15753694">西</option>
+								<option placeholder="audi" value="15753695">北</option>
+								<option placeholder="audi" value="15753696">东北</option>
+								<option placeholder="audi" value="15753697">东南</option>
+								<option placeholder="audi" value="15753698">西北</option>
+								<option placeholder="audi" value="15753699">西南</option>
+								<option placeholder="audi" value="15753702">其他</option>
+							</select>
+						</p>
+						<img src="../img/ico_right.png" alt="">
+					</li>
+				</ul>
+			</div> -->
+			<div class="button_box">
+				<button class="button-1 f14" onclick="addHouse()">立即评估</button>
+			</div>
+			
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/lodash.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script src="http://api.map.baidu.com/api?v=2.0&ak=ISaVGtroCIszpRS455cYuZMuR8cNvaNt"></script>
+	<script type="text/javascript" src="../js/config.js"></script>
+	<script type="text/javascript" src="../js/baiduMap.js"></script>
+	<script type="text/javascript" src="../js/tools_xie.js"></script>
+	<script type="text/javascript" src="../js/public/searchC.js"></script>
+	<script type="text/javascript" src="../js/public/searchM.js"></script>	
+	<script type="text/javascript" src="../js/valuation/index.js"></script>
+
+</body>
+
+</html>

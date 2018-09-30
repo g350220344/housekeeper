@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cindata.housekeeper.web.dao.GroupInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.GroupInfo">
+    <id column="GROUP_ID" jdbcType="VARCHAR" property="groupId" />
+    <result column="GROUP_NAME" jdbcType="VARCHAR" property="groupName" />
+    <result column="LOGO" jdbcType="VARCHAR" property="logo" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="STATUS" jdbcType="DECIMAL" property="status" />
+    <result column="TYPE" jdbcType="DECIMAL" property="type" />
+    <result column="START_DATE" jdbcType="DATE" property="startDate" />
+    <result column="END_DATE" jdbcType="DATE" property="endDate" />
+    <result column="CREATE_DATE" jdbcType="DATE" property="createDate" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="PRINCIPAL" jdbcType="VARCHAR" property="principal" />
+    <result column="PHONE_NUMBER" jdbcType="DECIMAL" property="phoneNumber" />
+    <result column="SEAT_NUMBER" jdbcType="DECIMAL" property="seatNumber" />
+    <result column="MAILBOX" jdbcType="VARCHAR" property="mailbox" />
+    <result column="SALES_USER" jdbcType="VARCHAR" property="salesUser" />
+    <result column="PRODUCT_NAME" jdbcType="VARCHAR" property="productName" />
+    <result column="PRODUCT_TYPE" jdbcType="DECIMAL" property="productType" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="DATE_TYPE" jdbcType="DECIMAL" property="dateType" />
+    <result column="UPDATE_DATE" jdbcType="DATE" property="updateDate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    GROUP_ID, GROUP_NAME, LOGO, ADDRESS, STATUS, TYPE, START_DATE, END_DATE, CREATE_DATE, 
+    URL, PRINCIPAL, PHONE_NUMBER, SEAT_NUMBER, MAILBOX, SALES_USER, PRODUCT_NAME, PRODUCT_TYPE, 
+    REMARK, DATE_TYPE, UPDATE_DATE
+  </sql>
+  <select id="selectByExample" parameterType="com.cindata.housekeeper.web.model.GroupInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_GROUP_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_GROUP_INFO
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from T_HOUSEKEEPER_GROUP_INFO
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.GroupInfoExample">
+    delete from T_HOUSEKEEPER_GROUP_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.GroupInfo">
+    insert into T_HOUSEKEEPER_GROUP_INFO (GROUP_ID, GROUP_NAME, LOGO, 
+      ADDRESS, STATUS, TYPE, 
+      START_DATE, END_DATE, CREATE_DATE, 
+      URL, PRINCIPAL, PHONE_NUMBER, 
+      SEAT_NUMBER, MAILBOX, SALES_USER, 
+      PRODUCT_NAME, PRODUCT_TYPE, REMARK, 
+      DATE_TYPE, UPDATE_DATE)
+    values (#{groupId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{status,jdbcType=DECIMAL}, #{type,jdbcType=DECIMAL}, 
+      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{createDate,jdbcType=DATE}, 
+      #{url,jdbcType=VARCHAR}, #{principal,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=DECIMAL}, 
+      #{seatNumber,jdbcType=DECIMAL}, #{mailbox,jdbcType=VARCHAR}, #{salesUser,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{productType,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, 
+      #{dateType,jdbcType=DECIMAL}, #{updateDate,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.GroupInfo">
+    insert into T_HOUSEKEEPER_GROUP_INFO
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="groupId != null">
+        GROUP_ID,
+      </if>
+      <if test="groupName != null">
+        GROUP_NAME,
+      </if>
+      <if test="logo != null">
+        LOGO,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="type != null">
+        TYPE,
+      </if>
+      <if test="startDate != null">
+        START_DATE,
+      </if>
+      <if test="endDate != null">
+        END_DATE,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+      <if test="principal != null">
+        PRINCIPAL,
+      </if>
+      <if test="phoneNumber != null">
+        PHONE_NUMBER,
+      </if>
+      <if test="seatNumber != null">
+        SEAT_NUMBER,
+      </if>
+      <if test="mailbox != null">
+        MAILBOX,
+      </if>
+      <if test="salesUser != null">
+        SALES_USER,
+      </if>
+      <if test="productName != null">
+        PRODUCT_NAME,
+      </if>
+      <if test="productType != null">
+        PRODUCT_TYPE,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="dateType != null">
+        DATE_TYPE,
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="groupId != null">
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="principal != null">
+        #{principal,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="seatNumber != null">
+        #{seatNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="mailbox != null">
+        #{mailbox,jdbcType=VARCHAR},
+      </if>
+      <if test="salesUser != null">
+        #{salesUser,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dateType != null">
+        #{dateType,jdbcType=DECIMAL},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.GroupInfoExample" resultType="java.lang.Long">
+    select count(*) from T_HOUSEKEEPER_GROUP_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update T_HOUSEKEEPER_GROUP_INFO
+    <set>
+      <if test="record.groupId != null">
+        GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupName != null">
+        GROUP_NAME = #{record.groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.logo != null">
+        LOGO = #{record.logo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.address != null">
+        ADDRESS = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=DECIMAL},
+      </if>
+      <if test="record.type != null">
+        TYPE = #{record.type,jdbcType=DECIMAL},
+      </if>
+      <if test="record.startDate != null">
+        START_DATE = #{record.startDate,jdbcType=DATE},
+      </if>
+      <if test="record.endDate != null">
+        END_DATE = #{record.endDate,jdbcType=DATE},
+      </if>
+      <if test="record.createDate != null">
+        CREATE_DATE = #{record.createDate,jdbcType=DATE},
+      </if>
+      <if test="record.url != null">
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.principal != null">
+        PRINCIPAL = #{record.principal,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phoneNumber != null">
+        PHONE_NUMBER = #{record.phoneNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="record.seatNumber != null">
+        SEAT_NUMBER = #{record.seatNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="record.mailbox != null">
+        MAILBOX = #{record.mailbox,jdbcType=VARCHAR},
+      </if>
+      <if test="record.salesUser != null">
+        SALES_USER = #{record.salesUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productName != null">
+        PRODUCT_NAME = #{record.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productType != null">
+        PRODUCT_TYPE = #{record.productType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.remark != null">
+        REMARK = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dateType != null">
+        DATE_TYPE = #{record.dateType,jdbcType=DECIMAL},
+      </if>
+      <if test="record.updateDate != null">
+        UPDATE_DATE = #{record.updateDate,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update T_HOUSEKEEPER_GROUP_INFO
+    set GROUP_ID = #{record.groupId,jdbcType=VARCHAR},
+      GROUP_NAME = #{record.groupName,jdbcType=VARCHAR},
+      LOGO = #{record.logo,jdbcType=VARCHAR},
+      ADDRESS = #{record.address,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=DECIMAL},
+      TYPE = #{record.type,jdbcType=DECIMAL},
+      START_DATE = #{record.startDate,jdbcType=DATE},
+      END_DATE = #{record.endDate,jdbcType=DATE},
+      CREATE_DATE = #{record.createDate,jdbcType=DATE},
+      URL = #{record.url,jdbcType=VARCHAR},
+      PRINCIPAL = #{record.principal,jdbcType=VARCHAR},
+      PHONE_NUMBER = #{record.phoneNumber,jdbcType=DECIMAL},
+      SEAT_NUMBER = #{record.seatNumber,jdbcType=DECIMAL},
+      MAILBOX = #{record.mailbox,jdbcType=VARCHAR},
+      SALES_USER = #{record.salesUser,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{record.productName,jdbcType=VARCHAR},
+      PRODUCT_TYPE = #{record.productType,jdbcType=DECIMAL},
+      REMARK = #{record.remark,jdbcType=VARCHAR},
+      DATE_TYPE = #{record.dateType,jdbcType=DECIMAL},
+      UPDATE_DATE = #{record.updateDate,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cindata.housekeeper.web.model.GroupInfo">
+    update T_HOUSEKEEPER_GROUP_INFO
+    <set>
+      <if test="groupName != null">
+        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        LOGO = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=DECIMAL},
+      </if>
+      <if test="type != null">
+        TYPE = #{type,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null">
+        START_DATE = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="principal != null">
+        PRINCIPAL = #{principal,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        PHONE_NUMBER = #{phoneNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="seatNumber != null">
+        SEAT_NUMBER = #{seatNumber,jdbcType=DECIMAL},
+      </if>
+      <if test="mailbox != null">
+        MAILBOX = #{mailbox,jdbcType=VARCHAR},
+      </if>
+      <if test="salesUser != null">
+        SALES_USER = #{salesUser,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        PRODUCT_TYPE = #{productType,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dateType != null">
+        DATE_TYPE = #{dateType,jdbcType=DECIMAL},
+      </if>
+      <if test="updateDate != null">
+        UPDATE_DATE = #{updateDate,jdbcType=DATE},
+      </if>
+    </set>
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cindata.housekeeper.web.model.GroupInfo">
+    update T_HOUSEKEEPER_GROUP_INFO
+    set GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      LOGO = #{logo,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=DECIMAL},
+      TYPE = #{type,jdbcType=DECIMAL},
+      START_DATE = #{startDate,jdbcType=DATE},
+      END_DATE = #{endDate,jdbcType=DATE},
+      CREATE_DATE = #{createDate,jdbcType=DATE},
+      URL = #{url,jdbcType=VARCHAR},
+      PRINCIPAL = #{principal,jdbcType=VARCHAR},
+      PHONE_NUMBER = #{phoneNumber,jdbcType=DECIMAL},
+      SEAT_NUMBER = #{seatNumber,jdbcType=DECIMAL},
+      MAILBOX = #{mailbox,jdbcType=VARCHAR},
+      SALES_USER = #{salesUser,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      PRODUCT_TYPE = #{productType,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      DATE_TYPE = #{dateType,jdbcType=DECIMAL},
+      UPDATE_DATE = #{updateDate,jdbcType=DATE}
+    where GROUP_ID = #{groupId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectGroupList" parameterType="com.cindata.housekeeper.web.model.GroupInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_GROUP_INFO
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  
+  <select id="getGroupList" parameterType="com.cindata.housekeeper.core.entity.Parameter" resultMap="BaseResultMap">
+    select *
+    from
+    (
+    select p.*, rownum rn
+    from
+    (
+    select GROUP_ID,GROUP_NAME,PRINCIPAL,PRODUCT_NAME,PRODUCT_TYPE,STATUS,SALES_USER,TYPE,START_DATE,END_DATE
+    from T_HOUSEKEEPER_GROUP_INFO
+    where 1=1 
+     <if test="groupName != null and groupName != ''">
+      AND
+     GROUP_NAME like '%' || #{groupName} || '%'
+    </if>
+    <if test="status != null and status != ''">
+      AND
+    STATUS = #{status}
+    </if>
+     <if test="startDate != null and startDate != ''">
+      AND
+    START_DATE &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      AND
+    END_DATE &lt;= #{endDate}
+    </if>
+     <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+     )p
+    where rownum &lt;= #{end_no}
+    )
+    where rn &gt;= #{start_no}
+  </select>
+ 
+  <select id="getCountGroupListNoPage" parameterType="com.cindata.housekeeper.core.entity.Parameter" resultMap="BaseResultMap">
+  
+    select GROUP_ID,GROUP_NAME,PRINCIPAL,PRODUCT_NAME,PRODUCT_TYPE,STATUS,SALES_USER,TYPE,START_DATE,END_DATE
+    from T_HOUSEKEEPER_GROUP_INFO
+    where 1=1 
+     <if test="groupName != null and groupName != ''">
+      AND
+     GROUP_NAME like '%' || #{groupName} || '%'
+    </if>
+    <if test="status != null and status != ''">
+      AND
+    STATUS = #{status}
+    </if>
+     <if test="startDate != null and startDate != ''">
+      AND
+    START_DATE &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+      AND
+    END_DATE &lt;= #{endDate}
+    </if>
+     <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+   
+  </select>
+ 
+</mapper>

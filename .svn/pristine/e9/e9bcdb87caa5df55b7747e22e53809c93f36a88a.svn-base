@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>房产列表</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+<body>
+<div class="index_box">
+	<div class="houseproperty">
+		<p class="f11 col">共<span id="houseNum">0</span>套房产，总估值<span id="housePrice">0</span>万元</p><a href="../valuation/index.html" class="f11">&#43;  添加房产</a>
+	</div>
+	<ul class="houseproperty_ul" id="houseList">
+		<li>
+			<div class="houseproperty_ul_list">
+				<h1 class="f14">梧桐花园 <span>公寓</span></h1>
+				<p class="hous_p1 f11 col">A区 - A3 - 302 | 132㎡</p>
+				<p class="hous_p2 f15">862.23<i class="f11">万元</i><span class="f11">（2017/12/12）</span></p>
+			</div>
+			<div class="houseproperty_ul_img"><a href="##"><img src="../img/ico_right.png" alt=""></a></div>
+		</li>
+			<li>
+			<div class="houseproperty_ul_list">
+				<h1 class="f14">梧桐花园 <span>公寓</span></h1>
+				<p class="hous_p1 f11 col">A区 - A3 - 302 | 132㎡</p>
+				<p class="hous_p2 f15">862.23<i class="f11">万元</i><span class="f11">（2017/12/12）</span></p>
+			</div>
+			<div class="houseproperty_ul_img"><a href="##"><img src="../img/ico_right.png" alt=""></a></div>
+		</li>
+			<li>
+			<div class="houseproperty_ul_list">
+				<h1 class="f14">梧桐花园 <span>公寓</span></h1>
+				<p class="hous_p1 f11 col">A区 - A3 - 302 | 132㎡</p>
+				<p class="hous_p2 f15">862.23<i class="f11">万元</i><span class="f11">（2017/12/12）</span></p>
+			</div>
+			<div class="houseproperty_ul_img"><a href="##"><img src="../img/ico_right.png" alt=""></a></div>
+		</li>
+			<li>
+			<div class="houseproperty_ul_list">
+				<h1 class="f14">梧桐花园 <span>公寓</span></h1>
+				<p class="hous_p1 f11 col">A区 - A3 - 302 | 132㎡</p>
+				<p class="hous_p2 f15">862.23<i class="f11">万元</i><span class="f11">（2017/12/12）</span></p>
+			</div>
+			<div class="houseproperty_ul_img"><a href="##"><img src="../img/ico_right.png" alt=""></a></div>
+		</li>
+	</ul>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script type="text/javascript" src="../js/houseproperty/houseList.js"></script>
+</body>
+</html>

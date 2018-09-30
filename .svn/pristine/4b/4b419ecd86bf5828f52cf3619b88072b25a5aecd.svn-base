@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.LoanInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.LoanInfo" >
+    <result column="LOANID" property="loanid" jdbcType="VARCHAR" />
+    <result column="LOANDATE" property="loandate" jdbcType="DATE" />
+    <result column="LOANTYPE" property="loantype" jdbcType="VARCHAR" />
+    <result column="LOANCHANNEL" property="loanchannel" jdbcType="VARCHAR" />
+    <result column="LOANMONEY" property="loanmoney" jdbcType="DECIMAL" />
+    <result column="REPAYMENTWAY" property="repaymentway" jdbcType="VARCHAR" />
+    <result column="LOANLIMIT" property="loanlimit" jdbcType="VARCHAR" />
+    <result column="USERID" property="userid" jdbcType="VARCHAR" />
+    <result column="GROUPID" property="groupid" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="LOANRATE" property="loanrate" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    LOANID, LOANDATE, LOANTYPE, LOANCHANNEL, LOANMONEY, REPAYMENTWAY, LOANLIMIT, USERID, 
+    GROUPID, STATUS, LOANRATE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.web.model.LoanInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_HOUSEKEEPER_LOAN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.LoanInfoExample" >
+    delete from T_HOUSEKEEPER_LOAN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.LoanInfo" >
+    insert into T_HOUSEKEEPER_LOAN (LOANID, LOANDATE, LOANTYPE, 
+      LOANCHANNEL, LOANMONEY, REPAYMENTWAY, 
+      LOANLIMIT, USERID, GROUPID, 
+      STATUS, LOANRATE)
+    values (#{loanid,jdbcType=VARCHAR}, #{loandate,jdbcType=DATE}, #{loantype,jdbcType=VARCHAR}, 
+      #{loanchannel,jdbcType=VARCHAR}, #{loanmoney,jdbcType=DECIMAL}, #{repaymentway,jdbcType=VARCHAR}, 
+      #{loanlimit,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{groupid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{loanrate,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.LoanInfo" >
+    insert into T_HOUSEKEEPER_LOAN
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="loanid != null" >
+        LOANID,
+      </if>
+      <if test="loandate != null" >
+        LOANDATE,
+      </if>
+      <if test="loantype != null" >
+        LOANTYPE,
+      </if>
+      <if test="loanchannel != null" >
+        LOANCHANNEL,
+      </if>
+      <if test="loanmoney != null" >
+        LOANMONEY,
+      </if>
+      <if test="repaymentway != null" >
+        REPAYMENTWAY,
+      </if>
+      <if test="loanlimit != null" >
+        LOANLIMIT,
+      </if>
+      <if test="userid != null" >
+        USERID,
+      </if>
+      <if test="groupid != null" >
+        GROUPID,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="loanrate != null" >
+        LOANRATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="loanid != null" >
+        #{loanid,jdbcType=VARCHAR},
+      </if>
+      <if test="loandate != null" >
+        #{loandate,jdbcType=DATE},
+      </if>
+      <if test="loantype != null" >
+        #{loantype,jdbcType=VARCHAR},
+      </if>
+      <if test="loanchannel != null" >
+        #{loanchannel,jdbcType=VARCHAR},
+      </if>
+      <if test="loanmoney != null" >
+        #{loanmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="repaymentway != null" >
+        #{repaymentway,jdbcType=VARCHAR},
+      </if>
+      <if test="loanlimit != null" >
+        #{loanlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="groupid != null" >
+        #{groupid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="loanrate != null" >
+        #{loanrate,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.LoanInfoExample" resultType="java.lang.Integer" >
+    select count(*) from T_HOUSEKEEPER_LOAN
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_HOUSEKEEPER_LOAN
+    <set >
+      <if test="record.loanid != null" >
+        LOANID = #{record.loanid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loandate != null" >
+        LOANDATE = #{record.loandate,jdbcType=DATE},
+      </if>
+      <if test="record.loantype != null" >
+        LOANTYPE = #{record.loantype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loanchannel != null" >
+        LOANCHANNEL = #{record.loanchannel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loanmoney != null" >
+        LOANMONEY = #{record.loanmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.repaymentway != null" >
+        REPAYMENTWAY = #{record.repaymentway,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loanlimit != null" >
+        LOANLIMIT = #{record.loanlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupid != null" >
+        GROUPID = #{record.groupid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.loanrate != null" >
+        LOANRATE = #{record.loanrate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_HOUSEKEEPER_LOAN
+    set LOANID = #{record.loanid,jdbcType=VARCHAR},
+      LOANDATE = #{record.loandate,jdbcType=DATE},
+      LOANTYPE = #{record.loantype,jdbcType=VARCHAR},
+      LOANCHANNEL = #{record.loanchannel,jdbcType=VARCHAR},
+      LOANMONEY = #{record.loanmoney,jdbcType=DECIMAL},
+      REPAYMENTWAY = #{record.repaymentway,jdbcType=VARCHAR},
+      LOANLIMIT = #{record.loanlimit,jdbcType=VARCHAR},
+      USERID = #{record.userid,jdbcType=VARCHAR},
+      GROUPID = #{record.groupid,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=VARCHAR},
+      LOANRATE = #{record.loanrate,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

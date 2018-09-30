@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:03 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>用户房产</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    
+    <style>
+        .search-label {
+            line-height: 30px;
+            display: block;
+            float: left;
+            margin-right: 10px;
+        }
+        .search-box-outer {
+            display: inline-block;
+            width: auto;
+            overflow: hidden;
+            clear: both;
+        }
+        .user-name-span {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Bootstrap table <a href="http://bootstrap-table.wenzhixin.net.cn/zh-cn/" target="_blank">http://bootstrap-table.wenzhixin.net.cn/zh-cn/</a></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <p>Bootstrap table是国人开发的一款基于 Bootstrap 的 jQuery 表格插件，通过简单的设置，就可以拥有强大的单选、多选、排序、分页，以及编辑、导出、过滤（扩展）等等的功能。目前在github上已经有2600多个Star，可见其受欢迎程度。</p>
+                <ul>
+                    <li>支持 Bootstrap 3 和 Bootstrap 2</li>
+                    <li>自适应界面</li>
+                    <li>固定表头</li>
+                    <li>非常丰富的配置参数</li>
+                    <li>直接通过标签使用</li>
+                    <li>显示/隐藏列</li>
+                    <li>显示/隐藏表头</li>
+                    <li>通过 AJAX 获取 JSON 格式的数据</li>
+                    <li>支持排序</li>
+                    <li>格式化表格</li>
+                    <li>支持单选或者多选</li>
+                    <li>强大的分页功能</li>
+                    <li>支持卡片视图</li>
+                    <li>支持多语言</li>
+                    <li>支持插件</li>
+                </ul>
+            </div>
+        </div> -->
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <!-- <h5> -->
+                    <button id="go_back" class="btn btn-default btn-outline" type="button"><< 返回</button>
+                    <span class="user-name-span">用户名： 5285858858528</span>
+                    
+                <!-- </h5> -->
+                <!-- <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div> -->
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <!-- <div class="col-sm-6">
+                        <h4 class="example-title">从URL加载</h4>
+                        <div class="example">
+                            <table data-toggle="table" data-url="js/demo/table_base.json" data-height="250" data-mobile-responsive="true">
+                                <thead>
+                                    <tr>
+                                        <th data-field="Tid">ID</th>
+                                        <th data-field="First">姓名</th>
+                                        <th data-field="sex">性别</th>
+                                        <th data-field="Score">评分</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                        <!-- <div class="search-box row">
+                            <div class="col-sm-5">
+                                
+                                <div id="data_5" class="search-box-outer">
+                                    <span class="search-label">首次使用日期</span>
+                                    <div class="input-daterange input-group" id="datepicker">
+                                        <input type="text" class="input-sm form-control" name="start" value="2014-11-11" />
+                                        <span class="input-group-addon">到</span>
+                                        <input type="text" class="input-sm form-control" name="end" value="2014-11-17" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="search-box-outer">
+                                    <span class="search-label">用户名</span>
+                                    <input style="width: 160px;" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button class="btn btn-success " type="button"><i class="fa fa-search"></i>&nbsp;搜索</button>
+                                <button name="refresh" data-toggle="button" class="btn btn-success btn-outline" type="button"><i class="glyphicon glyphicon-repeat"></i>重置</button>
+                            </div>
+                            
+                        </div> -->
+                        <!-- <h4 class="example-title">查询结果：用户<span id="user-total">266</span>个，房产<span id="house-total">465</span>套，房产总额<span id="house-value">12.89亿</span></h4> -->
+                        
+                        <div class="example">
+                            <table id="exampleTableFromData" data-striped="true" data-mobile-responsive="true" data-pagination="true">
+                                <thead>
+                                    <tr>
+                                        <th data-field="createdDt" data-align="center">房产添加时间</th>
+                                        <th data-field="address" data-align="center">房产地址</th>
+                                        <th data-field="communityName" data-align="center">小区名称</th>
+                                        <th data-field="doorNum" data-align="center" data-formatter="buildingNum">楼栋室号</th>
+                                        <th data-field="communitytype" data-align="center" >物业类型</th>
+                                        <th data-field="buildingsquare" data-align="center">建筑面积(㎡)</th>
+                                        <th data-field="currentfloor" data-align="center">楼层</th>
+                                        <th data-field="floorplanName" data-align="center">户型</th>
+                                        <th data-field="aspectName" data-align="center">朝向</th>
+                                        <th data-field="createdDt" data-align="center">评估日期</th>
+                                        <th data-field="assessSaleTotalPrice" data-align="center">评估总价(万元)</th>
+                                        <th data-field="assessSalePrice" data-align="center">单价(元/㎡)</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- End Panel Basic -->
+
+    </div>
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/content.min.js?v=1.0.0"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- date-picker -->
+    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="js/config.js"></script>
+    
+    <script src="js/scripts/user_house.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+    <script>
+        $("#data_5 .input-daterange").datepicker({
+            keyboardNavigation:!1,
+            forceParse:!1,autoclose:!0
+        });
+
+    </script>
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:06 GMT -->
+</html>

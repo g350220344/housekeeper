@@ -1,0 +1,744 @@
+package com.cindata.housekeeper.wx.controller;
+
+import com.cindata.housekeeper.core.common.tools.*;
+import com.cindata.housekeeper.core.entity.JSONResult;
+import com.cindata.housekeeper.core.entity.Parameter;
+import com.cindata.housekeeper.job.ant.SendJPushThread;
+import com.cindata.housekeeper.web.model.*;
+import com.cindata.housekeeper.wx.model.WxAroundCommunityPrice;
+import com.google.common.collect.Maps;
+import com.google.common.reflect.TypeToken;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping(value = "/WxCommunity")
+public class WxCommunityController {
+
+	private static Logger log = LoggerFactory.getLogger(WxCommunityController.class);
+	//public static final String lpbUrl = "http://avmapi.cindata.cn/api/";
+	//public static final String KEY = "5CBC470DBAFEBCC5E0532901A8C0CD5B";
+
+	public static final String lpbUrl = "http://a27.cindata.cn/api/";
+	public static final String KEY = "5CBC470DBAFEBCC5E0532901A8C0CD5B";
+	/**
+	 * 小区搜索接口
+	 */
+	@RequestMapping(value="/searchCommunity", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getCityList(HttpServletRequest request, HttpServletResponse response){
+		String communityName = ServletRequestHelper.getParameter(request, "communityName", null);
+		Long cityId = StringUtil.parseLong(request.getParameter("cityId"), null);
+		JSONResult<List<ApplyCommunityInfo>> res = new JSONResult<List<ApplyCommunityInfo>>();
+		if(StringUtil.isNotNullOrEmpty(communityName) && StringUtil.isNotNullOrEmpty(cityId)){
+			Parameter param = new Parameter();
+			param.setCommunityName(communityName);
+			param.setCityId(cityId);
+			try {
+				String resBody = OpenapiPoster.post(param, "community/searchCommunity");
+				JSONResult<List<ApplyCommunityInfo>> bean = (JSONResult<List<ApplyCommunityInfo>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<ApplyCommunityInfo>>>(){}.getType());
+				if(bean == null){
+					res.setData(new ArrayList<ApplyCommunityInfo>());
+					res.setStatusCode(1);
+					res.setMessage("ok");
+					res.setSuccess(true);
+				}else{
+					List<ApplyCommunityInfo> data = bean.getData();
+					if(data == null || data.isEmpty()){
+						res.setData(new ArrayList<ApplyCommunityInfo>());
+						res.setStatusCode(1);
+						res.setMessage("ok");
+						res.setSuccess(true);
+					}else{
+						res.setData(data);
+						res.setStatusCode(1);
+						res.setMessage("ok");
+						res.setSuccess(true);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				res.setStatusCode(2);
+				res.setMessage("no ok");
+				res.setSuccess(false);
+			}
+		}
+
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	 /**
+	 * 附近小区列表
+	 */
+	@RequestMapping(value="/searchNearCommunity", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String searchNearCommunity(HttpServletRequest request, HttpServletResponse response){
+		JSONResult<List<AroundCommunityInfo>> res = new JSONResult<List<AroundCommunityInfo>>();
+		Double lng = StringUtil.parseDouble(request.getParameter("lng"),null);
+		Double lat = StringUtil.parseDouble(request.getParameter("lat"),null);
+		Integer range = StringUtil.parseInt(request.getParameter("range"),null);
+		Integer page = Integer.parseInt(request.getParameter("page"));
+		Integer rows = Integer.parseInt(request.getParameter("rows"));
+		List<ApplyCommunityInfo> communityList = null;
+		List<AroundCommunityInfo> resultCommunityList = new ArrayList<AroundCommunityInfo>();
+		try {
+			//查找附近小区
+			if(StringUtil.isNotNullOrEmpty(lng)&& StringUtil.isNotNullOrEmpty(lat)&& StringUtil.isNotNullOrEmpty(range)) {
+				Parameter param = new Parameter();
+				param.setLng(lng);
+				param.setLat(lat);
+				param.setRange(range);
+				param.setPage(page);
+				String resBody = OpenapiPoster.post(param, "community/getNearbyCommunity");
+				JSONResult<List<ApplyCommunityInfo>> bean = (JSONResult<List<ApplyCommunityInfo>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<ApplyCommunityInfo>>>() {
+				}.getType());
+				communityList = bean.getData();
+				for(ApplyCommunityInfo applyCommunityInfo : communityList){
+					AroundCommunityInfo aroundCommunityInfo = new AroundCommunityInfo();
+					String communityName1 = applyCommunityInfo.getCommunityname();
+					String Detailaddress =applyCommunityInfo.getDetailaddress();
+					String buildYear = applyCommunityInfo.getBuildyear();
+					Double latitude = applyCommunityInfo.getLatitude().doubleValue();
+					Double longitude = applyCommunityInfo.getLongitude().doubleValue();
+					BigDecimal saleSqmPrice = applyCommunityInfo.getSalesqmprice();
+					aroundCommunityInfo.setCommunityId(applyCommunityInfo.getCommunityId());
+					aroundCommunityInfo.setSalesqmprice(saleSqmPrice);
+					aroundCommunityInfo.setCommunityName(communityName1);
+					aroundCommunityInfo.setDetailaddress(Detailaddress);
+					aroundCommunityInfo.setBuildYear(buildYear);
+					double distance = LatLonUtil.GetDistance(lng, lat, longitude, latitude);
+					double position = LatLonUtil.getAngle1(lng, lat, longitude, latitude);
+					String direction =  LatLonUtil.getDirection(position);
+					aroundCommunityInfo.setDistance(distance);
+					aroundCommunityInfo.setDirection(direction);
+					resultCommunityList.add(aroundCommunityInfo);
+
+				}
+
+			}
+			//总条目数
+			int size = resultCommunityList.size();
+			int first = (page - 1) * rows;
+			int currentRows = page  * rows;
+			if(size > currentRows){
+				resultCommunityList = resultCommunityList.subList(first, currentRows);
+			}else{
+				resultCommunityList = resultCommunityList.subList(first, size);
+			}
+			res.setData(resultCommunityList);
+			res.setDataCount((long)size);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	
+	
+	
+	
+	/**
+	 * 小区行情接口
+	 */
+	@RequestMapping(value="/getCommunityMarket", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getCommunityMarket(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		//Date month = Date.valueOf(request.getParameter("month"));
+		//当前时间
+		//Date month = new Date(System.currentTimeMillis());
+		//TODO:默认时间，为了数据，测试用，
+		Date month = StringUtil.getDate("2018-04-01");
+		CommunityMarket data = null;
+		try {
+			if(StringUtil.isNotNullOrEmpty(month) && StringUtil.isNotNullOrEmpty(communityId)) {
+				Parameter param = new Parameter();
+				param.setMonth(month);
+				param.setCommunityId(communityId);
+				String resBody = OpenapiPoster.post(param, "analysis/getCommunityMarket");
+				JSONResult<CommunityMarket> bean= (JSONResult<CommunityMarket>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<CommunityMarket>>(){}.getType());
+				data = bean.getData();
+                if(data.getCityId()!=null) {
+                    param.setCityId(data.getCityId());
+                    String resBody1 = OpenapiPoster.post(param, "common/getCityById");
+                    JSONResult<CityInfo> bean1 = (JSONResult<CityInfo>) CtrlerUtil.json2bean(resBody1, new TypeToken<JSONResult<CityInfo>>() {
+                    }.getType());
+                    CityInfo cityInfo = bean1.getData();
+                    data.setCityName(cityInfo.getCityName());
+                }
+				res.setData(data);
+			}
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * @description:获取出售的成交数量、成交量环比、在售房源
+	 * @author: liuyanming
+	 * @create: 2018/8/16 9:26
+	 **/
+    @RequestMapping(value="/getSaleDealCount", produces="text/html;charset=UTF-8")
+    @ResponseBody
+    public String getSaleDealCount(HttpServletRequest request, HttpServletResponse response){
+        JSONResult result = new JSONResult();
+        String cityId = request.getParameter("cityId");
+        String communityId = request.getParameter("communityId");
+        if(StringUtil.isNull(cityId) || StringUtil.isNull(communityId)){
+			result.setSuccess(false);
+			result.setStatusCode(2);
+			result.setMessage("no ok");
+            return CtrlerUtil.getRetBody(request, result);
+        }
+		int nowSaleCount = 0, preSaleCount = 0, onSaleHouseCount = 0;
+		String ringRatio = null;
+		try {
+			Parameter params = new Parameter();
+			params.setCityId(StringUtil.parseLong(cityId,null));
+			params.setCommunityId(StringUtil.parseLong(communityId,null));
+			String resBody = OpenapiPoster.post(params, "community/getGrCommunityList");
+			JSONResult<LpbCommunity> bean = (JSONResult<LpbCommunity>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<LpbCommunity>>() {
+			}.getType());
+			LpbCommunity data = bean.getData();
+			Map<String, Object> param = Maps.newHashMap();
+			param.put("cityCode",cityId+"00");
+			param.put("communityId",data.getCommunityId());
+			String resBody_BJ = OpenapiPoster.postBJ(param, "api/communityRate");
+			JSONObject jObject=new JSONObject(resBody_BJ);
+			//本月
+			//String nowDate = StringUtil.dateFormat(new java.util.Date(), "yyyy年MM月", "");
+			//上月
+			String nowDate = StringUtil.dateFormat(StringUtil.getMonthRetDate(new java.util.Date(), -1), "yyyy年MM月", "");
+			//大上月
+			String preMonthDate = StringUtil.dateFormat(StringUtil.getMonthRetDate(new java.util.Date(), -2), "yyyy年MM月", "");
+
+			System.out.println(nowDate + ", " + preMonthDate);
+			onSaleHouseCount = 0;
+			preSaleCount = 0;
+			nowSaleCount = 0;
+			ringRatio = "0";
+			if("0".equals(jObject.getString("code")) && jObject.getJSONObject("data").length() > 0 && jObject.getJSONObject("data").getJSONArray("echartDate").length() > 0){
+                JSONArray jsonArray = jObject.getJSONObject("data").getJSONArray("echartDate");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                    if(nowDate.equals(jsonObject.getString("monthDate"))){
+                        nowSaleCount = jsonObject.getInt("saleCount");
+                        onSaleHouseCount = jsonObject.getInt("numberCount");
+                    }
+                    if(preMonthDate.equals(jsonObject.getString("monthDate"))){
+                        preSaleCount = jsonObject.getInt("saleCount");
+                    }
+                }
+            }
+			if(preSaleCount != 0 && nowSaleCount != 0){
+                ringRatio = String.format("%.2f", ((double) (nowSaleCount - preSaleCount)/preSaleCount)*100);
+            }
+			if(preSaleCount == 0 && nowSaleCount != 0){
+                ringRatio = "100";
+            }
+			if(preSaleCount != 0 && nowSaleCount == 0){
+                ringRatio = "-100";
+            }
+			Map<String, Object> resMap = Maps.newHashMap();
+			resMap.put("saleCount", nowSaleCount);
+			resMap.put("ringRatio", ringRatio);
+			resMap.put("onSaleHouseCount", onSaleHouseCount);
+			result.setSuccess(true);
+			result.setStatusCode(1);
+			result.setMessage("ok");
+			result.setData(resMap);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			result.setSuccess(false);
+			result.setStatusCode(2);
+			result.setMessage("no ok");
+		}
+
+
+        return CtrlerUtil.getRetBody(request, result);
+    }
+
+
+	/**
+	 * 出售相似案例列表接口（当前小区）
+	 */
+	@RequestMapping(value="/getSameSaleListing", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getSameSaleListing(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		BigDecimal square = StringUtil.parseBigDecimal(request.getParameter("square"), null);
+		Long cityId = StringUtil.parseLong(request.getParameter("cityId"),null);
+		List<AvmCaseData> data = new ArrayList<AvmCaseData>();
+		try {
+			if(StringUtil.isNotNullOrEmpty(square) && StringUtil.isNotNullOrEmpty(communityId)&& StringUtil.isNotNullOrEmpty(cityId)) {
+				Parameter param = new Parameter();
+				param.setSquare(square);
+				param.setCityId(cityId);
+				param.setCommunityId(communityId);
+				String resBody = OpenapiPoster.post(param, "avm/getSameSaleListing");
+				JSONResult<List<AvmCaseData>> bean= (JSONResult<List<AvmCaseData>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<AvmCaseData>>>(){}.getType());
+				data = bean.getData();
+				if(!data.isEmpty()){
+					for(int i=0;i<data.size();i++){
+						data.get(i).setTotalsqmprice(StringUtil.parseBigDecimal(data.get(i).getSqmprice()*data.get(i).getBuildingsquare(),null).divide(new BigDecimal(10000),2,BigDecimal.ROUND_HALF_UP));
+					}
+				}
+			}
+			res.setData(data);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 出售相似案例列表接口（附近小区）
+	 */
+	@RequestMapping(value="/getSameSaleListingNearbyCommunity", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getSameSaleListingNearbyCommunity(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		BigDecimal square = StringUtil.parseBigDecimal(request.getParameter("square"), null);
+		Double lng = StringUtil.parseDouble(request.getParameter("lng"),null);
+		Double lat = StringUtil.parseDouble(request.getParameter("lat"),null);
+		Integer range = StringUtil.parseInt(request.getParameter("range"),null);
+
+		List<AvmCaseData> data = new ArrayList<AvmCaseData>();
+		try {
+			//查找附近小区
+			if(StringUtil.isNotNullOrEmpty(square) && StringUtil.isNotNullOrEmpty(lng)&& StringUtil.isNotNullOrEmpty(lat)&& StringUtil.isNotNullOrEmpty(range)) {
+				Parameter param = new Parameter();
+				param.setLng(lng);
+				param.setLat(lat);
+				param.setRange(range);
+				String resBody = OpenapiPoster.post(param, "community/getNearbyCommunity");
+				JSONResult<List<ApplyCommunityInfo>> bean = (JSONResult<List<ApplyCommunityInfo>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<ApplyCommunityInfo>>>() {
+				}.getType());
+				List<ApplyCommunityInfo> communityList = bean.getData();
+				if (communityList != null && !communityList.isEmpty()) {
+					for (int i=1;i<communityList.size();i++) {
+						int dataSize = communityList.size();
+						dataSize = dataSize > 5 ? 5 : dataSize;
+						communityList = communityList.subList(0, dataSize);
+						ApplyCommunityInfo community = communityList.get(i);
+						Parameter communityParam = new Parameter();
+						communityParam.setSquare(square);
+						communityParam.setCityId(community.getCityId());
+						communityParam.setCommunityId(community.getCommunityId());
+						String body = OpenapiPoster.post(communityParam, "avm/getSameSaleListing");
+						JSONResult<List<AvmCaseData>> dataResult = (JSONResult<List<AvmCaseData>>) CtrlerUtil.json2bean(body, new TypeToken<JSONResult<List<AvmCaseData>>>() {
+						}.getType());
+						if (dataResult.isSuccess()) {
+
+							data.add(dataResult.getData().get(0));
+							if (communityList.size() < 5 && i == communityList.size()) {
+								for (int j = 1; j < i; j++) {
+									data.add(dataResult.getData().get(j));
+								}
+							}
+
+						}
+
+					}
+				}
+
+			}
+			if(!data.isEmpty()){
+				for(int i=0;i<data.size();i++){
+					data.get(i).setTotalsqmprice(StringUtil.parseBigDecimal(data.get(i).getSqmprice()*data.get(i).getBuildingsquare(),null).divide(new BigDecimal(10000),2,BigDecimal.ROUND_HALF_UP));
+				}
+				res.setData(data);
+			}
+
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	/**
+	 * 成交相似案例列表接口（当前小区）
+	 */
+	@RequestMapping(value="/getSameDealListing", produces="text/html;charset=UTF-8" )
+	@ResponseBody
+	public String getSameDealListing(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		Long cityId = StringUtil.parseLong(request.getParameter("cityId"),null);
+
+		List<DealCommunity> list = new ArrayList<DealCommunity>();
+		try {
+			if( StringUtil.isNotNullOrEmpty(communityId)&& StringUtil.isNotNullOrEmpty(cityId)) {
+				list = getDealCommunity(communityId,cityId,"");
+
+			}
+			res.setData(list);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	/**
+	 * 成交相似案例列表接口（附近小区）
+	 */
+	@RequestMapping(value="/getSameDealListingNearbyCommunity", produces="text/html;charset=UTF-8" )
+	@ResponseBody
+	public String getSameDealListingNearbyCommunity(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		BigDecimal square = StringUtil.parseBigDecimal(request.getParameter("square"), null);
+
+
+		Double lng = StringUtil.parseDouble(request.getParameter("lng"),null);
+		Double lat = StringUtil.parseDouble(request.getParameter("lat"),null);
+		Integer range = StringUtil.parseInt(request.getParameter("range"),null);
+
+		List<AvmCaseData> data = new ArrayList<AvmCaseData>();
+		List<DealCommunity> list = new ArrayList<DealCommunity>();
+		try {
+			//查找附近小区
+			if(StringUtil.isNotNullOrEmpty(square) && StringUtil.isNotNullOrEmpty(lng)&& StringUtil.isNotNullOrEmpty(lat)&& StringUtil.isNotNullOrEmpty(range)) {
+				Parameter param = new Parameter();
+				param.setLng(lng);
+				param.setLat(lat);
+				param.setRange(range);
+				String resBody = OpenapiPoster.post(param, "community/getNearbyCommunity");
+				JSONResult<List<ApplyCommunityInfo>> bean = (JSONResult<List<ApplyCommunityInfo>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<ApplyCommunityInfo>>>() {
+				}.getType());
+				List<ApplyCommunityInfo> communityList = bean.getData();
+
+				if (communityList != null && !communityList.isEmpty()) {
+					int dataSize = communityList.size();
+					dataSize = dataSize > 5 ? 5 : dataSize;
+					communityList = communityList.subList(0, dataSize);
+					List<SendJPushThread> tList = new ArrayList<>();
+					for (int i=1;i<communityList.size();i++) {
+
+						ApplyCommunityInfo community=communityList.get(i);
+						Long cityId = community.getCityId();
+						Long communityId = community.getCommunityId();
+						String communityName = community.getCommunityname();
+						int tpye=0;
+						SendJPushThread thread = new SendJPushThread(cityId,communityId,communityName,list,tpye);
+						tList.add(thread);
+
+						/*List<DealCommunity> dealCommunityList = getDealCommunity(communityId,cityId);
+						if(dealCommunityList!=null&&!dealCommunityList.isEmpty()){
+							list.add(dealCommunityList.get(0));
+						}*/
+					}
+					if(tList != null && !tList.isEmpty()){
+						for (SendJPushThread sendJPushThread : tList) {
+							sendJPushThread.start();
+						}
+						boolean hasRunning = true;
+						while(hasRunning){
+							hasRunning = false;
+							for (SendJPushThread sendJPushThread : tList) {
+								if(sendJPushThread.isAlive()){
+									hasRunning = true;
+									continue;
+								}
+							}
+						}
+						for (SendJPushThread sendJPushThread : tList) {
+							if(!sendJPushThread.getDealCommunityList().isEmpty()){
+								list.add(sendJPushThread.getDealCommunityList().get(0));
+							}
+						}
+					}
+
+				}
+			}
+			res.setData(list);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 出租相似案例列表接口（当前小区）
+	 */
+	@RequestMapping(value="/getSameRentListing", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getSameRentListing(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		BigDecimal square = StringUtil.parseBigDecimal(request.getParameter("square"), null);
+		Long cityId = StringUtil.parseLong(request.getParameter("cityId"),null);
+		List<AvmCaseData> data = new ArrayList<AvmCaseData>();
+		try {
+			if(StringUtil.isNotNullOrEmpty(square) && StringUtil.isNotNullOrEmpty(communityId)&& StringUtil.isNotNullOrEmpty(cityId)) {
+				Parameter param = new Parameter();
+				param.setSquare(square);
+				param.setCityId(cityId);
+				param.setCommunityId(communityId);
+				String resBody = OpenapiPoster.post(param, "avm/getSameRentListing");
+				JSONResult<List<AvmCaseData>> bean= (JSONResult<List<AvmCaseData>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<AvmCaseData>>>(){}.getType());
+				data = bean.getData();
+
+			}
+			res.setData(data);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 出租相似案例列表接口（附近小区）
+	 */
+	@RequestMapping(value="/getSameRentListingNearbyCommunity", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getSameRentListingNearbyCommunity(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		BigDecimal square = StringUtil.parseBigDecimal(request.getParameter("square"), null);
+		Double lng = StringUtil.parseDouble(request.getParameter("lng"),null);
+		Double lat = StringUtil.parseDouble(request.getParameter("lat"),null);
+		Integer range = StringUtil.parseInt(request.getParameter("range"),null);
+
+		List<AvmCaseData> data = new ArrayList<AvmCaseData>();
+		try {
+			//查找附近小区
+			if(StringUtil.isNotNullOrEmpty(square) && StringUtil.isNotNullOrEmpty(lng)&& StringUtil.isNotNullOrEmpty(lat)&& StringUtil.isNotNullOrEmpty(range)) {
+				Parameter param = new Parameter();
+				param.setLng(lng);
+				param.setLat(lat);
+				param.setRange(range);
+				String resBody = OpenapiPoster.post(param, "community/getNearbyCommunity");
+				JSONResult<List<ApplyCommunityInfo>> bean = (JSONResult<List<ApplyCommunityInfo>>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<List<ApplyCommunityInfo>>>() {
+				}.getType());
+				List<ApplyCommunityInfo> communityList = bean.getData();
+				if (communityList != null && !communityList.isEmpty()) {
+					for (int i=1;i<communityList.size();i++) {
+						int dataSize = communityList.size();
+						dataSize = dataSize > 5 ? 5 : dataSize;
+						communityList = communityList.subList(0, dataSize);
+						ApplyCommunityInfo community = communityList.get(i);
+						Parameter communityParam = new Parameter();
+						communityParam.setSquare(square);
+						communityParam.setCityId(community.getCityId());
+						communityParam.setCommunityId(community.getCommunityId());
+						String body = OpenapiPoster.post(communityParam, "avm/getSameRentListing");
+						JSONResult<List<AvmCaseData>> dataResult = (JSONResult<List<AvmCaseData>>) CtrlerUtil.json2bean(body, new TypeToken<JSONResult<List<AvmCaseData>>>() {
+						}.getType());
+						if (dataResult.isSuccess()) {
+
+							data.add(dataResult.getData().get(0));
+							if (communityList.size() < 5 && i == communityList.size()) {
+								for (int j = 1; j < i; j++) {
+									data.add(dataResult.getData().get(j));
+								}
+							}
+
+						}
+
+					}
+				}
+
+			}
+			res.setData(data);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 交易数据
+	 */
+	@RequestMapping(value="/getDealCommunityList", produces="text/html;charset=UTF-8" )
+	@ResponseBody
+	public String getDealCommunityList(HttpServletRequest request, HttpServletResponse response){
+		JSONResult res = new JSONResult();
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		Long cityId = StringUtil.parseLong(request.getParameter("cityId"),null);
+		Long limit = StringUtil.parseLong(request.getParameter("limit"),null);
+
+		List<DealCommunity> list = new ArrayList<DealCommunity>();
+		try {
+			LpbCommunity data = null;
+			if( StringUtil.isNotNullOrEmpty(communityId)&& StringUtil.isNotNullOrEmpty(cityId)) {
+				Parameter param = new Parameter();
+				param.setCityId(cityId);
+				param.setCommunityId(communityId);
+				String resBody = OpenapiPoster.post(param, "community/getGrCommunityList");
+				JSONResult<LpbCommunity> bean = (JSONResult<LpbCommunity>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<LpbCommunity>>() {
+				}.getType());
+				data = bean.getData();
+				if (data != null) {
+					Long cityCode = Long.parseLong(cityId + "00");
+					String grCommunityId = data.getCommunityId();
+					Map parmMap = new HashMap<String, Object>();
+					//parmMap.put("limit", limit);
+					if (cityCode != null && !cityCode.equals("")) {
+						parmMap.put("cityCode", cityCode);
+					}
+					if (grCommunityId != null && !grCommunityId.equals("")) {
+						parmMap.put("communityId", grCommunityId);
+					}
+					parmMap.put("pageNo",1);
+					parmMap.put("pageSize",5);
+
+					//String mothed = "sale.do";
+					String mothed = "saleForPage";
+					String url = lpbUrl + mothed + "?key=" + KEY;
+					String jsonParam = StringUtil.toString(CommonHelper.getJsonObject(parmMap), null);
+					String result = HttpRequest.httpPostWithJson(url, jsonParam);
+					JSONResult<List<DealCommunity>> dataBean = (JSONResult<List<DealCommunity>>) CtrlerUtil.json2bean(result, new TypeToken<JSONResult<List<DealCommunity>>>() {
+					}.getType());
+					list = dataBean.getData();
+				}
+				if(list != null && !list.isEmpty()){
+					for(DealCommunity dealCommunity : list){
+						dealCommunity.setCommunityName(data.getCommunityName());
+						String date = dealCommunity.getContractdate().substring(0,7).replaceAll("-","年")+"月";
+						dealCommunity.setContractdate(date);
+					}
+				}
+				res.setData(list);
+				res.setMessage("ok");
+				res.setStatusCode(1);
+				res.setSuccess(true);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	public List<DealCommunity> getDealCommunity(Long communityId,Long cityId,String communityName) {
+		LpbCommunity data = null;
+		List<DealCommunity> list = new ArrayList<DealCommunity>();
+		Parameter param = new Parameter();
+		param.setCityId(cityId);
+		param.setCommunityId(communityId);
+		String resBody = OpenapiPoster.post(param, "community/getGrCommunityList");
+		JSONResult<LpbCommunity> bean= (JSONResult<LpbCommunity>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<LpbCommunity>>(){}.getType());
+		data = bean.getData();
+		if(data!=null) {
+			Long cityCode = Long.parseLong(cityId + "00");
+			String grCommunityId = data.getCommunityId();
+			Map parmMap = new HashMap<String, Object>();
+			//parmMap.put("limit", limit);
+			if (cityCode != null && !cityCode.equals("")) {
+				parmMap.put("cityCode", cityCode);
+			}
+			if (grCommunityId != null && !grCommunityId.equals("")) {
+				parmMap.put("communityId", grCommunityId);
+			}
+			parmMap.put("pageNo",1);
+			parmMap.put("pageSize",5);
+
+			//String mothed = "sale.do";
+			String mothed = "saleForPage";
+			String url = lpbUrl + mothed + "?key=" + KEY;
+			String jsonParam = StringUtil.toString(CommonHelper.getJsonObject(parmMap), null);
+			String result = HttpRequest.httpPostWithJson(url, jsonParam);
+			JSONResult<List<DealCommunity>> dataBean = (JSONResult<List<DealCommunity>>) CtrlerUtil.json2bean(result, new TypeToken<JSONResult<List<DealCommunity>>>() {
+			}.getType());
+			list = dataBean.getData();
+			if (list.size() > 4) {
+				list = list.subList(0, 4);
+			}
+			for (int i = 0; i < list.size(); i++) {
+				if(!StringUtil.isNotNullOrEmpty(communityName)){
+					list.get(i).setCommunityName(data.getCommunityName());
+				}else{
+					list.get(i).setCommunityName(communityName);
+				}
+				list.get(i).setCommunityId(communityId);
+				list.get(i).setContractdate(new Date(StringUtil.parseLong(list.get(i).getContractdate(),null)).toString());
+				list.get(i).setTotalprice(list.get(i).getTotalprice() / 10000);
+				if (i > 2) {
+					break;
+				}
+			}
+		}
+		return list;
+	}
+}

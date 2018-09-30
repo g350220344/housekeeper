@@ -1,0 +1,114 @@
+var InterValObj; //timer变量，控制时间
+var count = 60; //间隔函数，1秒执行
+var curCount;//当前剩余秒数
+var code = ""; //验证码
+var codeLength = 6;//验证码长度
+function sendMessage() {
+curCount = count;
+var dealType; //验证方式
+var uid=$("#uid").val();//用户uid
+if ($("#phone").attr("checked") == true) {
+    dealType = "phone";
+}
+else {
+    dealType = "email";
+}
+//产生验证码
+for (var i = 0; i < codeLength; i++) {
+    code += parseInt(Math.random() * 9).toString();
+}
+    codeStatus = 0;//验证码生效
+//设置button效果，开始计时
+    $("#btnSendCode").attr("disabled", "true");
+    $("#btnSendCode").val( + curCount + "秒再获取");
+    InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+//向后台发送处理数据
+    $.ajax({
+        type: "POST", //用POST方式传输
+        dataType: "text", //数据格式:JSON
+        url: 'login.html', //目标地址
+        data: "dealType=" + dealType +"&uid=" + uid + "&code=" + code,
+        error: function (XMLHttpRequest, textStatus, errorThrown) { },
+        success: function (msg){ }
+    });
+}
+//timer处理函数
+function SetRemainTime() {
+    if (curCount == 0) {                
+        window.clearInterval(InterValObj);//停止计时器
+        $("#btnSendCode").removeAttr("disabled");//启用按钮
+        $("#btnSendCode").val("重新发送");
+        codeStatus = 1;//验证码失效
+        code = ""; //清除验证码。如果不清除，过时间后，输入收到的验证码依然有效    
+    }
+    else {
+        curCount--;
+        $("#btnSendCode").val( + curCount + "秒再获取");
+    }
+}
+var codeStatus = 2;//0有效1失效2初始状态
+$("#submit").click(function () {
+    //判断手机号
+    var phone = $("#phone").val();
+    if(phone.length==0){
+        showToast(1, "手机号不可以为空！");
+        return;
+    }
+    if(!isMobileMethod(phone)){
+        showToast(1, "请输入正确数字！");
+        return ;
+    }
+    // if(codeStatus==2){
+    //     showToast(1, "请发送验证码！");
+    //     return;
+    // }
+    // if(codeStatus==1){
+    //     showToast(1, "验证码已失效！");
+    //     return;
+    // }
+    var code = $("#code").val();
+    if(code.length==0){
+        showToast(1, "密码不可以为空！");
+        return;
+    }
+    if(code != 123321) {
+        showToast(1, '密码错误');
+        return;
+    }
+    login();
+    // $(window).attr('location','index.html');
+});
+
+$('#wx_login').on('click', function(e) {
+    window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=' + REDIRECT_URI + '&response_type=code&scope=' + SCOPE + '&state=123#wechat_redirect';
+    /**
+     * 1.4版本授权操作
+     */
+    // var pre_page = getQueryString('pre');
+    // var target_page = pre_page || REDIRECT_URI;
+    // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=' + target_page + '&response_type=code&scope=' + SCOPE + '&state=123#wechat_redirect';
+});
+
+function login() {
+    loading.show();
+    var code = $("#code").val();
+    var mobile = $("#phone").val();
+    var params = 'mobile=' + mobile;
+    link_public.method(server_url + "/rest/user/login", params, "post", true, function (result) {
+		if (result.success) {
+            console.log('result', result);
+            localStorage.setItem('houseUserId', result.data);
+            window.location.href = './index.html';
+            /**
+             * 1.4版本授权操作
+             */
+            // var pre_page = getQueryString('pre');
+            // var target_page = pre_page || './index.html';
+            // window.location.href = target_page;
+		} else {
+			// $("#nearbyDistrict").html('<li class="empty-words">暂无数据</li>')								
+			showToast(3, result.message);
+		}
+		loading.hide();
+	});
+}

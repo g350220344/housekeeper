@@ -1,0 +1,166 @@
+package com.cindata.housekeeper.wx.controller;
+
+import com.cindata.housekeeper.core.common.tools.CtrlerUtil;
+import com.cindata.housekeeper.core.common.tools.StringUtil;
+import com.cindata.housekeeper.core.entity.JSONResult;
+import com.cindata.housekeeper.wx.model.WxAttention;
+import com.cindata.housekeeper.wx.model.WxHouseInfo;
+import com.cindata.housekeeper.wx.model.WxReport;
+import com.cindata.housekeeper.wx.service.WxAttentionService;
+import com.cindata.housekeeper.wx.service.WxHouseInfoService;
+import com.cindata.housekeeper.wx.service.WxReportService;
+import com.cindata.housekeeper.wx.service.WxUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+@Controller
+@RequestMapping(value = "/WxAttention")
+public class WxAttentionController {
+
+	
+	private static Logger log = LoggerFactory.getLogger(WxAttentionController.class);
+	
+	@Autowired
+    private WxHouseInfoService wxhouseInfoService;
+	@Autowired
+    private WxAttentionService wxAttentionService;
+	@Autowired
+    private WxUserService wxUserService;
+	@Autowired
+	private WxReportService wxReportService;
+	/**
+	 * 添加关注
+	 */
+	@RequestMapping(value="/addAttention", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String addAttention(WxAttention wxAttention,HttpServletRequest request, HttpServletResponse response){
+		
+		/*String WxOpenId = request.getParameter("WxOpenId");
+		String UserId = wxUserService.selectUserIdByOpenId(WxOpenId);
+		wxAttention.setUserId(UserId);*/
+		int i = 0;
+		JSONResult res = new JSONResult();
+		wxAttention.setType(new BigDecimal(1));
+		wxAttention.setStatus(new BigDecimal(1));
+		try {
+			if(!StringUtil.isNotNullOrEmpty(wxAttention.getUserId())&&!StringUtil.isNotNullOrEmpty(wxAttention.getDataId())){
+				res.setMessage("no ok");
+				res.setStatusCode(2);
+				res.setSuccess(false);
+			}else {
+				//用户是否关注该小区
+				List<WxAttention> list = wxAttentionService.getWxAttentionInfoByUserIdAndCommunityId(wxAttention.getUserId(), wxAttention.getDataId().toString());
+				if (!list.isEmpty()) {
+					res.setMessage("小区已被该用户关注");
+					res.setStatusCode(1);
+					res.setSuccess(true);
+				}else{
+					i = wxAttentionService.addAttention(wxAttention);
+					res.setData(i);
+					res.setMessage("ok");
+					res.setStatusCode(1);
+					res.setSuccess(true);
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 取消关注
+	 */
+	@RequestMapping(value="/canelAttention", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String canelAttention(WxAttention wxAttention,HttpServletRequest request, HttpServletResponse response){
+		int i = 0;
+		JSONResult res = new JSONResult();
+		
+		try {
+			if(!StringUtil.isNotNullOrEmpty(wxAttention.getUserId())&&!StringUtil.isNotNullOrEmpty(wxAttention.getDataId())){
+				res.setMessage("no ok");
+				res.setStatusCode(2);
+				res.setSuccess(false);
+			}else{
+				i =	wxAttentionService.canelAttention(wxAttention.getUserId(),wxAttention.getDataId());
+				res.setData(i);
+				res.setMessage("ok");
+				res.setStatusCode(1);
+				res.setSuccess(true);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+
+	/**
+	 * 用户小区关系（是否关注、是否有房产）
+	 */
+	@RequestMapping(value="/getUserCommunityInfo", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String getUserCommunityInfo(HttpServletRequest request,HttpServletResponse response){
+		JSONResult<Map> res = new JSONResult<>();
+		String userId = request.getParameter("userId");
+		String communityId = request.getParameter("communityId");
+		try {
+			Map map = new HashMap();
+			int isAtt = 0;
+			int isHouse = 0;
+			int isRepor = 0;
+			//用户是否关注该小区
+			List<WxAttention> list =  wxAttentionService.getWxAttentionInfoByUserIdAndCommunityId(userId,communityId);
+			if(!list.isEmpty()){
+				isAtt = 1;
+			}
+			map.put("isAtt",isAtt);
+			//用户在该小区下 是否有房产
+			List<WxHouseInfo> wxHouseInfoList =  wxhouseInfoService.getWxHouseInfoByUserIdAndCommunityId(userId,communityId);
+			if(!wxHouseInfoList.isEmpty()){
+				isHouse = 1;
+			}
+			map.put("isHouse",isHouse);
+			//用户在该小区下 是否有报告
+			List<WxReport> wxReportInfoList =  wxReportService.getWxReportByUserIdAndCommunityId(userId,communityId);
+			if(!wxReportInfoList.isEmpty()){
+				isRepor = 1;
+			}
+			map.put("isRepor",isRepor);
+			res.setData(map);
+			res.setMessage("ok");
+			res.setStatusCode(1);
+			res.setSuccess(true);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+}

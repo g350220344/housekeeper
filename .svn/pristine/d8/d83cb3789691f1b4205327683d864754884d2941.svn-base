@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:03 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - Bootstrap Table</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+    <link href="css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+    
+    <style>
+        .search-label {
+            line-height: 30px;
+            display: block;
+            float: left;
+            margin-right: 10px;
+        }
+        .search-box-outer {
+            display: inline-block;
+            width: auto;
+            overflow: hidden;
+            clear: both;
+        }
+        .form-control {
+            width: 180px;
+            float: left;
+            margin-right: 10px;
+        }
+        /* #province_placeholder {
+            display: none!important;
+        } */
+    </style>
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Bootstrap table <a href="http://bootstrap-table.wenzhixin.net.cn/zh-cn/" target="_blank">http://bootstrap-table.wenzhixin.net.cn/zh-cn/</a></h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <p>Bootstrap table是国人开发的一款基于 Bootstrap 的 jQuery 表格插件，通过简单的设置，就可以拥有强大的单选、多选、排序、分页，以及编辑、导出、过滤（扩展）等等的功能。目前在github上已经有2600多个Star，可见其受欢迎程度。</p>
+                <ul>
+                    <li>支持 Bootstrap 3 和 Bootstrap 2</li>
+                    <li>自适应界面</li>
+                    <li>固定表头</li>
+                    <li>非常丰富的配置参数</li>
+                    <li>直接通过标签使用</li>
+                    <li>显示/隐藏列</li>
+                    <li>显示/隐藏表头</li>
+                    <li>通过 AJAX 获取 JSON 格式的数据</li>
+                    <li>支持排序</li>
+                    <li>格式化表格</li>
+                    <li>支持单选或者多选</li>
+                    <li>强大的分页功能</li>
+                    <li>支持卡片视图</li>
+                    <li>支持多语言</li>
+                    <li>支持插件</li>
+                </ul>
+            </div>
+        </div> -->
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>
+                    昨日新增用户： <span id="user_yes_new" class="user-data-span">88个</span> ／
+                    总用户：<span id="user_count" class="user-data-span">1,888个</span> ／
+                    昨日新增房产：<span id="house_yes_new" class="user-data-span">79套</span> ／
+                    总房产：<span id="house_count" class="user-data-span">72966套</span>
+                </h5>
+                <!-- <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-wrench"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#">选项1</a>
+                        </li>
+                        <li><a href="#">选项2</a>
+                        </li>
+                    </ul>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div> -->
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <!-- <div class="col-sm-6">
+                        <h4 class="example-title">从URL加载</h4>
+                        <div class="example">
+                            <table data-toggle="table" data-url="js/demo/table_base.json" data-height="250" data-mobile-responsive="true">
+                                <thead>
+                                    <tr>
+                                        <th data-field="Tid">ID</th>
+                                        <th data-field="First">姓名</th>
+                                        <th data-field="sex">性别</th>
+                                        <th data-field="Score">评分</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div> -->
+
+                    <div class="col-sm-12">
+                        <div class="search-box row">
+                            <div class="col-sm-5">
+                                
+                                <div id="data_5" class="search-box-outer">
+                                    <span class="search-label">房产添加日期</span>
+                                    <div class="input-daterange input-group" id="datepicker">
+                                        <input value="" id="date-s" type="text" class="input-sm form-control" name="start" value="2014-11-11" />
+                                        <span class="input-group-addon">--</span>
+                                        <input value="" id="date-e" type="text" class="input-sm form-control" name="end" value="2014-11-17" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="search-box-outer">
+                                    <span class="search-label">用户名</span>
+                                    <input id="user-id" style="width: 160px; height: 30px;" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button id="table-search" class="btn btn-success " type="button"><i class="fa fa-search"></i>&nbsp;搜索</button>
+                                <button id="table-refresh" name="refresh" data-toggle="button" class="btn btn-success btn-outline" type="button"><i class="glyphicon glyphicon-repeat"></i>重置</button>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="search-box-outer">
+                                    <span class="search-label">房产所在地区</span>
+                                    <select id="province" class="form-control m-b" placeholer="省份">
+                                        <option value='' disabled selected style='display:none;'>省份</option>
+                                    </select>
+                                    <select id="city" class="form-control m-b" placeholder="城市">
+                                        <option value='' disabled selected style='display:none;'>城市</option>
+                                    </select>
+                                    <select id="district" class="form-control m-b" placeholder="区县">
+                                        <option value='' disabled selected style='display:none;'>区县</option> 
+                                        <!-- <option value="">区县</option> -->
+                                    </select>
+                                </div>
+                                <!-- <div class="input-group">
+                                    <select data-placeholder="选择省份" class="chosen-select" style="width:350px;" tabindex="4">
+                                        <option value="">请选择省份</option>
+                                        <option value="110000" hassubinfo="true">北京</option>
+                                        <option value="120000" hassubinfo="true">天津</option>
+                                        <option value="130000" hassubinfo="true">河北省</option>
+                                        <option value="140000" hassubinfo="true">山西省</option>
+                                        <option value="150000" hassubinfo="true">内蒙古自治区</option>
+                                        <option value="210000" hassubinfo="true">辽宁省</option>
+                                        <option value="220000" hassubinfo="true">吉林省</option>
+                                        <option value="230000" hassubinfo="true">黑龙江省</option>
+                                        <option value="310000" hassubinfo="true">上海</option>
+                                        <option value="320000" hassubinfo="true">江苏省</option>
+                                        <option value="330000" hassubinfo="true">浙江省</option>
+                                        <option value="340000" hassubinfo="true">安徽省</option>
+                                        <option value="350000" hassubinfo="true">福建省</option>
+                                        <option value="360000" hassubinfo="true">江西省</option>
+                                        <option value="370000" hassubinfo="true">山东省</option>
+                                        <option value="410000" hassubinfo="true">河南省</option>
+                                        <option value="420000" hassubinfo="true">湖北省</option>
+                                        <option value="430000" hassubinfo="true">湖南省</option>
+                                        <option value="440000" hassubinfo="true">广东省</option>
+                                        <option value="450000" hassubinfo="true">广西壮族自治区</option>
+                                        <option value="460000" hassubinfo="true">海南省</option>
+                                        <option value="500000" hassubinfo="true">重庆</option>
+                                        <option value="510000" hassubinfo="true">四川省</option>
+                                        <option value="520000" hassubinfo="true">贵州省</option>
+                                        <option value="530000" hassubinfo="true">云南省</option>
+                                        <option value="540000" hassubinfo="true">西藏自治区</option>
+                                        <option value="610000" hassubinfo="true">陕西省</option>
+                                        <option value="620000" hassubinfo="true">甘肃省</option>
+                                        <option value="630000" hassubinfo="true">青海省</option>
+                                        <option value="640000" hassubinfo="true">宁夏回族自治区</option>
+                                        <option value="650000" hassubinfo="true">新疆维吾尔自治区</option>
+                                        <option value="710000" hassubinfo="true">台湾省</option>
+                                        <option value="810000" hassubinfo="true">香港特别行政区</option>
+                                        <option value="820000" hassubinfo="true">澳门特别行政区</option>
+                                        <option value="990000" hassubinfo="true">海外</option>
+                                    </select>
+                                </div> -->
+                            </div>
+                        </div>
+                        <h4 class="example-title">查询结果：用户<span id="user-total">266</span>个，房产<span id="house-total">465</span>套，房产总额<span id="house-value">12.89亿</span></h4>
+                        
+                        <div class="example">
+                            <table id="exampleTableFromData" data-striped="true" data-mobile-responsive="true" data-pagination="true">
+                                <thead>
+                                    <tr>
+                                        <th data-align="center" data-valign="middle" data-field="userId">用户名</th>
+                                        <th data-align="center" data-valign="middle" data-field="communityName" data-formatter="houseInfo">房产信息(小区名－地址)</th>
+                                        <th data-align="center" data-valign="middle" data-field="addressDetail" data-formatter="buildingNum">楼栋室号</th>
+                                        <th data-align="center" data-valign="middle" data-field="buildingsquare">面积(㎡)</th>
+                                        <th data-align="center" data-valign="middle" data-field="assessSalePrice" data-formatter="salePrice">评估总价(万元)</th>
+                                        <th data-align="center" data-valign="middle" data-field="createdDt">房产添加时间</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Panel Basic -->
+
+    </div>
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+    <script src="js/content.min.js?v=1.0.0"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="js/plugins/chosen/chosen.jquery.js"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script src="js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+    <!-- date-picker -->
+    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="js/config.js"></script>    
+    <script src="js/scripts/house_data.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+    <script>
+        $("#data_5 .input-daterange").datepicker({
+            keyboardNavigation:!1,
+            forceParse:!1,autoclose:!0
+        });
+        // var config={".chosen-select":{},".chosen-select-deselect":{allow_single_deselect:!0},".chosen-select-no-single":{disable_search_threshold:10},".chosen-select-no-results":{no_results_text:"Oops, nothing found!"},".chosen-select-width":{width:"95%"}};
+        // for(var selector in config)$(selector).chosen(config[selector]);
+    </script>
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_bootstrap.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:06 GMT -->
+</html>

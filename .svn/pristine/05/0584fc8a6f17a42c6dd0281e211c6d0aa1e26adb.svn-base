@@ -1,0 +1,212 @@
+var houseId = ''; //房产id
+var myhouse = null; //置换房产数据
+var type = 0; //置换方式
+var resetFlag = queryUrl('flag') //是否为修改条件
+$(function() {
+    addHistoryBackListener('../index.html');
+    houseId = queryUrl('houseId');
+    init();
+});
+function init() {
+    if(resetFlag) {
+        handleReset();
+    }
+    if(!houseId) {
+        loadLatest();
+    }else {
+        loadHouse();
+    }
+    listener();
+}
+function handleReset() {
+    var register = JSON.parse(localStorage.getItem('changeCity'));
+    console.log('register', register);
+    $('#moneyOwn').val(register.havePrice);
+    $('#budget').val(register.budget / 10000);
+    if(register.changeWay == 2) {
+        type = 1;
+        $('#computed').hide();
+        $('#nav-2').removeClass('cor');
+        $('#nav-1').addClass('cor');
+    }
+}
+//事件注册
+function listener() {
+    $('#select-house').on('click', function(e) {
+        e.stopPropagation();
+        localStorage.removeItem('condition_change_flag');
+        if(!houseId) { //添加房产
+            location.href = '../valuation/index.html';
+        }else { //选择房产
+            localStorage.setItem('back_origin_my', location.href);
+            location.href = '../houseproperty/my.html?url=../change/index.html';
+        }
+    });
+    $('.apply_top p').click(function(){		
+        var vv = $(this).index();
+        $('.apply_top p').removeClass('cor');
+        $(this).addClass('cor');
+        if($(this).attr('data-nav') == "0") {
+            type = 0;
+            $('#computed').show();
+            compute($('#moneyOwn').val());
+        }else {
+            type = 1;
+            $('#computed').hide();
+        }
+    });
+    //根据现有资金计算合计资金
+    // $('#moneyOwn').on('input propertychange', function(e) {
+    //     compute($(this).val());
+    // });
+    $('#moneyOwn').blur(function(e) {
+        compute($(this).val());
+    });
+
+    //下一步
+    $('#next').on('click', function(e) {
+        e.stopPropagation();
+        next();
+    });
+}
+
+//计算合计资金
+function compute(num) {
+    var housePrice = !myhouse ? 0 : !myhouse.assessSaleTotalPrice ? 0 : myhouse.assessSaleTotalPrice;
+    if (!isNaN(parseInt(num))) {
+        if (type == 0) {
+            $('#total-money').html((parseInt(num) + housePrice).toFixed(2));
+        }
+    } else {
+        if (type == 0) {
+            $('#total-money').html(housePrice || '');
+        }
+    }
+}
+
+function loadHouse() {
+    loading.show();
+    var urlData = "houseId=" + houseId;
+    link_public.method(server_url + '/rest/house/selectHouseInfoByHouseId', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if (data != null) {
+                myhouse = json.data;
+                initForm(data);
+            }
+            console.log('house', json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        setTimeout(function () {
+            loading.hide();
+        }, 500);
+    });
+}
+
+
+function initForm(data) {
+    var extraMoney = $('#moneyOwn').val() || 0;
+    var address = data.communityName + ' ' + (data.unitId || '--') + '栋－' + (data.buildingId || '--') + '单元-' + (data.doorNum || '--') + '室 ';
+    $('#house-address').html(address + '<img src="../img/ico_right.png" alt="">');
+    console.log('address', address);
+    if (!!data.assessSaleTotalPrice) {
+        $('#valuation-my').html(data.assessSaleTotalPrice + "万元" + "<span id='valuation-date'>(" + (data.assessTime || '') + ")</span>");
+        
+        $('#total-money').html(extraMoney * 1 + data.assessSaleTotalPrice * 1);
+    } else {
+        $('#valuation-my').html('暂无估价');
+    }
+}
+
+function initEmpty() {
+    $('#house-address').html('+ 添加房产');
+    $('#valuation-my').html('');
+}
+
+
+
+function check() {
+    var moneyOwn = $('#moneyOwn').val();
+    var budget = $('#budget').val();
+    if(!myhouse.houseId) {
+        showToast(3, '请添加一套房产用于置换评估');
+        return false;
+    }
+    if(!moneyOwn) {
+        showToast(3, '请输入可筹借到的资金');
+        return false;
+    }
+    if(moneyOwn.replace(/\b(0+)/gi,"") == 0) {
+        showToast(3, '请输入大于0的可筹借资金');
+        return false;
+    }
+    if(!budget) {
+        showToast(3, '请输入买房预算');
+        return false;
+    }
+    if(budget.replace(/\b(0+)/gi,"") == 0) {
+        showToast(3, '请输入大于0的预算');
+        return false;
+    }
+    return true;
+}
+
+function loadLatest() {
+    loading.show();
+    var urlData = "userId=" + userId;
+    link_public.method(server_url + '/rest/house/lastInsertHouse', urlData, "post", true, function (json) {
+        if (json.success) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            var cityName = null;
+            if (!!data) {
+                myhouse = json.data;
+                houseId = myhouse.houseId;
+                initForm(data);
+            }else {
+                initEmpty();
+            }
+            console.log('latest', json.data);
+        } else {
+            showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        setTimeout(function () {
+            loading.hide();
+        }, 500);
+    });
+}
+
+function next() {
+    if(check()) {
+        var type_arr = [1, 2];
+        var havePrice = $('#moneyOwn').val();
+        var budget = ($('#budget').val() || 0).replace(/\b(0+)/gi,"") * 10000; //预算
+        console.log('houseId', myhouse.houseId);
+        localStorage.setItem('changeCity', JSON.stringify({
+            changeWay:type_arr[type], 
+            accHousePrice: myhouse.assessSaleTotalPrice, 
+            havePrice: havePrice, 
+            accessTime: myhouse.createdDt, 
+            houseId: myhouse.houseId, 
+            cityId: myhouse.cityId, 
+            cityName: myhouse.cityName, 
+            houseId: houseId, 
+            budget: budget,
+            totlePrice: $('#total-money').text()
+        }));
+        console.log('myhouse', myhouse);
+        if(resetFlag == 1) {
+            window.location.href = "./change.html?flag=1&cityId=" + myhouse.cityId + '&houseId=' + myhouse.houseId + '&accessTime=' + myhouse.createdDt;
+        }else {
+            window.location.href = "./change.html?cityId=" + myhouse.cityId + '&houseId=' + myhouse.houseId + '&accessTime=' + myhouse.createdDt;
+        }
+        
+    }else {
+        return;
+    }
+}

@@ -1,0 +1,19 @@
+/* msg-page */
+.msg_page {
+    position: relative;
+}
+.msg_wrapper {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+}
+.msg_content {
+    padding: 0;
+    padding-top: 5px;
+}
+.msg_ctn {
+    font-size: 0.28rem;
+    line-height: 0.42rem;
+    color: #888;
+    padding: 0.27rem 0.3rem 0.5rem;
+}

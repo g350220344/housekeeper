@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE generatorConfiguration
+   PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+   "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<!--数据库驱动 -->
+	<classPathEntry location="E:\workspaces\housekeeper\src\main\webapp\WEB-INF\lib\ojdbc14.jar" />
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<property name="suppressDate" value="true" />
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		<!--数据库链接地址账号密码 
+		agent/123456@//10.200.3.27:1521/tasm
+		-->
+		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@10.200.3.27:1521/tasm" userId="housekeeper"
+			password="123456">
+		</jdbcConnection>
+		<javaTypeResolver type="" >
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!--生成Model类存放位置 -->
+		<javaModelGenerator targetPackage="com.cindata.housekeeper.web.model"
+			targetProject="housekeeper/src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<!--生成映射文件存放位置 -->
+		<sqlMapGenerator targetPackage="com.cindata.housekeeper.web.dao.mapping"
+			targetProject="housekeeper/src/main/java">
+			<!-- <property name="enableSubPackages" value="true" /> -->
+		</sqlMapGenerator>
+		<!--生成Dao类存放位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.cindata.housekeeper.web.dao" targetProject="housekeeper/src/main/java">
+			<!-- <property name="enableSubPackages" value="true" /> -->
+		</javaClientGenerator>
+		<!--生成对应表及类名
+		-->
+		<table tableName="t_hk_user_behavior_log" domainObjectName="UserBehaviorLog" ></table>
+		<table tableName="t_housekeeper_house_info" domainObjectName="HouseInfo" ></table>
+		<table tableName="t_housekeeper_user_info" domainObjectName="UserInfo" ></table>
+		
+
+
+
+
+
+
+			<!-- 设置是否驼峰
+			<property name="useActualColumnNames" value="true" />
+			 -->
+	</context>
+</generatorConfiguration>

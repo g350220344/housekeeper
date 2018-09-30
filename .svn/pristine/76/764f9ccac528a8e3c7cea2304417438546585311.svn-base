@@ -1,0 +1,37 @@
+package com.cindata.housekeeper.wx.service;
+
+import com.cindata.housekeeper.wx.model.WxReportInfo;
+
+import java.util.List;
+import java.util.Map;
+
+public interface WxReportService {
+
+	/**
+	 * 获取用户订阅列表（分页）
+	 */
+	List<Map> selectUserReportByPage(Map<String,Object> bean);
+	/**
+	 * 获取用户订阅总数（分页）
+	 */
+	int selectUserReportByPageCount(Map<String, Object> bean);
+	
+	/**
+	 * 获取用户订阅列表明细（分页）
+	 */
+	List<Map> selectUserReportDetailByPage(Map<String,Object> bean);
+	/**
+	 * 获取用户订阅总数明细（分页）
+	 */
+	int selectUserReportDetailByPageCount(Map<String, Object> bean);
+	
+	List<WxReportInfo> selectAllUserReportByUserId(Map<String, Object> bean);
+	
+	List<WxReportInfo> selectReport(WxReportInfo reportInfo);
+
+    List<WxReportInfo> getWxReportInfoByUserIdAndCommunityId(String userId, String communityId);
+
+	int updateReporStatus();
+
+	int updateReporRead();
+}

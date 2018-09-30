@@ -1,0 +1,238 @@
+package com.cindata.housekeeper.wx.controller;
+
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.cindata.housekeeper.core.common.tools.CtrlerUtil;
+import com.cindata.housekeeper.core.common.tools.OpenapiPoster;
+import com.cindata.housekeeper.core.common.tools.PayWxCommonUtil;
+import com.cindata.housekeeper.core.common.tools.StringUtil;
+import com.cindata.housekeeper.core.entity.JSONResult;
+import com.cindata.housekeeper.core.entity.Parameter;
+import com.cindata.housekeeper.web.model.CityInfo;
+import com.cindata.housekeeper.web.model.CommunityMarket;
+import com.cindata.housekeeper.wx.model.WxReportInfo;
+import com.cindata.housekeeper.wx.model.WxSubCommunity;
+import com.cindata.housekeeper.wx.model.WxUserInfo;
+import com.cindata.housekeeper.wx.service.WxHouseInfoService;
+import com.cindata.housekeeper.wx.service.WxSubscriptionService;
+import com.cindata.housekeeper.wx.service.WxUserService;
+import com.google.common.reflect.TypeToken;
+
+@Controller
+@RequestMapping(value = "/WxSubscription")
+public class WxSubscriptionController {
+
+	
+	private static Logger log = LoggerFactory.getLogger(WxSubscriptionController.class);
+	
+	
+	@Autowired
+    private WxSubscriptionService wxSubscriptionService;
+	@Autowired
+    private WxUserService wxUserService;
+	/**
+	 * 订阅小区报告
+	 */
+	@RequestMapping(value="/subCommunity", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String subCommunity(WxReportInfo WxReportInfo,HttpServletRequest request, HttpServletResponse response){
+		
+		/*String WxOpenId = request.getParameter("WxOpenId");
+		String UserId = wxUserService.selectUserIdByOpenId(WxOpenId);
+		wxSubCommunity.setUserId(UserId);*/
+		int i = 0;
+		JSONResult res = new JSONResult();
+		WxReportInfo.setCreateDate(new java.sql.Date(new java.util.Date().getTime()));
+		WxReportInfo.setStatus(new BigDecimal(0));
+		WxReportInfo.setIsExpired(new BigDecimal(0));
+				try {
+				i =	wxSubscriptionService.subCommunity(WxReportInfo);
+				 res.setData(i);
+				 res.setMessage("ok");
+				 res.setStatusCode(1);
+				 res.setSuccess(true);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	
+	
+	/**
+	 * 根据userid查询小区报告
+	 */
+	@RequestMapping(value="/selectSubCommunityByUserId", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String selectSubCommunityByUserId(HttpServletRequest request, HttpServletResponse response){
+		/*String WxOpenId = request.getParameter("WxOpenId");
+		String UserId = wxUserService.selectUserIdByOpenId(WxOpenId);*/
+		String userId = request.getParameter("userId");
+		int i = 0;
+		JSONResult res = new JSONResult();
+		
+				try {
+					List<WxReportInfo> wxSubCommunity =	wxSubscriptionService.selectSubCommunityByUserId(userId);
+				 res.setData(wxSubCommunity);
+				 res.setMessage("ok");
+				 res.setStatusCode(1);
+				 res.setSuccess(true);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	
+	
+	
+	/**
+	 * 查询小区报告订阅人数
+	 */
+	@RequestMapping(value="/selectSubCommunityCountByCId", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String selectSubCommunityCountById(HttpServletRequest request, HttpServletResponse response){
+		
+		String communityId = request.getParameter("communityId");
+		int i = 0;
+		JSONResult res = new JSONResult();
+		
+				try {
+				i =	wxSubscriptionService.selectSubCommunityCountById(communityId);
+				 res.setData(i);
+				 res.setMessage("ok");
+				 res.setStatusCode(1);
+				 res.setSuccess(true);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+	
+	
+	
+	/**
+	 * 小区出租报告
+	 */
+	@RequestMapping(value="/communityRentReport", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String communityRentReport(HttpServletRequest request, HttpServletResponse response){
+		
+		Long communityId = StringUtil.parseLong(request.getParameter("communityId"),null);
+		int i = 0;
+		JSONResult res = new JSONResult();
+		
+		//当前时间
+				//Date month = new Date(System.currentTimeMillis());
+				//TODO:默认时间，为了数据，测试用，
+				Date month = StringUtil.getDate("2018-04-01");
+				CommunityMarket data = null;
+				try {
+					if(StringUtil.isNotNullOrEmpty(month) && StringUtil.isNotNullOrEmpty(communityId)) {
+						Parameter param = new Parameter();
+						param.setMonth(month);
+						param.setCommunityId(communityId);
+						String resBody = OpenapiPoster.post(param, "analysis/getCommunityMarket");
+						JSONResult<CommunityMarket> bean= (JSONResult<CommunityMarket>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<CommunityMarket>>(){}.getType());
+						data = bean.getData();
+		                if(data.getCityId()!=null) {
+		                    param.setCityId(data.getCityId());
+		                    String resBody1 = OpenapiPoster.post(param, "common/getCityById");
+		                    JSONResult<CityInfo> bean1 = (JSONResult<CityInfo>) CtrlerUtil.json2bean(resBody1, new TypeToken<JSONResult<CityInfo>>() {
+		                    }.getType());
+		                    CityInfo cityInfo = bean1.getData();
+		                    data.setCityName(cityInfo.getCityName());
+		                }
+						res.setData(data);
+					}
+					res.setMessage("ok");
+					res.setStatusCode(1);
+					res.setSuccess(true);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					res.setMessage("no ok");
+					res.setStatusCode(2);
+					res.setSuccess(false);
+				}
+				String resultStr = CtrlerUtil.getRetBody(request, res);
+				return resultStr;
+	}
+	
+	
+	
+	/**
+	 * 我的订阅均价走势对比
+	 */
+	@RequestMapping(value="/sqmPriceCompare", produces="text/html;charset=UTF-8")
+	@ResponseBody
+	public String sqmPriceCompare(HttpServletRequest request, HttpServletResponse response){
+		/*String WxOpenId = request.getParameter("WxOpenId");
+		String UserId = wxUserService.selectUserIdByOpenId(WxOpenId);*/
+		String userId = request.getParameter("userId");
+		int i = 0;
+		JSONResult res = new JSONResult();
+		Date month = new Date(System.currentTimeMillis());
+		CommunityMarket data = null;
+		List resultList = new ArrayList();
+				try {
+					List<WxReportInfo> wxSubCommunity =	wxSubscriptionService.sqmPriceCompare(userId);
+					if(wxSubCommunity != null){
+						for(WxReportInfo compare : wxSubCommunity){
+							
+							Long communityId = compare.getCommunityId().longValue();
+							Parameter param = new Parameter();
+							param.setMonth(month);
+							param.setCommunityId(communityId);
+							String resBody = OpenapiPoster.post(param, "analysis/getCommunityMarket");
+							JSONResult<CommunityMarket> bean= (JSONResult<CommunityMarket>) CtrlerUtil.json2bean(resBody, new TypeToken<JSONResult<CommunityMarket>>(){}.getType());
+							data = bean.getData();
+							
+							resultList.add(data);
+						}
+					}
+				 res.setData(resultList);
+				 res.setMessage("ok");
+				 res.setStatusCode(1);
+				 res.setSuccess(true);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			res.setMessage("no ok");
+			res.setStatusCode(2);
+			res.setSuccess(false);
+		}
+		String resultStr = CtrlerUtil.getRetBody(request, res);
+		return resultStr;
+	}
+}

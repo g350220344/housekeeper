@@ -1,0 +1,367 @@
+var houseId = null;
+var communityId = '';
+var houseInfo = null;
+var has_market = false;
+$(function () {
+    // loading.show();
+    showPartLoading('trend_loading');
+    addListener();
+    addHistoryBackListener(localStorage.getItem('back_origin_houseAvm'));
+    houseId = decodeURIComponent(queryUrl("houseId"));
+
+    if (houseId != null) {
+        var urlData = "houseId=" + houseId;
+        link_public.method(server_url + '/rest/house/selectHouseInfoByHouseId', urlData, "post", false, function (json) {
+            if (json.success) {
+                //alert(JSON.stringify(json));
+                var data = json.data;
+                var cityName = null;
+                if (data != null) {
+                    houseInfo = data;
+                    communityId = data.communityId;
+                    cityName = data.cityName;
+                    var info_str = data.buildingId ? data.buildingId + "栋" : '';
+                    info_str += data.unitId ? " - " + data.unitId + "单元" : '';
+                    info_str += data.doorNum ? ' - ' + data.doorNum + '室' : '';
+                    if(info_str.length > 0) {
+                        info_str += data.buildingsquare ? ' | ' + data.buildingsquare + '㎡' : '';
+                    }else {
+                        info_str += data.buildingsquare ? data.buildingsquare + '㎡' : '';
+                    }
+                    // $("#suggestPrice").html(data.minSaleTotalPrice +"~"+data.maxSaleTotalPrice);
+                    $("#communityName").html(data.communityName + '<img id="address-arrow" src="../img/ico_right.png" class="a-2" alt="">');
+                    $("#address").html(data.cityName + " " + (data.address || ''));
+                    // if(data.minSaleTotalPrice != 0 && data.maxSaleTotalPrice != 0) {
+                    //     $("#suggestPrice").html(data.minSaleTotalPrice +"~"+data.maxSaleTotalPrice);   
+                    // }else {
+                    //     $('#suggestPrice').html('暂无估价');
+                    // }
+                    $('#suggestPrice').html(data.assessSaleTotalPrice || '暂无估价')
+                    $("#info").html("<span class=\"f10 house_type_span\">" + data.communitytype + "</span>" + info_str);
+                    $("#assessSalePrice").html("评估单价：" + (data.assessSalePrice || '--') + "元/㎡");
+                    $("#assessTime").html("评估日期：" + (data.assessTime || '--'));
+                    
+                }
+                //获取小区行情
+                if (communityId != null) {
+                    fetchMarket(communityId);
+                    // var month = "2017-07-21";//当前时间没有数据 所以时间写死
+                    var month = formatDate(new Date());
+                    var communityData = "communityId=" + communityId + "&month=" + month;
+                    link_public.method(server_url + '/rest/community/getCommunityMarket', communityData, "post", false, function (json) {
+                        if (json.statusCode == 1) {
+                            var data = json.data;
+                            // marketData = json.data;
+                            //alert(JSON.stringify(json));
+                            // console.log(data.saleSqmPriceLinkRelativeRatio, data.saleSqmPriceOnYear_on_YearBasis)
+                            if (!data) {
+                                $('#container').hide();
+                                // loading.hide();
+                                hidePartLoading('trend_loading');
+                                showToast(3, '暂无行情走势图');
+                                return;
+                            }
+                            $("#avmPrice").html((data.salesqmprice || '--') + "元/<i>㎡</i>");
+                            var saleSqmPriceLinkRelativeRatio = (typeof data.saleSqmPriceLinkRelativeRatio == 'undefined' ? '' : data.saleSqmPriceLinkRelativeRatio).toString();
+                            var saleSqmPriceOnYear_on_YearBasis = (typeof data.saleSqmPriceOnYear_on_YearBasis == 'undefined' ? '' : data.saleSqmPriceOnYear_on_YearBasis).toString();
+                            var imgType1 = "ico_s";
+                            var imgType2 = "ico_s";
+
+                            if (saleSqmPriceLinkRelativeRatio.indexOf("-") > -1) {
+                                saleSqmPriceLinkRelativeRatio = saleSqmPriceLinkRelativeRatio.replace("-", "");
+                                imgType1 = "ico_x";
+                                $("#saleSqmPriceLinkRelativeRatio p").attr("class", "f13 down");
+                            }
+                            if (saleSqmPriceOnYear_on_YearBasis.indexOf("-") > -1) {
+                                imgType2 = "ico_x";
+                                saleSqmPriceOnYear_on_YearBasis = saleSqmPriceOnYear_on_YearBasis.replace("-", "");
+                                $("#saleSqmPriceOnYear_on_YearBasis p").attr("class", "f13 down");
+                            }
+                            console.log(saleSqmPriceOnYear_on_YearBasis)
+                            $("#saleSqmPriceLinkRelativeRatio p").html("<img src=\"../img/" + imgType1 + ".png\" alt=\"\">" + (saleSqmPriceLinkRelativeRatio || '--') + "%");
+                            $("#saleSqmPriceOnYear_on_YearBasis p").html("<img src=\"../img/" + imgType2 + ".png\" alt=\"\">" + (saleSqmPriceOnYear_on_YearBasis || '--') + "%");
+                            if (typeof data.cityScale != 'undefined') {
+                                $("#cityScale").html(data.cityScale.toFixed(1) + "%");
+                            } else {
+                                $("#cityScale").html('--')
+                            }
+                            $("#comName").html(data.communityName);
+
+                            if (cityName != null) {
+                                $("#cityName").html(cityName);
+                            }
+                            if (typeof data.dataArray != 'undefined') {
+                                var priceData = JSON.parse(data.dataArray)[0];
+                                var timeData = JSON.parse(data.dataArray)[1];
+                                $('.chart-unit').show();
+                                Drawing(priceData, timeData);
+                            } else {
+                                // $('.tubiao_box').html('<div class="empty_words">暂无行情曲线图</div>')
+                            }
+                            // if(typeof data.salesqmprice == 'undefined') {
+                            //     $('#address-arrow').hide();
+                            // }
+                            hidePartLoading('trend_loading');
+                        }else {
+                            $('#address-arrow').hide();
+                        }
+                    })
+                }
+            } else {
+                showToast(3, json.message);
+                $('.index_box').html(emptyContent);
+            }
+            
+        });
+    } else {
+        showToast(3, '出错了！');
+        $('.index_box').html(emptyContent);
+    }
+    clearHouseLocalStorage();
+});
+
+//获取小区近3月均价行情
+function fetchMarket(communityId) {
+    var communityData = "communityId=" + communityId + "&month=" + _config.dataMonth;
+    link_public.method(server_url + '/rest/community/getCommunityMarketByDate', communityData, "post", false, function (json) {
+        if (json.statusCode == 1 && json.data) {
+            has_market = true;
+        } else {
+            has_market = false;
+        }
+        if(!has_market) {
+            $('#address-arrow').hide();
+        }
+
+    })
+}
+//事件注册
+function addListener() {
+    $('.cancelbu').on('click', function () {
+        $('.remove_box').hide();
+        $("body").removeClass('b_add')
+    });
+    $('#go-sell').on('click', function () {
+        // console.log(1)
+        localStorage.setItem('back_origin_my', '../index.html');
+        window.location.href = "../sell/index.html?houseId=" + houseId;
+    });
+    $('#go-lease').on('click', function () {
+        localStorage.setItem('back_origin_my', '../index.html');
+        window.location.href = "../lease/index.html?houseId=" + houseId + '&communityId=' + communityId;
+    });
+    $('#add-house').on('click', function () {
+        showToast(0, '敬请期待');
+        // localStorage.setItem('valuation_origin', window.location.href);
+        // window.location.href = '../valuation/index.html';
+    });
+    $('#communityName').on('click', function(e) {
+        if(!houseInfo) {
+            // showToast(3, '出错了！');
+            return;
+        }
+
+        if(!has_market) {
+            return;
+        }
+        localStorage.setItem('back_origin_details', location.href);
+        var query = '?communityId=' + houseInfo.communityId + '&cityId=' + houseInfo.cityId + '&districtId=' + houseInfo.districtid;
+        $(window).attr('location', '../change/details.html' + query);
+    })
+}
+// function Drawing(priceData,timeData){
+//     var data = JSON.parse("["+priceData+"]");
+//     var showBar = timeData.length > 13 ? true : false;
+//     //曲线图
+//     var chart = Highcharts.chart('container', {
+//         title: {
+//             text: ''
+//         },
+//         yAxis: {
+//             lineWidth: 1,
+//             title: {
+//                 text: ''
+//             }
+//         },
+
+//         credits: {
+//             enabled:false
+//         },
+//         legend: {
+//             enabled: false,
+//             layout: 'vertical',
+//             align: 'right',
+//             verticalAlign: 'middle'
+//         },
+//         xAxis: {
+//             categories:timeData,
+//             scrollbar: {
+//                 enabled: showBar
+//             },
+//             min: 0,
+//             max: 12,
+//             tickLength: 0
+//         },
+//         plotOptions: {
+//             bar: {
+//                 dataLabels: {
+//                     enabled: showBar
+//                 }
+//             },
+//             line: {
+//                 connectNulls:true,//该设置会连接空值点
+//                 // gapSize:1,//缺失点小于gapSize则连接
+//                 /*dataLabels: {
+//                     enabled: true
+//                 },
+//                 enableMouseTracking: false*/
+//             }
+//         },
+//        /* plotOptions: {
+//             series: {
+//                 /!* label: {
+//                      connectorAllowed: false
+//                  },
+//                  pointStart: 2010*!/
+//                 data:["2017-09-01","2017-08-01"]
+//             }
+//         },*/
+//         series: [{
+//             name: '小区单价',
+//             data:data
+//         }],
+//         responsive: {
+//             rules: [{
+//                 condition: {
+//                     maxWidth: 500
+//                 },
+//                 chartOptions: {
+//                     legend: {
+//                         layout: 'horizontal',
+//                         align: 'center',
+//                         verticalAlign: 'bottom'
+//                     }
+//                 }
+//             }]
+//         }
+//     });
+// }
+
+function Drawing(priceData, timeData) {
+    // var data = priceData;
+    var data = JSON.parse("[" + priceData + "]");
+    // data = [null, 8128, 2082, null, 2012, null, null, 80830, 1233, 22222, null, 9088];
+    // timeData = ['02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '01'];
+    //曲线图
+    var chart = Highcharts.chart('container', {
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: ''
+        },
+        yAxis: {
+            // lineWidth: 1,
+            title: {
+                text: ''
+            }
+        },
+        colors: ["#FAAD1C"],
+        credits: {
+            enabled: false
+        },
+        legend: {
+            enabled: false,
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        xAxis: {
+            categories: timeData
+        },
+        /* plotOptions: {
+             series: {
+                 /!* label: {
+                      connectorAllowed: false
+                  },
+                  pointStart: 2010*!/
+                 data:["2017-09-01","2017-08-01"]
+             }
+         },*/
+        plotOptions: {
+            area: {
+                fillOpacity: 0.3, // 指定所有面积图的透明度
+                connectNulls: true,//该设置会连接空值点
+                // pointStart: timeData[0],
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 1,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            },
+
+            // line: {
+            //     connectNulls:true,//该设置会连接空值点
+            //     marker: {
+            //         enabled: false,
+            //         symbol: 'circle',
+            //         radius: 1,
+            //         states: {
+            //             hover: {
+            //                 enabled: true
+            //             }
+            //         }
+            //     }
+            //     // gapSize:1,//缺失点小于gapSize则连接
+            //     /*dataLabels: {
+            //         enabled: true
+            //     },
+            //     enableMouseTracking: false*/
+            // }
+        },
+        series: [{
+            name: '小区均价',
+            data: data
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+    });
+}
+
+function deleteHouse() {
+    loading.show();
+    if (houseId != null) {
+        var urlData = "houseId=" + houseId + "&status=0"
+        link_public.method(server_url + '/rest/house/updateHouse', urlData, "post", true, function (json) {
+            if (json.success) {
+                showToast(2, "删除成功");
+                setTimeout(function () {
+                    window.history.go(-1);
+                    // $(window).attr('location','houseList.html');                    
+                }, 500);
+            } else {
+                showToast(3, json.message);
+            }
+            loading.hide();
+        });
+    }
+
+}
+

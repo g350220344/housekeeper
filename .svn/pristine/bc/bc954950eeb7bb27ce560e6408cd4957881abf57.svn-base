@@ -1,0 +1,246 @@
+var districts = {};
+var pre_center;
+var _cur_zoom;
+var reDrawTimer = null;
+var reZoomTimer = null;
+function initMap(box, pointObj, c_list) {
+    var _map = new BMap.Map(box);
+    var point = new BMap.Point(pointObj.x, pointObj.y);
+    //添加控件
+    _map.addControl(new BMap.NavigationControl());
+    _map.addControl(new BMap.ScaleControl());
+    _map.addControl(new BMap.OverviewMapControl());
+    //定位
+    _map.centerAndZoom(point, 14);
+    pre_center = _map.getCenter();
+    _cur_zoom = _map.getZoom();
+    // // 随机向地图添加25个标注
+    // var bounds = _map.getBounds();
+    // var sw = bounds.getSouthWest();
+    // var ne = bounds.getNorthEast();
+    // var lngSpan = Math.abs(sw.lng - ne.lng);
+    // var latSpan = Math.abs(ne.lat - sw.lat);
+    // var txt = "银湖海岸城", mouseoverTxt = txt + " " + parseInt(Math.random() * 1000, 10) + "套";    
+    // for (var i = 0; i < 25; i++) {
+    //     var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+    //     // addMarker(point);
+    //     var myCompOverlay = new ComplexCustomOverlay(_map, point, "银湖海岸城", "售价：106,215元/㎡", mouseoverTxt);
+    //     _map.addOverlay(myCompOverlay);
+    // }
+    for(var c in c_list) {
+        var item = c_list[c];
+        var point = new BMap.Point(item.longitude, item.latitude);
+        var myCompOverlay = new ComplexCustomOverlay(_map, point, item.communityName, "售价：" + item.salesqmprice + "元/㎡", item);
+        _map.addOverlay(myCompOverlay);
+    }
+    /**地图事件监听部分 */
+    // _map.addEventListener("dragstart", function() {
+    //     pre_center = _map.getCenter();
+    // })
+    // _map.addEventListener("dragend", function(){  
+    //     if(reDrawTimer) {
+    //         clearTimeout(reDrawTimer);
+    //     }
+    //     setTimeout(function() {
+    //         var center = _map.getCenter();    
+    //         console.log("地图中心点变更为：" + center.lng + ", " + center.lat);    
+    //         if(_cur_zoom >= 15) {
+    //             var distance = GetDistance(pre_center.lat, pre_center.lng, center.lat, center.lng);
+    //             console.log('拖动距离： ', distance);
+    //             if(distance > 2) {
+    //                 console.log('重绘标注！')
+    //             }
+    //         }
+    //     }, 300)
+        
+    // });
+    // _map.addEventListener("zoomend", function(){    
+    //     // var center = map.getCenter();    
+    //     if(reZoomTimer) {
+    //         clearTimeout(reZoomTimer);
+    //     }
+    //     if(reDrawTimer) {
+    //         clearTimeout(reDrawTimer);
+    //     }
+    //     setTimeout(function() {
+    //         var _zoom = _map.getZoom();
+    //         console.log("地图比例为：" + _map.getZoom());   
+    //         if(_cur_zoom < 15 && _zoom >= 15) {
+    //             _map.clearOverlays();
+    //             //加载城市标注
+    //         }
+    //         if(_cur_zoom >= 15 && _zoom < 15) {
+    //             _map.clearOverlays();
+    //             //加载小区标注
+    //         }
+    //         _cur_zoom = _map.getZoom();
+    //     }, 300);
+    // })
+    // console.log('districts', JSON.parse(localStorage.getItem('districtContents')));
+}
+
+$(function () {
+    init();
+})
+
+
+function initNav() {
+    districts = JSON.parse(localStorage.getItem('districtContents'));
+    console.log('districtContents: ', districts)
+    var total = 0;
+    for(var d in districts) {
+        total += districts[d].list.length;
+    }
+    if(total == 0) {
+        showToast(3, '暂无匹配结果！');
+    }
+    var html_str = '';
+    if(!!districts) {
+        for(var key in districts) {
+            var item = districts[key];
+            html_str += '<p data-num=' + item.list.length + ' data-district=' + item.districtId + ' data-index=' + key + '>' + item.districtName + '(' + item.list.length + ')' + "</p>";
+        }
+    }
+    $('.map_box_tii').html(html_str);
+    // $('.map_box_tii').find('p').eq(0).addClass('cor');
+    addListener();
+}
+
+function init() {
+    addHistoryBackListener('./proposal.html');
+    initNav();
+    for(var i in districts) {
+        var item = districts[i];
+        console.log(item);
+        if(item.list.length > 0) {
+            $('.map_box_tii').find('p').eq(i).addClass('cor');
+            setMap(i, 'allmap');
+            break;
+        } 
+    }
+}
+
+// 复杂的自定义覆盖物
+function ComplexCustomOverlay(map, point, text, price, cm_obj) {
+    this._point = point;
+    this._text = text;
+    this._price = price;
+    // this._overText = mouseoverText;
+    this._cm_obj = cm_obj
+}
+ComplexCustomOverlay.prototype = new BMap.Overlay();
+ComplexCustomOverlay.prototype.initialize = function (map) {
+    this._map = map;
+    var div = this._div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.style.backgroundColor = "#fff";
+    // div.style.border = "1px solid #BC3B3A";
+    div.style.color = "#495060";
+    div.style.borderRadius = '0.5rem';
+    // div.style.height = "3.6rem";
+    div.style.padding = "0.7rem 1rem";
+    div.style.lineHeight = "1.8rem";
+    div.style.whiteSpace = "nowrap";
+    div.style.MozUserSelect = "none";
+    div.style.fontSize = "1.4rem"
+    div.style.boxShadow = "0.5rem 1rem 0.5rem #888888"
+    var span = this._span = document.createElement("span");
+    span.style.fontWeight = "bold";
+    var p = this._p = document.createElement("p");
+    p.style.color = "#ed3f14";
+    p.style.fontSize = "1.2rem"
+    div.style.textAlign = "center";
+    
+    div.appendChild(span);
+    div.appendChild(p);
+    span.appendChild(document.createTextNode(this._text));
+    p.appendChild(document.createTextNode(this._price));
+    var that = this;
+
+    var arrow = this._arrow = document.createElement("div");
+    arrow.style.background = "url(../img/triangle.png) no-repeat";
+    arrow.style.position = "absolute";
+    arrow.style.width = "3.1rem";
+    arrow.style.height = "3rem";
+    arrow.style.top = "3.6rem";
+    arrow.style.left = "2.4rem";
+    arrow.style.overflow = "hidden";
+    arrow.style.backgroundSize = "contain";
+    div.appendChild(arrow);
+
+    // div.onmouseover = function () {
+    //     this.style.backgroundColor = "#6BADCA";
+    //     this.style.borderColor = "#0000ff";
+    //     this.getElementsByTagName("span")[0].innerHTML = that._overText;
+    //     arrow.style.backgroundPosition = "0px -20px";
+    // }
+
+    // div.onmouseout = function () {
+    //     this.style.backgroundColor = "#EE5D5B";
+    //     this.style.borderColor = "#BC3B3A";
+    //     this.getElementsByTagName("span")[0].innerHTML = that._text;
+    //     arrow.style.backgroundPosition = "0px 0px";
+    // }
+
+    //标注点击事件
+    div.addEventListener('touchstart', function() {
+        console.log(that._cm_obj.communityId, that._cm_obj.districtId, that._cm_obj.cityId);
+        localStorage.setItem('back_origin_details', location.href);
+        var query = '?communityId=' + that._cm_obj.communityId + '&cityId=' + that._cm_obj.cityId + '&districtId=' + that._cm_obj.districtId;
+        $(window).attr('location', 'details.html' + query);
+    });
+
+    map.getPanes().labelPane.appendChild(div);
+
+    return div;
+}
+ComplexCustomOverlay.prototype.draw = function () {
+    var map = this._map;
+    var pixel = map.pointToOverlayPixel(this._point);
+    this._div.style.left = pixel.x - parseInt(this._arrow.style.left) + "px";
+    this._div.style.top = pixel.y - 30 + "px";
+}
+
+
+//清除覆盖物
+function remove_overlay(){
+    map.clearOverlays();         
+}
+
+function addListener() {
+    $('.map_box_tii p').click(function (e) {
+        // remove_overlay();
+        
+        var vv = $(this).index();
+        $('.map_box_tii p').removeClass('cor ');
+        $(this).addClass('cor');
+        // $('.map_box_tcc').hide();
+        // $('.map_box_tcc').eq(vv).show();
+        if(vv == 0) {
+            setMap(vv, 'allmap')
+        }else if(vv == 1) {
+            setMap(vv, 'allmap')
+        }else {
+            setMap(vv, 'allmap')
+        }
+        if($(this).attr('data-num') == 0) {
+            showToast(3, '暂无匹配结果！');
+        }
+        console.log(vv);
+    })
+}
+
+function setMap(index, el) {
+    if(districts[index].list.length > 0) {
+        var item = districts[index].list[0];
+        var point = {
+            x: item.longitude,
+            y: item.latitude
+        }
+        initMap(el, point, districts[index].list);
+    }else {
+        $('#' + el).html('<div class="no_house">该区域暂无匹配房产</div>')
+    }
+    
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>出租分析</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	<style>
+		.lease_bar {
+			margin-top: 0;
+		}
+
+		.sh_bar_2 {
+			border-top: 1px solid #eee;
+    		margin-top: 0.5rem;
+		}
+	
+		.sh_bar_2 li {
+			border: none;
+			text-align: left;
+			padding-right: 0.5rem;
+		}
+		.rent-nav {
+			width: 90%;
+			margin: auto;
+			overflow: hidden;
+			clear: both;
+			padding: 1.5rem 0;
+			text-align: center;
+		}
+		.rent-nav li {
+			width: 23%;
+			/* float: left; */
+			padding: 0.3rem 0;
+			border: 1px solid #388cff;
+			text-align: center;
+			font-size: 1.2rem;
+			display: inline-block;
+			border-radius: 1.3rem;
+			color: #388cff;
+		}
+		/* .rent-nav li:not(:last-child) {
+			border-right: none;
+		} */
+		.rent-nav-active {
+			background: #388cff;
+			color: #fff!important;
+			border-color: #388cff!important;
+		}
+		.empty-words {
+			text-align: center;
+			color: gray;
+			width: 100%;
+			height: 5rem;
+			line-height: 5rem;
+		}
+		p .f12 {
+			text-align: center;
+		}
+		.tcc ul li .tcc_leftdel {
+			width: 12rem;
+		}
+		.tii p {
+			padding-left: 0!important;
+		}
+		.tii1 p {
+			padding-left: 0!important;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="index_box">
+		<div class="lease_box bac">
+			<h1 class="f25" id="suggestPrice">--~--</h1>
+			<p class="f11 col">建议租金（元/月）</p>
+			<div class="lease_bar">
+				<h1 class="f14" id="communityName">--㎡
+					<span class="f10">--</span>
+				</h1>
+				<p id="address" class="f11 col">xx xx xxxxxx号</p>
+				<p id="info" class="f11 col">xx - xx - xx | --㎡</p>
+				<!-- <ul class="sh_bar_2 f12 h28">
+					<li id="address">xx xx xxxxxx号</li>
+					<li id="assessSalePrice">评估日期：--/--/--</li>
+				</ul> -->
+				<!-- <ul class="sh_bar_2 f12 h28">
+					<li id="address">x xx xxxxxx号</li>
+					<li id="info">--</li>
+				</ul> -->
+			</div>
+		</div>
+		<div class="rent_box bac">
+			<h1 style="padding-bottom: 0;" class="f13 padding">租金走势</h1>
+			<div class="rent_box_list padding part_loading_box">
+				<div style="display: block;" id="rents_loading" class="loading_mask">
+					<img style="margin-top: 30%;" class="demo-spin-icon-load" src="../img/loading_inline.png">
+				</div>
+				<div class="tubiao_box">
+					<div class="chart-unit" style="font-size: 1.2rem;
+					color: grey;
+					padding-top: 1rem;">价格（元/月)</div>
+					<div id="container" style="max-width:800px;height: 20rem;"></div>
+				</div>
+				<div>
+					<ul class="rent-nav">
+						<!-- <li class="rent-nav-active" data-type="1">一居室</li>
+						<li data-type="2">二居室</li>
+						<li data-type="3">三居室</li>
+						<li data-type="4">四居室</li> -->
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="lease_deal bac">
+			<h1 class="f13 padding">出租房源参考</h1>
+
+			<div class="top">
+				<div class="tii f11">
+					<p id="gcommunityName" class="cor"></p>
+					<p>附近小区</p>
+				</div>
+				<div id="list_cur" class="tcc padding part_loading_box">
+					<div id="lease_loading" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul>
+						<!-- <li>
+							<div class="tcc_center">
+								<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+								<p class="f12 col">两室一厅 | 150平 | 南北 | 精装</p>
+							</div>
+							<div class="tcc_right">
+								<p class="f12"><span class="f_big f_red">10866</span><span class="f11">元/㎡</span></p>
+								<p class="f12 col">2017-11-26</p>
+							</div>
+						</li> -->
+						<!-- <li class="empty-words">暂无数据</li> -->
+					</ul>
+				</div>
+
+				<div id="list_nearby" class="tcc padding part_loading_box" style="display:none">
+					<div id="lease_loading_nearby" class="loading_mask">
+						<img class="demo-spin-icon-load" src="../img/loading_inline.png">
+					</div>
+					<ul>
+						<!-- <li>
+							<div class="tcc_center">
+								<p class="f12"><span class="f_big">新加坡美术馆</span></p>
+								<p class="f12 col">两室一厅 | 150平 | 南北 | 精装</p>
+							</div>
+							<div class="tcc_right">
+								<p class="f12"><span class="f_big f_red">10866</span><span class="f11">元/㎡</span></p>
+								<p class="f12 col">2017-11-26</p>
+							</div>
+						</li> -->
+						<!-- <li class="empty-words">暂无数据</li> -->
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="Advertisement">
+			<!-- <img src="../img/3号.jpg" alt=""> -->
+		</div>
+		<h1 class="h1detal">这已经是我的底线了~</h1>
+	</div>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/tools_xie.js"></script>
+	<script type="text/javascript" src="../js/highcharts.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>	
+	<script type="text/javascript" src="../js/lease/lease.js"></script>	
+	<!-- <script>
+		$(function () {
+			$('.tii p').click(function () {
+				var vv = $(this).index();
+				$('.tii p').removeClass('cor');
+				$(this).addClass('cor');
+				$('.tcc').hide();
+				$('.tcc').eq(vv).show();
+			})
+
+			$('.tii1 p').click(function () {
+				var vv = $(this).index();
+				$('.tii1 p').removeClass('cor');
+				$(this).addClass('cor');
+				$('.tcc1').hide();
+				$('.tcc1').eq(vv).show();
+			})
+
+		})
+	</script> -->
+</body>
+
+</html>

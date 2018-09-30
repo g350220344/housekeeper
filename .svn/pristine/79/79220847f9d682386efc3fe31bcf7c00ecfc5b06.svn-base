@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+	<title>搜索-房产管家</title>
+	<link rel="stylesheet" type="text/css" href="../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+<body>
+<div class="index_box">
+	
+
+	<div class="search_box bac">
+		<div class="search_input"><img src="../img/search.png" alt=""><input class="text required" id="search" type="search" placeholder="搜索小区名称或小区地址"  ></div><a id="cancel" class="search_input_button f14">取消</a>
+	</div>
+	<div class="search_del" id ="search_del">
+		<div class="search_del_list"><p class="f11">搜索历史</p><a class="f11" id="clearHistory"><img src="../img/del.png" alt="" >清空</a></div>
+		<ul class="search_del_list_ul f12" id="searchHistory">
+		</ul>
+
+</div>
+	<ul class="search1_box" id="search_box" >
+
+	</ul>
+	<script type="text/javascript" src="../js/jquery.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="../js/config.js"></script>
+
+	<script type="text/javascript" src="../js/public/searchCommunity.js"></script>
+
+</body>
+</html>

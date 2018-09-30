@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cindata.housekeeper.web.dao.UserBehaviorLogMapper" >
+  <resultMap id="BaseResultMap" type="com.cindata.housekeeper.web.model.UserBehaviorLog" >
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USER_AGENT" property="userAgent" jdbcType="VARCHAR" />
+    <result column="POSITION_OF_APP" property="positionOfApp" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="DECIMAL" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="PARAMS" property="params" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="DATE" />
+    <result column="VERSION" property="version" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="ERROR_MSG" property="errorMsg" jdbcType="VARCHAR" />
+    <result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
+    <result column="OS" property="os" jdbcType="DECIMAL" />
+    <result column="PHONE_TYPE" property="phoneType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    USER_ID, USER_AGENT, POSITION_OF_APP, TYPE, URL, PARAMS, CREATE_TIME, VERSION, IP, 
+    ERROR_MSG, ERROR_CODE, OS, PHONE_TYPE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cindata.housekeeper.web.model.UserBehaviorLogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from T_HK_USER_BEHAVIOR_LOG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.cindata.housekeeper.web.model.UserBehaviorLogExample" >
+    delete from T_HK_USER_BEHAVIOR_LOG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cindata.housekeeper.web.model.UserBehaviorLog" >
+    insert into T_HK_USER_BEHAVIOR_LOG (USER_ID, USER_AGENT, POSITION_OF_APP, 
+      TYPE, URL, PARAMS, 
+      CREATE_TIME, VERSION, IP, 
+      ERROR_MSG, ERROR_CODE, OS, 
+      PHONE_TYPE)
+    values (#{userId,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR}, #{positionOfApp,jdbcType=VARCHAR}, 
+      #{type,jdbcType=DECIMAL}, #{url,jdbcType=VARCHAR}, #{params,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=DATE}, #{version,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{errorMsg,jdbcType=VARCHAR}, #{errorCode,jdbcType=VARCHAR}, #{os,jdbcType=DECIMAL}, 
+      #{phoneType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cindata.housekeeper.web.model.UserBehaviorLog" >
+    insert into T_HK_USER_BEHAVIOR_LOG
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="userAgent != null" >
+        USER_AGENT,
+      </if>
+      <if test="positionOfApp != null" >
+        POSITION_OF_APP,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="params != null" >
+        PARAMS,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="version != null" >
+        VERSION,
+      </if>
+      <if test="ip != null" >
+        IP,
+      </if>
+      <if test="errorMsg != null" >
+        ERROR_MSG,
+      </if>
+      <if test="errorCode != null" >
+        ERROR_CODE,
+      </if>
+      <if test="os != null" >
+        OS,
+      </if>
+      <if test="phoneType != null" >
+        PHONE_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null" >
+        #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="positionOfApp != null" >
+        #{positionOfApp,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=DECIMAL},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="params != null" >
+        #{params,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="errorMsg != null" >
+        #{errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="errorCode != null" >
+        #{errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="os != null" >
+        #{os,jdbcType=DECIMAL},
+      </if>
+      <if test="phoneType != null" >
+        #{phoneType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cindata.housekeeper.web.model.UserBehaviorLogExample" resultType="java.lang.Integer" >
+    select count(*) from T_HK_USER_BEHAVIOR_LOG
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update T_HK_USER_BEHAVIOR_LOG
+    <set >
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAgent != null" >
+        USER_AGENT = #{record.userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.positionOfApp != null" >
+        POSITION_OF_APP = #{record.positionOfApp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        TYPE = #{record.type,jdbcType=DECIMAL},
+      </if>
+      <if test="record.url != null" >
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.params != null" >
+        PARAMS = #{record.params,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=DATE},
+      </if>
+      <if test="record.version != null" >
+        VERSION = #{record.version,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null" >
+        IP = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.errorMsg != null" >
+        ERROR_MSG = #{record.errorMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.errorCode != null" >
+        ERROR_CODE = #{record.errorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.os != null" >
+        OS = #{record.os,jdbcType=DECIMAL},
+      </if>
+      <if test="record.phoneType != null" >
+        PHONE_TYPE = #{record.phoneType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update T_HK_USER_BEHAVIOR_LOG
+    set USER_ID = #{record.userId,jdbcType=VARCHAR},
+      USER_AGENT = #{record.userAgent,jdbcType=VARCHAR},
+      POSITION_OF_APP = #{record.positionOfApp,jdbcType=VARCHAR},
+      TYPE = #{record.type,jdbcType=DECIMAL},
+      URL = #{record.url,jdbcType=VARCHAR},
+      PARAMS = #{record.params,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=DATE},
+      VERSION = #{record.version,jdbcType=VARCHAR},
+      IP = #{record.ip,jdbcType=VARCHAR},
+      ERROR_MSG = #{record.errorMsg,jdbcType=VARCHAR},
+      ERROR_CODE = #{record.errorCode,jdbcType=VARCHAR},
+      OS = #{record.os,jdbcType=DECIMAL},
+      PHONE_TYPE = #{record.phoneType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

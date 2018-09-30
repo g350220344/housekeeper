@@ -1,0 +1,127 @@
+/* my page */
+.my_block_1 {
+    width: 100%;
+    overflow: hidden;
+    clear: both;
+    padding: 0.7rem 0;
+}
+.my_persion_pic {
+    width: 1.12rem;
+    height: 1.12rem;
+    border-radius: 50%;
+    display: block;
+    float: left;
+}
+.my_block_1_right {
+    width: 4rem;
+    float: left;
+    margin-left: 0.25rem;
+}
+.my_block_1_right_row_1 {
+    font-size: 0.3rem;
+    color: #111;
+    line-height: 0.29rem;
+    padding-top: 0.15rem;
+}
+.my_block_1_right_row_2 {
+    color: #bbb;
+    font-size: 0.26rem;
+    line-height: 0.25rem;
+    padding-top: 0.33rem;
+}
+.my_block_2 {
+    overflow: hidden;
+    clear: both;
+    background: #fff;
+    height: 0.9rem;
+    width: 100%;
+    padding-top: 0.05rem;
+    /* margin-top: -0.05rem; */
+}
+.my_block_2_item {
+    list-style: none;
+    width: 33.3%;
+    float: left;
+    text-align: center;
+    height: 100%;
+    position: relative;
+}
+.my_block_2_item_badge:after {
+    content: '';
+    display: block;
+    width: 0.12rem;
+    height: 0.12rem;
+    border-radius: 50%;
+    background: #ef6b2d;
+    position: absolute;
+    top: -0.05rem;
+    right: 0.85rem;
+    z-index: 99;
+}
+.my_block_2_item_icon {
+    width: 0.46rem;
+    height: 0.46rem;
+    display: block;
+    margin: auto;
+}
+.my_block_2_item_label {
+    font-size: 0.28rem;
+    color: #000;
+    line-height: 0.26rem;
+    padding-top: 0.16rem;
+}
+.my_block_2_item_label_num {
+    font-size: 0.26rem;
+    color: #888;
+}
+.my_block_3 {
+    background: #fff;
+    width: 100%;
+    padding: 0.4rem 0 0.24rem;
+}
+.my_block_3_report_bg {
+    display: block;
+    width: 7.02rem;
+    height: 2.2rem;
+    margin: auto;
+}
+.my_report_item {
+    width: 7.02rem;
+    height: 2.2rem;
+    border-radius: 0.3rem;
+    margin: auto;
+    background-size: cover;
+    color: #fff;
+    position: relative;
+}
+.my_report_item_tit {
+    line-height: 0.34rem;
+    padding-top: 0.33rem;
+    padding-bottom: 0.23rem;
+    padding-left: 0.25rem;
+    font-size: 0.36rem;
+}
+.my_report_item_address {
+    font-size: 0.26rem;
+    padding-left: 0.46rem;
+    line-height: 0.25rem;
+}
+.my_report_item_date {
+    position: absolute;
+    line-height: 0.2rem;
+    top: 0.33rem;
+    right: 0.2rem;
+    z-index: 10;
+}
+.my_report_item_new {
+    width: 0.12rem;
+    height: 0.12rem;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 0.1rem;
+    margin-right: 0.1rem;
+}
+.my_page .vux-label,.my_page .weui-label {
+    text-align-last: left;
+}

@@ -1,0 +1,16 @@
+/* add_loan page */
+.add_loan_inline_input {
+    display: inline-block;
+    width: 1rem;
+    text-align: right;
+    font-size: inherit;
+    color: #888;
+    border: none;
+}
+.add_loan_inline_input:focus {
+    outline: none;
+}
+.add_loan_inline_input::-webkit-input-placeholder {
+    /* font-size: 0.3rem; */
+    color: #888;
+}

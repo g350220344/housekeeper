@@ -1,0 +1,383 @@
+var sort_reg = [];
+function cellStyle(e, t, o) {
+    var n = ["active", "success", "info", "warning", "danger"];
+    return o % 2 === 0 && o / 2 < n.length ? {
+        classes: n[o / 2]
+    }: {}
+}
+function rowStyle(e, t) {
+    var o = ["active", "success", "info", "warning", "danger"];
+    return t % 2 === 0 && t / 2 < o.length ? {
+        classes: o[t / 2]
+    }: {}
+}
+function scoreSorter(e, t) {
+    return e > t ? 1 : t > e ? -1 : 0
+}
+function nameFormatter(e) {
+    return e + '<i class="icon wb-book" aria-hidden="true"></i> '
+}
+function starsFormatter(e) {
+    return '<i class="icon wb-star" aria-hidden="true"></i> ' + e
+}
+function queryParams(params) {
+    console.log('params', params);
+    var sort_keys = [];
+    var order = '';
+    var columns = this.columns[0];
+    for(var i in sort_reg) {
+        var key = sort_reg[i];
+       
+        switch(key) {
+            case "regTime":
+                console.log(columns)
+                sort_keys.push(tuofengToUnderLine(key) + ' ' + (params.sort == 'regTime' ? params.order : columns[1].order));
+                break;
+            case "houseCount":
+                var str_arr = $('#user-house-sel').val().split(' ');
+                sort_keys.push(tuofengToUnderLine(str_arr[0]) + ' ' + str_arr[1]);
+                break;
+            case "changeCount":
+                var str_arr = $('#house-change-sel').val().split(' ');
+                sort_keys.push(tuofengToUnderLine(str_arr[0]) + ' ' + str_arr[1]);
+                break;
+            case "lastLoginTime":
+                sort_keys.push(tuofengToUnderLine(key) + ' ' + (params.sort == 'lastLoginTime' ? params.order : columns[4].order));
+                break;
+            default:;
+        }
+    }
+    console.log('sort_keys', sort_keys);
+    order = sort_keys.join(',');
+    if(order !== '') {
+        order += ',';
+    }
+    console.log('order', order);
+    var s_time = $('#date-s').val() || '';
+    var e_time = $('#date-e').val() || '';
+    if(s_time != '' && e_time != '') {
+        if(CompareDate(s_time, e_time)) {
+            e_time = s_time;
+            $('#date-e').val(s_time);
+        }
+    }
+    return {
+        userId: $('#user-id').val(),
+        startDate: s_time,
+        endDate: e_time,
+        page: this.pageNumber,
+        rows: this.pageSize,
+        orderByClause: order
+    }
+}
+function buildTable(e, t, o) {
+    var n, l, s, a = [],
+    c = [];
+    for (n = 0; t > n; n++) a.push({
+        field: "字段" + n,
+        title: "单元" + n
+    });
+    for (n = 0; o > n; n++) {
+        for (s = {},
+        l = 0; t > l; l++) s["字段" + l] = "Row-" + n + "-" + l;
+        c.push(s)
+    }
+    e.bootstrapTable("destroy").bootstrapTable({
+        columns: a,
+        data: c,
+        iconSize: "outline",
+        icons: {
+            columns: "glyphicon-list"
+        }
+    })
+} !
+function(e, t, o) {
+    "use strict"; !
+    function() {
+        // var columns = [
+        //     {
+        //         title: '用户名',
+        //         field: 'mobile',
+        //         align: 'center'
+        //     },
+        //     {
+        //         title: '首次使用时间',
+        //         field: 'regTime',
+        //         align: 'center',
+        //         sortable: true
+        //     },
+        //     {
+        //         title: '用户房产',
+        //         field: 'houseCount',
+        //         align: 'center',
+                
+        //         formatter: userHouseFormatter
+        //     },
+        //     {
+        //         title: '房产置换',
+        //         field: 'changeCount',
+        //         align: 'center',
+        //         formatter: houseChangeFormatter
+        //     },
+        //     {
+        //         title: '最近使用时间',
+        //         field: 'lastLoginTime',
+        //         align: 'center',
+        //         sortable: true
+        //     }
+        // ]
+        // userListUrl();
+        o("#exampleTableFromData").bootstrapTable({
+            url: server_url + '/rest/sys/user/getUserInfoList',
+            ajax: $.ajax,
+            type: 'post',
+            dataType: 'jsonp',
+            pageNumber: 1,
+            dataField: 'res',
+            sidePagination: 'server',
+            queryParamsType: 'limit',
+            queryParams: queryParams,
+            pageSize: 20,
+            pageList:[5,10,20,30],//分页步进值
+            // showToggle: true,
+            // toolbarAlign:'right',//工具栏对齐方式
+            // buttonsAlign:'right',//按钮对齐方式
+            // toolbar:'#toolbar',//指定工作栏
+            // columns: columns,
+            responseHandler: function(res) {
+                console.log(res);
+                $('#user-total').html(typeof res.data.COUNT == 'undefined' ? '--' : res.data.COUNT);
+                $('#house-total').html(typeof res.data.HOUSECOUNT == 'undefined' ? '--' : res.data.HOUSECOUNT);
+                $('#house-value').html(typeof res.data.HOUSEPRICE == 'undefined' ? '--' : (res.data.HOUSEPRICE.toFixed(2) + '元'));
+                return {
+                    total: res.data.COUNT,
+                    res: res.data.data
+                }
+            },
+            onClickCell: function(field, value, row, $element) {
+                // console.log(field, row);
+                if(field == 'Exchange') {
+                    console.log(row.Exchange);
+                }
+            },
+            onSort: function(name, order) {
+                updateSortReg(name);
+            }
+        })
+    } (),
+    // function() {
+    //     o("#exampleTableColumns").bootstrapTable({
+    //         url: "js/demo/bootstrap_table_test.json",
+    //         height: "400",
+    //         iconSize: "outline",
+    //         showColumns: !0,
+    //         icons: {
+    //             refresh: "glyphicon-repeat",
+    //             toggle: "glyphicon-list-alt",
+    //             columns: "glyphicon-list"
+    //         }
+    //     })
+    // } (),
+    // buildTable(o("#exampleTableLargeColumns"), 50, 50),
+    // function() {
+    //     o("#exampleTableToolbar").bootstrapTable({
+    //         url: "js/demo/bootstrap_table_test2.json",
+    //         search: !0,
+    //         showRefresh: !0,
+    //         showToggle: !0,
+    //         showColumns: !0,
+    //         toolbar: "#exampleToolbar",
+    //         iconSize: "outline",
+    //         icons: {
+    //             refresh: "glyphicon-repeat",
+    //             toggle: "glyphicon-list-alt",
+    //             columns: "glyphicon-list"
+    //         }
+    //     })
+    // } (),
+    // function() {
+    //     o("#exampleTableEvents").bootstrapTable({
+    //         url: "js/demo/bootstrap_table_test.json",
+    //         search: !0,
+    //         pagination: !0,
+    //         showRefresh: !0,
+    //         showToggle: !0,
+    //         showColumns: !0,
+    //         iconSize: "outline",
+    //         toolbar: "#exampleTableEventsToolbar",
+    //         icons: {
+    //             refresh: "glyphicon-repeat",
+    //             toggle: "glyphicon-list-alt",
+    //             columns: "glyphicon-list"
+    //         }
+    //     });
+    //     var e = o("#examplebtTableEventsResult");
+    //     o("#exampleTableEvents").on("all.bs.table",
+    //     function(e, t, o) {
+    //         console.log("Event:", t, ", data:", o)
+    //     }).on("click-row.bs.table",
+    //     function() {
+    //         e.text("Event: click-row.bs.table")
+    //     }).on("dbl-click-row.bs.table",
+    //     function() {
+    //         e.text("Event: dbl-click-row.bs.table")
+    //     }).on("sort.bs.table",
+    //     function() {
+    //         e.text("Event: sort.bs.table")
+    //     }).on("check.bs.table",
+    //     function() {
+    //         e.text("Event: check.bs.table")
+    //     }).on("uncheck.bs.table",
+    //     function() {
+    //         e.text("Event: uncheck.bs.table")
+    //     }).on("check-all.bs.table",
+    //     function() {
+    //         e.text("Event: check-all.bs.table")
+    //     }).on("uncheck-all.bs.table",
+    //     function() {
+    //         e.text("Event: uncheck-all.bs.table")
+    //     }).on("load-success.bs.table",
+    //     function() {
+    //         e.text("Event: load-success.bs.table")
+    //     }).on("load-error.bs.table",
+    //     function() {
+    //         e.text("Event: load-error.bs.table")
+    //     }).on("column-switch.bs.table",
+    //     function() {
+    //         e.text("Event: column-switch.bs.table")
+    //     }).on("page-change.bs.table",
+    //     function() {
+    //         e.text("Event: page-change.bs.table")
+    //     }).on("search.bs.table",
+    //     function() {
+    //         e.text("Event: search.bs.table")
+    //     })
+    // } ()
+    loadUser();
+    listener();
+} (document, window, jQuery);
+
+function listener() {
+    $('#table-search').on('click', function() {
+        $('#exampleTableFromData').bootstrapTable('refresh', {url: host + server_url + '/rest/sys/user/getUserInfoList'});
+    });
+    $('#table-refresh').on('click', function() {
+        location.reload();
+    })
+    $('#user-house-sel').on('input', function() {
+        var name = 'houseCount';
+        var val = $(this).val();
+        if(val === '') {
+            updateSortReg(name, 'empty');
+        }else {
+            updateSortReg(name);
+        }
+        
+        $('#exampleTableFromData').bootstrapTable('refresh', {url: host + server_url + '/rest/sys/user/getUserInfoList'});        
+    });
+    $('#house-change-sel').on('input', function() {
+        var name = 'changeCount';
+        var val = $(this).val();
+        if(val === '') {
+            updateSortReg(name, 'empty');
+        }else {
+            updateSortReg(name);
+        }
+        $('#exampleTableFromData').bootstrapTable('refresh', {url: host + server_url + '/rest/sys/user/getUserInfoList'});        
+    });
+    $('#date-s').on('change', function(e) {
+        var s = $(this).val() || '';
+        var e = $('#date-e').val() || '';
+        if(s == '') {
+            return;
+        }
+        if(CompareDate(s, e)) {
+            console.log('----------1-------')
+            $('#date-e').val(s);
+        }
+    });
+    $('#date-e').on('change', function(e) {
+        
+        var s = $('#date-s').val() || '';
+        var e = $(this).val() || '';
+        if(s == '') {
+            return;
+        }
+        if(e == '') {
+            $(this).val(s);
+        }
+        if(CompareDate(s, e)) {
+            $(this).val(s);
+        }
+    });
+}
+
+function userHouseFormatter(value, row, index) {
+    var str = '';
+    if(typeof row.houseCount != 'undefined') {
+        str += '共' + row.houseCount + '套 ';
+    }
+    if(typeof row.housePrice != 'undefined') {
+        str += '总' + row.housePrice + '万';
+    }
+    return '<a class="J_menuItem" href=' +  "./user_house.html?id=" + (row.mobile || '--') + '>' + str + '</a>';
+}
+
+function houseChangeFormatter(value, row, index) {
+    var str = '';
+    if(typeof row.changeCount != 'undefined') {
+        str += '共' + row.changeCount + '次 ';
+    }
+    if(typeof row.changePrice != 'undefined') {
+        str += '最高' + row.changePrice + '万';
+    }
+    return '<span>' + str + '</span>';
+}
+
+function updateSortReg(name, tag) {
+    var pos = -1;
+    for (var i in sort_reg) {
+        if (name == sort_reg[i]) {
+            pos = i;
+            break;
+        }
+    }
+    if (pos != -1) {
+        sort_reg.splice(pos, 1);
+    }
+    if(tag === 'empty') {
+        return;
+    }
+    sort_reg.unshift(name);
+    console.log('sort_reg', sort_reg);
+}
+
+function loadUser() {
+    // loading.show();
+    var urlData = "";
+    link_public.method(server_url + '/rest/sys/house/houseAndUserData', urlData, "post", true, function (json) {
+        if (json.statusCode == 1) {
+            //alert(JSON.stringify(json));
+            var data = json.data;
+            // var cityName = null;
+            if (data != null) {
+                initInfo(data);
+            }
+            console.log('data', json.data);
+        } else {
+            // showToast(3, json.message);
+            // $('.index_box').html(emptyContent);
+        }
+        // setTimeout(function () {
+        //     loading.hide();
+        // }, 500);
+    });
+}
+
+function initInfo(data) {
+    $('#user_yes_new').html(data.userCountYesterday + '个')
+    $('#user_count').html(data.houseCount + '个'); //总用户
+    $('#house_yes_new').html(data.houseAddYesterday + '套'); 
+    $('#house-total').html(data.houseCount + '套');
+}
+

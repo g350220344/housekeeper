@@ -1,0 +1,186 @@
+package com.cindata.housekeeper.wx.model;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class WxReportInfo {
+    private String id;
+
+    private String userId;
+
+    private BigDecimal communityId;
+
+    private BigDecimal status;
+
+    private String remark;
+
+    private BigDecimal type;
+
+    private Date createDate;
+
+    private Date subscribeDate;
+
+    private BigDecimal period;
+
+    private BigDecimal isExpired;
+
+    private Date updateDate;
+
+    private String reserve1;
+
+    private String reserve2;
+
+    private String reserve3;
+
+    private String reserve4;
+
+    private BigDecimal isRead;
+
+    private String address;
+
+    private String communityName;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId == null ? null : userId.trim();
+    }
+
+    public BigDecimal getCommunityId() {
+        return communityId;
+    }
+
+    public void setCommunityId(BigDecimal communityId) {
+        this.communityId = communityId;
+    }
+
+    public BigDecimal getStatus() {
+        return status;
+    }
+
+    public void setStatus(BigDecimal status) {
+        this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
+    }
+
+    public BigDecimal getType() {
+        return type;
+    }
+
+    public void setType(BigDecimal type) {
+        this.type = type;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getSubscribeDate() {
+        return subscribeDate;
+    }
+
+    public void setSubscribeDate(Date subscribeDate) {
+        this.subscribeDate = subscribeDate;
+    }
+
+    public BigDecimal getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(BigDecimal period) {
+        this.period = period;
+    }
+
+    public BigDecimal getIsExpired() {
+        return isExpired;
+    }
+
+    public void setIsExpired(BigDecimal isExpired) {
+        this.isExpired = isExpired;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public String getReserve1() {
+        return reserve1;
+    }
+
+    public void setReserve1(String reserve1) {
+        this.reserve1 = reserve1 == null ? null : reserve1.trim();
+    }
+
+    public String getReserve2() {
+        return reserve2;
+    }
+
+    public void setReserve2(String reserve2) {
+        this.reserve2 = reserve2 == null ? null : reserve2.trim();
+    }
+
+    public String getReserve3() {
+        return reserve3;
+    }
+
+    public void setReserve3(String reserve3) {
+        this.reserve3 = reserve3 == null ? null : reserve3.trim();
+    }
+
+    public String getReserve4() {
+        return reserve4;
+    }
+
+    public void setReserve4(String reserve4) {
+        this.reserve4 = reserve4 == null ? null : reserve4.trim();
+    }
+
+    public BigDecimal getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(BigDecimal isRead) {
+        this.isRead = isRead;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
+
+    public String getCommunityName() {
+        return communityName;
+    }
+
+    public void setCommunityName(String communityName) {
+        this.communityName = communityName == null ? null : communityName.trim();
+    }
+}
