@@ -55,9 +55,8 @@ public class SMSUtil {
     private static String ENCODING = "UTF-8";
     
     //key
-   // private static String apikey = "0ec03b2171ae7785ed472a763572e232";
-    private static String apikey = "b5796709233fda0989a336f9782234c1";
-
+    private static String apikey = "0ec03b2171ae7785ed472a763572e232";
+   
     //文本短信模板id
     private static String tpl_id = "2075738";
     
